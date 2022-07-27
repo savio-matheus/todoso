@@ -8,12 +8,14 @@
 	"title": string -> 50 chars
 	"id": integer
 	"description": string
-	"creation_date": string -> aaaa/mm/dd
+	"creationDate": string -> aaaa/mm/dd
+	"completionDate": string -> aaaa/mm/dd
 	"deadline": string -> aaaa/mm/dd
 	"categories": string1, string2, ...
 	"tags": string1, string2, ...
 	"priority": integer
 	"color": string -> cor em hexadecimal
+	"done": true || false
 }
 ```
 
@@ -22,7 +24,8 @@
 {
 	"title": string -> 50 chars (obrigatório)
 	"description": string
-	"creation_date": string -> aaaa/mm/dd
+	"creationDate": string -> aaaa/mm/dd
+	"completionDate": string -> aaaa/mm/dd
 	"deadline": string -> aaaa/mm/dd
 	"categories": string1, string2, ...
 	"tags": string1, string2, ...
