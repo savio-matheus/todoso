@@ -7,10 +7,10 @@ import java.time.format.DateTimeParseException;
 public class Task {
 	static final int MAX_TITLE_SIZE = 50;
 	static final int NO_PRIORITY = 0;
-	static final Integer NO_ID = -1;
+	static final long NO_ID = -1;
 	
 	private String title; // 50 chars
-	private Integer id;
+	private Long id;
 	private String description;
 	private LocalDate creationDate;
 	private LocalDate completionDate;
@@ -23,7 +23,7 @@ public class Task {
 
 	public Task() {}
 	
-	public Task(String title, Integer id, String description, String creationDate,
+	public Task(String title, Long id, String description, String creationDate,
 			String completionDate, String deadline, ArrayList<String> categories,
 			ArrayList<String> tags, Integer priority, String color, boolean done) {
 
@@ -53,13 +53,13 @@ public class Task {
 		this.title = title.trim();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		try {
-			this.id = new Integer(id);
+			this.id = new Long(id);
 		} catch (NumberFormatException e) {
 			this.id = NO_ID;
 			//System.out.println(e);
@@ -67,7 +67,7 @@ public class Task {
 		}
 	}
 	
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -79,8 +79,8 @@ public class Task {
 		this.description = description;
 	}
 
-	public String getCreationDate() {
-		return creationDate.toString();
+	public LocalDate getCreationDate() {
+		return creationDate;
 	}
 
 	public void setCreationDate(String creationDate) {
@@ -92,8 +92,8 @@ public class Task {
 		}
 	}
 
-	public String getDeadline() {
-		return deadline.toString();
+	public LocalDate getDeadline() {
+		return deadline;
 	}
 	
 	public void setDeadline(String deadline) {
@@ -122,6 +122,9 @@ public class Task {
 	}
 
 	public Integer getPriority() {
+		if (priority == null) {
+			return NO_PRIORITY;
+		}
 		return priority;
 	}
 
@@ -164,5 +167,28 @@ public class Task {
 
 	public void setDone(boolean done) {
 		this.done = done;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append(getId() + " ");
+		if (isDone()) {
+			strBuf.append("x" + " ");
+		}
+		strBuf.append("(" + getPriority() + ")" + " ");
+		strBuf.append(getCompletionDate() + " ");
+		strBuf.append(getCreationDate() + " ");
+		strBuf.append(getDescription() + " ");
+		for (String i : getTags()) {
+			strBuf.append("+" + i + " ");
+		}
+		for (String i : getCategories()) {
+			strBuf.append("@" + i + " ");
+		}
+		strBuf.append("due:" + getDeadline());
+
+		System.out.println(strBuf);
+		return strBuf.toString();
 	}
 }

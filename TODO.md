@@ -4,7 +4,7 @@
 
 O aplicativo deve:
 
-- [ ] cadastrar tarefas
+- [X] cadastrar tarefas
 - [ ] editar tarefas
 - [ ] apagar tarefas
 - [ ] listar/visualizar tarefas
@@ -19,7 +19,7 @@ O aplicativo deve:
 
 - [ ] mostrar notificações (quando aplicável)
 - [ ] exportar/importar tarefas em vários formatos
-- [ ] ter suporte a todotxt
+- [X] ter suporte a todotxt
 - [ ] ter múltiplos usuários, com login e senha
 - [ ] ter suporte a compartilhamento de tarefas/categorias entre usuários
 
