@@ -1,6 +1,7 @@
 package backend.APIv1;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,7 +32,8 @@ public class Tasks {
 			Long id = TaskPersistence.write(task);
 			return Response
 					.status(Response.Status.CREATED)
-					.entity("/todoso-backend/api/v1/task/" + id)
+					.contentLocation(new URI("/todoso-backend/api/v1/task/" + id))
+					.entity("{\"status\": \"OK\"}")
 					.build();
 		}
 		catch (IOException e) {

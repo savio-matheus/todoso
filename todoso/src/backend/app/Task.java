@@ -76,6 +76,10 @@ public class Task {
 	}
 
 	public void setDescription(String description) {
+		if (description != null) {
+			this.description = description.trim();
+			return;
+		}
 		this.description = description;
 	}
 
@@ -110,6 +114,11 @@ public class Task {
 	}
 
 	public void setCategories(ArrayList<String> categories) {
+		if (categories != null) {
+			this.categories = spacesToUnderlines(categories);
+			return;
+		}
+		
 		this.categories = categories;
 	}
 
@@ -118,6 +127,11 @@ public class Task {
 	}
 
 	public void setTags(ArrayList<String> tags) {
+		if (tags != null) {
+			this.tags = spacesToUnderlines(tags);
+			return;
+		}
+		
 		this.tags = tags;
 	}
 
@@ -179,7 +193,11 @@ public class Task {
 		strBuf.append("(" + getPriority() + ")" + " ");
 		strBuf.append(getCompletionDate() + " ");
 		strBuf.append(getCreationDate() + " ");
-		strBuf.append(getDescription() + " ");
+		if (this.description == null) {
+			strBuf.append(getDescription() + " ");
+		} else {
+			strBuf.append("\"" + getDescription().replace("\"", "'") + "\"" + " ");
+		}
 		for (String i : getTags()) {
 			strBuf.append("+" + i + " ");
 		}
@@ -190,5 +208,13 @@ public class Task {
 
 		System.out.println(strBuf);
 		return strBuf.toString();
+	}
+	
+	private ArrayList<String> spacesToUnderlines(ArrayList<String> list) {
+		int size = list.size();
+		for (int i = 0; i < size; i++) {
+			list.set(i, list.get(i).trim().replace(" ", "_"));
+		}
+		return list;
 	}
 }
