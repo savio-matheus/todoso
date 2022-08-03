@@ -19,7 +19,7 @@ public class Task {
 	private ArrayList<String> tags;
 	private Integer priority;
 	private String color; // hex: #FFFFFF
-	private boolean done;
+	private boolean done = false;
 
 	public Task() {}
 	
@@ -83,8 +83,11 @@ public class Task {
 		this.description = description;
 	}
 
-	public LocalDate getCreationDate() {
-		return creationDate;
+	public String getCreationDate() {
+		if (creationDate == null) {
+			return null;
+		}
+		return creationDate.toString();
 	}
 
 	public void setCreationDate(String creationDate) {
@@ -96,8 +99,11 @@ public class Task {
 		}
 	}
 
-	public LocalDate getDeadline() {
-		return deadline;
+	public String getDeadline() {
+		if (deadline == null) {
+			return null;
+		}
+		return deadline.toString();
 	}
 	
 	public void setDeadline(String deadline) {
@@ -162,16 +168,21 @@ public class Task {
 		this.color = color;
 	}
 	
-	public LocalDate getCompletionDate() {
-		return completionDate;
+	public String getCompletionDate() {
+		if (completionDate == null) {
+			return null;
+		}
+		return completionDate.toString();
 	}
 	
 	public void setCompletionDate(String completionDate) {
 		try {
 			// Considerando o formato "AAAA-MM-DD" (ISO_LOCAL_DATE)
 			this.completionDate = LocalDate.parse(completionDate);
+            setDone(true);
 		} catch (DateTimeParseException e) {
 			this.completionDate = null;
+            setDone(false);
 		}
 	}
 
@@ -189,6 +200,8 @@ public class Task {
 		strBuf.append(getId() + " ");
 		if (isDone()) {
 			strBuf.append("x" + " ");
+		} else {
+			strBuf.append("o" + " ");
 		}
 		strBuf.append("(" + getPriority() + ")" + " ");
 		strBuf.append(getCompletionDate() + " ");

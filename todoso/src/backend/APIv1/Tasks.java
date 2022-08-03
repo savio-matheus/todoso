@@ -14,14 +14,36 @@ import com.owlike.genson.Genson;
 
 import backend.app.Task;
 import backend.app.TaskPersistence;
+import java.io.FileNotFoundException;
 
 @Path("/task")
 public class Tasks {
 
 	@GET @Path("/{id}")
 	@Produces({"application/json"})
-	public String getTask(@PathParam("id") String id) {
-		return "{\"id\": " + id + "}";
+	public Response getTask(@PathParam("id") String id) {
+		try {
+			Task task = TaskPersistence.read(new Long(id));
+			System.out.println(task.toString());
+			if (task == null) {
+				throw new FileNotFoundException();
+			}
+
+			return Response
+				.status(Response.Status.FOUND)
+				.entity(task)
+				.build();
+		} catch (FileNotFoundException e) {
+			return Response
+				.status(Response.Status.NOT_FOUND)
+				.entity("{}")
+				.build();
+		} catch (IOException e) {
+			return Response
+				.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{}")
+				.build();
+		}
 	}
 
 	@POST

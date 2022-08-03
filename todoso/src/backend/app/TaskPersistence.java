@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class TaskPersistence {
@@ -49,7 +50,7 @@ public class TaskPersistence {
 		if (str == null) {
 			return null;
 		}
-
+		System.out.println("TaskPersistence.java:42 - " + idToFind + " " + str);
 		return fillTask(str);
 	}
 
@@ -67,8 +68,73 @@ public class TaskPersistence {
 	}
 	
 	private static Task fillTask(String strTodo) {
-		Task t = new Task();
-		Stream stream = Stream.of(strTodo);
-		return t;
+		Task task = new Task();
+		String[] tokens = strTodo.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			switch (i) {
+			case 0:
+				task.setId(tokens[i]);
+				break;
+			case 1:
+				if (tokens[i].equals("x")) {
+					task.setDone(true);
+				} else {
+					task.setDone(false);
+				}
+				break;
+			case 2:
+				task.setPriority(tokens[i].substring(1, tokens[i].length()-1));
+			case 3:
+				if (!tokens[i].equals("null")) {
+					task.setCompletionDate(tokens[i]);
+				} else {
+					task.setCompletionDate(null);
+				}
+				break;
+			case 4:
+				if (!tokens[i].equals("null")) {
+					task.setCreationDate(tokens[i]);
+				} else {
+					task.setCreationDate(null);
+				}
+				break;
+			case 5:
+				// Descrição
+				StringBuffer tmp = new StringBuffer();
+				while (true) {
+					tmp.append(tokens[i] + " ");
+					
+					if (tokens[i].endsWith("\"")) {
+						break;
+					}
+					
+					i++;
+				}
+				task.setDescription(tmp.toString());
+				//System.out.println(task.getDescription());
+			
+			default:
+				// Tags
+				if (tokens[i].startsWith("+")) {
+					ArrayList<String> tagList = new ArrayList<String>();
+					for (; tokens[i].startsWith("+"); i++) {
+						tagList.add(tokens[i].substring(1));
+					}
+					task.setTags(tagList);
+				}
+
+				// Categorias
+				if (tokens[i].startsWith("@")) {
+					ArrayList<String> categoryList = new ArrayList<String>();
+					for (; tokens[i].startsWith("@"); i++) {
+						categoryList.add(tokens[i].substring(1));
+					}
+					task.setCategories(categoryList);
+				}
+				System.out.println(i);
+				task.setDeadline(tokens[i]);
+			}
+		}
+		return task;
 	}
 }
