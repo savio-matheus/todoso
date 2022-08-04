@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class TaskPersistence {
 	static final String DIR_PATH = "./todoso/";
@@ -21,31 +20,31 @@ public class TaskPersistence {
 
 		checkFile();
 
-		if (task.getId() == null) {
+		if (task.getId() == null || task.getId() == Task.NO_ID) {
 			task.setId(Files.size(Paths.get(DIR_PATH + FILE_NAME)));
 		}
-		
-		FileWriter writer = new FileWriter(todo_txt, true);
-		writer.append(task.toString() + "\n");
-		writer.close();
+
+		try (FileWriter writer = new FileWriter(todo_txt, true)) {
+			writer.append(task.toString() + "\n");
+		}
 		
 		return task.getId();
 	}
 
 	public static Task read(Long id) throws FileNotFoundException, IOException {
 		File todo_txt = new File(DIR_PATH + FILE_NAME);
-		BufferedReader bufRead = new BufferedReader(new FileReader(todo_txt));
 		String str;
-		String idFound;
-		String idToFind = id.toString();
-
-		while ((str = bufRead.readLine()) != null) {
-			idFound = str.substring(0, str.indexOf(" "));
-			if (idFound.equals(idToFind)) {
-				break;
+		String idToFind;
+		try (BufferedReader bufRead = new BufferedReader(new FileReader(todo_txt))) {
+			String idFound;
+			idToFind = id.toString();
+			while ((str = bufRead.readLine()) != null) {
+				idFound = str.substring(0, str.indexOf(" "));
+				if (idFound.equals(idToFind)) {
+					break;
+				}
 			}
 		}
-		bufRead.close();
 
 		if (str == null) {
 			return null;
@@ -61,16 +60,20 @@ public class TaskPersistence {
 		}
 		if (Files.notExists(Paths.get(DIR_PATH + FILE_NAME))) {
 			todo_txt.createNewFile();
-			FileWriter header = new FileWriter(todo_txt, true);
-			header.append("todo.txt format\n");
-			header.close();
+			try (FileWriter header = new FileWriter(todo_txt, true)) {
+				header.append("todo.txt (adaptado)\n");
+			}
 		}
 	}
 	
 	private static Task fillTask(String strTodo) {
 		Task task = new Task();
 		String[] tokens = strTodo.split(" ");
+		for (String i : tokens) {
+			System.out.println(i);
+		}
 		for (int i = 0; i < tokens.length; i++) {
+			System.out.println(i);
 			switch (i) {
 			case 0:
 				task.setId(tokens[i]);
@@ -100,9 +103,13 @@ public class TaskPersistence {
 				break;
 			case 5:
 				// Descrição
-				StringBuffer tmp = new StringBuffer();
-				while (true) {
-					tmp.append(tokens[i] + " ");
+				StringBuilder tmp = new StringBuilder();
+				boolean isNull = false;
+				if (tokens[i].equals("null")) {
+					isNull = true;
+				}
+				while (!isNull) {
+					tmp.append(tokens[i].replace("\"", "")).append(" ");
 					
 					if (tokens[i].endsWith("\"")) {
 						break;
@@ -112,11 +119,13 @@ public class TaskPersistence {
 				}
 				task.setDescription(tmp.toString());
 				//System.out.println(task.getDescription());
+
+				//System.out.println(task.getDescription());
 			
 			default:
 				// Tags
 				if (tokens[i].startsWith("+")) {
-					ArrayList<String> tagList = new ArrayList<String>();
+					ArrayList<String> tagList = new ArrayList<>();
 					for (; tokens[i].startsWith("+"); i++) {
 						tagList.add(tokens[i].substring(1));
 					}
@@ -125,14 +134,21 @@ public class TaskPersistence {
 
 				// Categorias
 				if (tokens[i].startsWith("@")) {
-					ArrayList<String> categoryList = new ArrayList<String>();
+					ArrayList<String> categoryList = new ArrayList<>();
 					for (; tokens[i].startsWith("@"); i++) {
 						categoryList.add(tokens[i].substring(1));
 					}
 					task.setCategories(categoryList);
 				}
 				System.out.println(i);
-				task.setDeadline(tokens[i]);
+				
+				// due:AAAA-MM-DD
+				//     4
+				if (!tokens[i].equals("due:null")) {
+					task.setDeadline(tokens[i].substring(4));
+				} else {
+					task.setDeadline(null);
+				}
 			}
 		}
 		return task;

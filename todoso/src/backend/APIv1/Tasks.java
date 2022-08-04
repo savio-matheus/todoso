@@ -14,6 +14,7 @@ import com.owlike.genson.Genson;
 
 import backend.app.Task;
 import backend.app.TaskPersistence;
+import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
 
 @Path("/task")
@@ -49,20 +50,32 @@ public class Tasks {
 	@POST
 	@Produces({"application/json"})
 	public Response postTask(String json) {
-		Task task = new Genson().deserialize(json, Task.class);
+		Task task;
+		try {
+			task = new Genson().deserialize(json, Task.class);
+		} catch (Exception e) {
+			return Response
+				.status(Response.Status.BAD_REQUEST)
+				.entity("{\"status\": 400}")
+				.build();
+		}
 		try {
 			Long id = TaskPersistence.write(task);
 			return Response
 					.status(Response.Status.CREATED)
 					.contentLocation(new URI("/todoso-backend/api/v1/task/" + id))
-					.entity("{\"status\": \"OK\"}")
+					.entity("{\"status\": \"201\"}")
 					.build();
 		}
 		catch (IOException e) {
+			System.out.println(e);
 		}
 		catch (Exception e) {
 			System.out.println(e);
 		}
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		return Response
+			.status(Response.Status.INTERNAL_SERVER_ERROR)
+			.entity("{\"status\": 500}")
+			.build();
 	}
 }

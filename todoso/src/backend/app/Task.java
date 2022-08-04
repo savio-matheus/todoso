@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 public class Task {
 	static final int MAX_TITLE_SIZE = 50;
 	static final int NO_PRIORITY = 0;
-	static final long NO_ID = -1;
+	public static final long NO_ID = -1;
 	
 	private String title; // 50 chars
 	private Long id;
@@ -59,9 +59,9 @@ public class Task {
 
 	public void setId(String id) {
 		try {
-			this.id = new Long(id);
-		} catch (NumberFormatException e) {
-			this.id = NO_ID;
+			setId(new Long(id));
+		} catch (NumberFormatException | NullPointerException e) {
+			setId(NO_ID);
 			//System.out.println(e);
 			//System.out.println("id = NO_ID");
 		}
@@ -94,7 +94,7 @@ public class Task {
 		try {
 			// Considerando o formato "AAAA-MM-DD" (ISO_LOCAL_DATE)
 			this.creationDate = LocalDate.parse(creationDate);
-		} catch (DateTimeParseException e) {
+		} catch (DateTimeParseException | NullPointerException e) {
 			this.creationDate = LocalDate.now();
 		}
 	}
@@ -110,7 +110,7 @@ public class Task {
 		try {
 			// Considerando o formato "AAAA-MM-DD" (ISO_LOCAL_DATE)
 			this.deadline = LocalDate.parse(deadline);
-		} catch (DateTimeParseException e) {
+		} catch (DateTimeParseException | NullPointerException e) {
 			this.deadline = null;
 		}
 	}
@@ -154,9 +154,9 @@ public class Task {
 	
 	public void setPriority(String priority) {
 		try {
-			this.priority = new Integer(priority);
+			setPriority(new Integer(priority));
 		} catch (NumberFormatException e) {
-			this.priority = NO_PRIORITY;
+			setPriority(NO_PRIORITY);
 		}
 	}
 
@@ -180,7 +180,8 @@ public class Task {
 			// Considerando o formato "AAAA-MM-DD" (ISO_LOCAL_DATE)
 			this.completionDate = LocalDate.parse(completionDate);
             setDone(true);
-		} catch (DateTimeParseException e) {
+		}
+		catch (DateTimeParseException | NullPointerException e) {
 			this.completionDate = null;
             setDone(false);
 		}
@@ -197,27 +198,40 @@ public class Task {
 	@Override
 	public String toString() {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append(getId() + " ");
+		strBuf.append(getId()).append(" ");
 		if (isDone()) {
-			strBuf.append("x" + " ");
+			strBuf.append("x").append(" ");
 		} else {
-			strBuf.append("o" + " ");
+			strBuf.append("o").append(" ");
 		}
-		strBuf.append("(" + getPriority() + ")" + " ");
-		strBuf.append(getCompletionDate() + " ");
-		strBuf.append(getCreationDate() + " ");
+		strBuf.append("(").append(getPriority()).append(") ");
+		strBuf.append(getCompletionDate()).append(" ");
+		strBuf.append(getCreationDate()).append(" ");
 		if (this.description == null) {
-			strBuf.append(getDescription() + " ");
+			strBuf.append(getDescription()).append("");
 		} else {
-			strBuf.append("\"" + getDescription().replace("\"", "'") + "\"" + " ");
+			strBuf.append("\"").append(getDescription().replace("\"", "'")).append("\"");
 		}
-		for (String i : getTags()) {
-			strBuf.append("+" + i + " ");
+		if (getTags() != null) {
+			for (String i : getTags()) {
+				strBuf.append(" +").append(i);
+			}
+		} else {
+			strBuf.append(" null");
 		}
-		for (String i : getCategories()) {
-			strBuf.append("@" + i + " ");
+		if (getCategories() != null) {
+			for (String i : getCategories()) {
+				strBuf.append(" @").append(i);
+			}
+		} else {
+			strBuf.append(" null");
 		}
-		strBuf.append("due:" + getDeadline());
+		
+		if (getDeadline() != null) {
+			strBuf.append(" due:").append(getDeadline());
+		} else {
+			strBuf.append(" due:null");
+		}
 
 		System.out.println(strBuf);
 		return strBuf.toString();
