@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-public class Task {
+public class Tarefa {
 	static final int MAX_TITLE_SIZE = 50;
 	static final int NO_PRIORITY = 0;
 	public static final long NO_ID = -1;
@@ -21,9 +21,9 @@ public class Task {
 	private String color; // hex: #FFFFFF
 	private boolean done = false;
 
-	public Task() {}
+	public Tarefa() {}
 	
-	public Task(String title, Long id, String description, String creationDate,
+	public Tarefa(String title, Long id, String description, String creationDate,
 			String completionDate, String deadline, ArrayList<String> categories,
 			ArrayList<String> tags, Integer priority, String color, boolean done) {
 

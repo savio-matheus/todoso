@@ -12,19 +12,19 @@ import javax.ws.rs.core.Response;
 
 import com.owlike.genson.Genson;
 
-import backend.app.Task;
-import backend.dados.TaskPersistence;
+import backend.app.Tarefa;
+import backend.persistencia.TarefaPersistencia;
 import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
 
-@Path("/task")
-public class Tasks {
+@Path("/tarefas")
+public class Tarefas {
 
 	@GET @Path("/{id}")
 	@Produces({"application/json"})
 	public Response getTask(@PathParam("id") String id) {
 		try {
-			Task task = TaskPersistence.read(new Long(id));
+			Tarefa task = TarefaPersistencia.read(new Long(id));
 			System.out.println(task.toString());
 			if (task == null) {
 				throw new FileNotFoundException();
@@ -50,9 +50,9 @@ public class Tasks {
 	@POST
 	@Produces({"application/json"})
 	public Response postTask(String json) {
-		Task task;
+		Tarefa task;
 		try {
-			task = new Genson().deserialize(json, Task.class);
+			task = new Genson().deserialize(json, Tarefa.class);
 		} catch (Exception e) {
 			return Response
 				.status(Response.Status.BAD_REQUEST)
@@ -60,10 +60,10 @@ public class Tasks {
 				.build();
 		}
 		try {
-			Long id = TaskPersistence.write(task);
+			Long id = TarefaPersistencia.write(task);
 			return Response
 					.status(Response.Status.CREATED)
-					.contentLocation(new URI("/todoso-backend/api/v1/task/" + id))
+					.contentLocation(new URI("/todoso-backend/api/v1/tarefas/" + id))
 					.entity("{\"status\": \"201\"}")
 					.build();
 		}

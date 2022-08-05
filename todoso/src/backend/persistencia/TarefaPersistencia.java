@@ -1,6 +1,6 @@
-package backend.dados;
+package backend.persistencia;
 
-import backend.app.Task;
+import backend.app.Tarefa;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,16 +12,16 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class TaskPersistence {
+public class TarefaPersistencia {
 	static final String DIR_PATH = "./todoso/";
 	static final String FILE_NAME = "todo.txt";
 
-	public static Long write(Task task) throws IOException {
+	public static Long write(Tarefa task) throws IOException {
 		File todo_txt = new File(DIR_PATH + FILE_NAME);
 
 		checkFile();
 
-		if (task.getId() == null || task.getId() == Task.NO_ID) {
+		if (task.getId() == null || task.getId() == Tarefa.NO_ID) {
 			task.setId(Files.size(Paths.get(DIR_PATH + FILE_NAME)));
 		}
 
@@ -32,7 +32,7 @@ public class TaskPersistence {
 		return task.getId();
 	}
 
-	public static Task read(Long id) throws FileNotFoundException, IOException {
+	public static Tarefa read(Long id) throws FileNotFoundException, IOException {
 		File todo_txt = new File(DIR_PATH + FILE_NAME);
 		String str;
 		String idToFind;
@@ -67,8 +67,8 @@ public class TaskPersistence {
 		}
 	}
 	
-	private static Task fillTask(String strTodo) {
-		Task task = new Task();
+	private static Tarefa fillTask(String strTodo) {
+		Tarefa task = new Tarefa();
 		String[] tokens = strTodo.split(" ");
 		for (String i : tokens) {
 			System.out.println(i);
