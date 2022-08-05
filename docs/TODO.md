@@ -31,4 +31,4 @@ As tarefas devem:
 - [ ] ter suporte a tags
 - [ ] ter suporte a cores
 - [ ] ter suporte a prioridades
-- [ ] pertercer a nenhuma, uma ou mais categorias
+- [ ] pertencer a nenhuma, uma ou mais categorias
