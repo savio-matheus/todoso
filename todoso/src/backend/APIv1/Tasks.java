@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import com.owlike.genson.Genson;
 
 import backend.app.Task;
-import backend.app.TaskPersistence;
+import backend.dados.TaskPersistence;
 import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
 
