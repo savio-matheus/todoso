@@ -17,7 +17,7 @@ import backend.persistencia.TarefaPersistencia;
 import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
 
-@Path("/tarefas")
+@Path("/tasks")
 public class Tarefas {
 
 	@GET @Path("/{id}")
