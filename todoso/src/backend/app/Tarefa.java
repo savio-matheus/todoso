@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import backend.persistencia.Entidade;
+
 public class Tarefa {
 	static final int MAX_TITLE_SIZE = 50;
 	static final int NO_PRIORITY = 0;
-	public static final long NO_ID = -1;
+	public static final int NO_ID = -1;
+	public static Entidade tipo = Entidade.TAREFA;
 	
 	private String title; // 50 chars
-	private Long id;
+	private Integer id;
 	private String description;
 	private LocalDate creationDate;
 	private LocalDate completionDate;
@@ -23,9 +26,9 @@ public class Tarefa {
 
 	public Tarefa() {}
 	
-	public Tarefa(String title, Long id, String description, String creationDate,
+	public Tarefa(String title, Integer id, String description, String creationDate,
 			String completionDate, String deadline, ArrayList<String> categories,
-			ArrayList<String> tags, Integer priority, String color, boolean done) {
+			ArrayList<String> tags, Integer priority, String color) {
 
 		super();
 		setTitle(title);
@@ -38,7 +41,7 @@ public class Tarefa {
 		setTags(tags);
 		setPriority(priority);
 		setColor(color);
-		setDone(done);
+		//setDone(done);
 	}
 
 	public String getTitle() {
@@ -53,13 +56,13 @@ public class Tarefa {
 		this.title = title.trim();
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		try {
-			setId(new Long(id));
+			setId(new Integer(id));
 		} catch (NumberFormatException | NullPointerException e) {
 			setId(NO_ID);
 			//System.out.println(e);
@@ -67,7 +70,7 @@ public class Tarefa {
 		}
 	}
 	
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

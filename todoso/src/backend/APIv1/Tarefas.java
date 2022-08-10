@@ -13,9 +13,10 @@ import javax.ws.rs.core.Response;
 import com.owlike.genson.Genson;
 
 import backend.app.Tarefa;
-import backend.persistencia.TarefaPersistencia;
+import backend.persistencia.TarefasPersistencia;
 import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 
 @Path("/tasks")
 public class Tarefas {
@@ -24,7 +25,7 @@ public class Tarefas {
 	@Produces({"application/json"})
 	public Response getTask(@PathParam("id") String id) {
 		try {
-			Tarefa task = TarefaPersistencia.read(new Long(id));
+			Tarefa task = TarefasPersistencia.leia(new Integer(id));
 			System.out.println(task.toString());
 			if (task == null) {
 				throw new FileNotFoundException();
@@ -34,7 +35,7 @@ public class Tarefas {
 				.status(Response.Status.FOUND)
 				.entity(task)
 				.build();
-		} catch (FileNotFoundException e) {
+		} catch (SQLException e) {
 			return Response
 				.status(Response.Status.NOT_FOUND)
 				.entity("{}")
@@ -60,14 +61,14 @@ public class Tarefas {
 				.build();
 		}
 		try {
-			Long id = TarefaPersistencia.write(task);
+			Integer id = new TarefasPersistencia(task).escreva();
 			return Response
 					.status(Response.Status.CREATED)
 					.contentLocation(new URI("/todoso-backend/api/v1/tarefas/" + id))
 					.entity("{\"status\": \"201\"}")
 					.build();
 		}
-		catch (IOException e) {
+		catch (SQLException e) {
 			System.out.println(e);
 		}
 		catch (Exception e) {
