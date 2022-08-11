@@ -26,9 +26,9 @@ public class Tarefa {
 
 	public Tarefa() {}
 	
-	public Tarefa(String title, Integer id, String description, String creationDate,
+	public Tarefa(Integer id, String title, String description, String creationDate,
 			String completionDate, String deadline, ArrayList<String> categories,
-			ArrayList<String> tags, Integer priority, String color) {
+			ArrayList<String> tags, String color, Integer priority) {
 
 		super();
 		setTitle(title);

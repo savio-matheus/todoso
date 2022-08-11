@@ -59,17 +59,35 @@ public class TarefasPersistencia {
 		ResultSet rs;
 		Boolean encontrado;
 		StringBuilder sql = new StringBuilder();
+		Tarefa tarefa = null;
 
 		sql.append("SELECT id, titulo, descricao, data_criacao, ")
 			.append("data_concluida, data_limite, cor, prioridade")
-			.append("FROM tarefas WHERE id=\'")
+			.append(" FROM tarefas WHERE id=")
 			.append(id)
-			.append("\';");
+			.append(";");
+		//System.out.println(sql);
 
 		try (Connection conn = Persistencia.abreConexaoBD()) {
-			Statement s = conn.createStatement();
+			Statement s = conn.createStatement(
+				ResultSet.FETCH_UNKNOWN,
+				ResultSet.CONCUR_READ_ONLY
+			);
 			encontrado = s.execute(sql.toString());
 			rs = s.getResultSet();
+			rs.first();
+			tarefa = new Tarefa(
+				rs.getInt(rs.findColumn("id")),
+				rs.getString(rs.findColumn("titulo")),
+				rs.getString(rs.findColumn("descricao")),
+				rs.getString(rs.findColumn("data_criacao")),
+				rs.getString(rs.findColumn("data_concluida")),
+				rs.getString(rs.findColumn("data_limite")),
+				null,
+				null,
+				rs.getString(rs.findColumn("cor")),
+				rs.getInt(rs.findColumn("prioridade"))
+			);
 		} catch (NamingException e) {
 			System.out.println(e);
 			throw new SQLException();
@@ -79,19 +97,7 @@ public class TarefasPersistencia {
 			return null;
 		}
 		
-		rs.first();
-		return new Tarefa(
-			rs.getString(rs.findColumn("titulo")),
-			rs.getInt(rs.findColumn("id")),
-			rs.getString(rs.findColumn("descricao")),
-			rs.getString(rs.findColumn("data_criacao")),
-			rs.getString(rs.findColumn("data_concluida")),
-			rs.getString(rs.findColumn("data_limite")),
-			null,
-			null,
-			rs.getInt(rs.findColumn("prioridade")),
-			rs.getString(rs.findColumn("cor"))
-		);
+		return tarefa;
 	}
 	
 	private void preencherCampos() {

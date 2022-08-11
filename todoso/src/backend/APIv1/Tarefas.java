@@ -26,7 +26,7 @@ public class Tarefas {
 	public Response getTask(@PathParam("id") String id) {
 		try {
 			Tarefa task = TarefasPersistencia.leia(new Integer(id));
-			System.out.println(task.toString());
+			//System.out.println(task.toString());
 			if (task == null) {
 				throw new FileNotFoundException();
 			}
@@ -36,11 +36,12 @@ public class Tarefas {
 				.entity(task)
 				.build();
 		} catch (SQLException e) {
+			System.out.println(e);
 			return Response
 				.status(Response.Status.NOT_FOUND)
 				.entity("{}")
 				.build();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return Response
 				.status(Response.Status.INTERNAL_SERVER_ERROR)
 				.entity("{}")
