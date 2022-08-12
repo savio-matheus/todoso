@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/olar")
+@Path("/v1/olar")
 public class HelloWorld {
 	
 	@GET

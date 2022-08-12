@@ -18,7 +18,7 @@ import com.owlike.genson.stream.JsonStreamException;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
-@Path("/tasks")
+@Path("/v1/tasks")
 public class Tarefas {
 
 	@GET @Path("/{id}")
