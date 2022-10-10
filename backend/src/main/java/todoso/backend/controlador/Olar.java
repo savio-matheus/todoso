@@ -1,6 +1,6 @@
-package com.todoso.backend;
+package todoso.backend.controlador;
 
-class Olar {
+public class Olar {
 	private final String nome;
 
 	public Olar(String nome) {

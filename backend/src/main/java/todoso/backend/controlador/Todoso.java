@@ -1,13 +1,13 @@
-package com.todoso.backend;
+package todoso.backend.controlador;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackendApplication {
+public class Todoso {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(Todoso.class, args);
 	}
 
 }

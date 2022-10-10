@@ -1,9 +1,9 @@
-package com.todoso.backend;
+package todoso.backend.controlador;
 
 import java.util.ArrayList;
 import java.time.LocalDate; // TODO: pesquisar java.time
 
-class Task {
+public class Task {
 
 	private String title;
 	private long id;
@@ -27,6 +27,14 @@ class Task {
 
 	public String getTitle() {
 		return this.title;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getId() {
+		return this.id;
 	}
 
 	public void setDescription(String description) {
