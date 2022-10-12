@@ -1,13 +1,30 @@
 package todoso.backend.controlador;
 
-public class Olar {
-	private final String nome;
+import java.sql.SQLException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-	public Olar(String nome) {
-		this.nome = nome;
-	}
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-	public String getnome() {
-		return (this.nome == null) ? "" : this.nome;
+@RestController()
+class Olar {
+	private static final String MODELO_RESPOSTA = "Olá, %s!";
+
+	@GetMapping("/olar")
+	public ResponseEntity olar(
+		@RequestParam(value = "name", defaultValue = "Mundo") String nome) {
+		
+		try {
+			todoso.backend.dados.Olar.criarTabelas();
+		}
+		catch (SQLException e) {
+			return new ResponseEntity<String>("Erro ao criar/verificar as tabelas",
+				HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity(String.format(MODELO_RESPOSTA, nome),
+			HttpStatus.OK);
 	}
 }

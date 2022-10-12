@@ -1,46 +1,19 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package todoso.backend.dados;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  *
- * @author mestre
+ * @author savio
  */
-public class BancoDeDados {
-	private final String URL = "jdbc:sqlite:todoso.db";
-	private Connection conn = null;
+public abstract class Olar {
 	
-	private BancoDeDados() throws SQLException {
-		this.conn = abrirConexao();
-		
-		if (conn == null) {
-			throw new SQLException("Sem conexão!");
-		}
-		
-		criarTabelas(conn);
-	}
-	
-	private Connection abrirConexao() {
-		try {
-			if (conn != null && !conn.isClosed()) {
-				return conn;
-			}
-			return DriverManager.getConnection(URL);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	private void criarTabelas(Connection conn) {
-		
+	public static void criarTabelas() throws SQLException {
 		String sqlCategorias =
 			"CREATE TABLE IF NOT EXISTS categorias (\n" +
 			"	id serial NOT NULL,\n" +
@@ -144,48 +117,21 @@ public class BancoDeDados {
 				+ "REFERENCES usuarios(id)\n" +
 			")\n";
 		
-		try {
-			Statement stmt = conn.createStatement();
-	
-			stmt.addBatch(sqlCategorias);
-			stmt.addBatch(sqlTags);
-			stmt.addBatch(sqlArquivos);
-			stmt.addBatch(sqlUsuarios);
-			stmt.addBatch(sqlTokens);
-			stmt.addBatch(sqlTarefas);
-			stmt.addBatch(sqlTarefas_tags);
-			stmt.addBatch(sqlTarefas_categorias);
-			stmt.addBatch(sqlTarefas_usuarios);
-			stmt.addBatch(sqlTarefas_arquivos);
-			
-			stmt.executeBatch();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static BancoDeDados abrir() {
-		try {
-			BancoDeDados db = new BancoDeDados();
-			return db;
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public void fechar() {
-		try {
-			if (conn == null || conn.isClosed()) {
-				return;
-			}
-			
-			conn.close();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		BdAcesso bd = BdAcesso.abrirConexao();
+
+		bd.statement.addBatch(sqlCategorias);
+		bd.statement.addBatch(sqlTags);
+		bd.statement.addBatch(sqlArquivos);
+		bd.statement.addBatch(sqlUsuarios);
+		bd.statement.addBatch(sqlTokens);
+		bd.statement.addBatch(sqlTarefas);
+		bd.statement.addBatch(sqlTarefas_tags);
+		bd.statement.addBatch(sqlTarefas_categorias);
+		bd.statement.addBatch(sqlTarefas_usuarios);
+		bd.statement.addBatch(sqlTarefas_arquivos);
+		
+		bd.statement.executeBatch();
+		
+		bd.fecharConexao();
 	}
 }

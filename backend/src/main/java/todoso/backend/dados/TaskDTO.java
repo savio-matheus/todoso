@@ -1,9 +1,9 @@
-package todoso.backend.controlador;
+package todoso.backend.dados;
 
 import java.util.ArrayList;
 import java.time.LocalDate; // TODO: pesquisar java.time
 
-public class Task {
+public class TaskDTO {
 
 	private String title;
 	private long id;
@@ -11,14 +11,14 @@ public class Task {
 	private LocalDate creationDate;
 	private LocalDate completionDate;
 	private LocalDate deadline;
-	private ArrayList<Category> categories;
-	private ArrayList<Tag> tags;
+	private ArrayList<CategoryDTO> categories;
+	private ArrayList<TagDTO> tags;
 	private int priority;
 	private String color; // #FFFFFF
 	private ArrayList<String> files;
-	private ArrayList<User> users;
+	private ArrayList<UserDTO> users;
 
-	public Task() {
+	public TaskDTO() {
 	}
 
 	public void setTitle(String title) {
@@ -75,23 +75,23 @@ public class Task {
 		return this.deadline;
 	}
 
-	public void setCategories(ArrayList<Category> list)	 {
+	public void setCategories(ArrayList<CategoryDTO> list)	 {
 		this.categories = (list == null)
-			? new ArrayList<Category>()
+			? new ArrayList<CategoryDTO>()
 			: list;
 	}
 
-	public ArrayList<Category> getCategories() {
+	public ArrayList<CategoryDTO> getCategories() {
 		return this.categories;
 	}
 
-	public void setTags(ArrayList<Tag> list) {
+	public void setTags(ArrayList<TagDTO> list) {
 		this.tags = (list == null)
-			? new ArrayList<Tag>()
+			? new ArrayList<TagDTO>()
 			: list;
 	}
 
-	public ArrayList<Tag> getTags() {
+	public ArrayList<TagDTO> getTags() {
 		return this.tags;
 	}
 
@@ -121,13 +121,13 @@ public class Task {
 		return this.files;
 	}
 
-	public void setUsers(ArrayList<User> list) {
+	public void setUsers(ArrayList<UserDTO> list) {
 		this.users = (list == null)
-			? new ArrayList<User>()
+			? new ArrayList<UserDTO>()
 			: list;
 	}
 
-	public ArrayList<User> getUsers() {
+	public ArrayList<UserDTO> getUsers() {
 		return this.users;
 	}
 }
