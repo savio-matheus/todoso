@@ -3,6 +3,7 @@ package todoso.backend.dados;
 import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +18,7 @@ public class BdAcesso implements Closeable {
 
 	public Connection conexao = null;
 	public Statement statement = null;
+	public PreparedStatement pStatement = null;
 	public ResultSet resultSet = null;
 	
 	private BdAcesso() throws SQLException {
@@ -25,8 +27,7 @@ public class BdAcesso implements Closeable {
 	}
 	
 	protected static BdAcesso abrirConexao() throws SQLException {
-		BdAcesso db = new BdAcesso();
-		return db;
+		return new BdAcesso();
 	}
 	
 	protected void fecharConexao() {

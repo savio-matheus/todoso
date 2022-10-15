@@ -1,6 +1,7 @@
 package todoso.backend.controlador;
 
 
+import java.sql.SQLException;
 import todoso.backend.dados.TaskDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +13,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import todoso.backend.dados.Tarefas;
 
 @RestController
 class TodosoAPIv1 {
 
 	@GetMapping("/api/v1/tasks/{id}")
 	public ResponseEntity<List> getTasks(@PathVariable("id") long id) {
-		ArrayList<TaskDTO> tasks = new ArrayList<>();
+		ArrayList<TaskDTO> lista = new ArrayList<>();
 		TaskDTO t = new TaskDTO();
 		
 		t.setId(id);
-		tasks.add(t);
-		tasks.add(t);
+		
+		try {
+			lista = Tarefas.listar(t, null, null);
+		} catch (SQLException e) {
+			System.out.println("TODO: enviar mensagem de erro.");
+			e.printStackTrace();
+		}
 
-		return new ResponseEntity(tasks, HttpStatus.FOUND);
+		return new ResponseEntity(lista, HttpStatus.FOUND);
 	}
 }

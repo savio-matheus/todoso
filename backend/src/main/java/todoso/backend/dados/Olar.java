@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package todoso.backend.dados;
 
 import java.sql.SQLException;
@@ -16,21 +12,21 @@ public abstract class Olar {
 	public static void criarTabelas() throws SQLException {
 		String sqlCategorias =
 			"CREATE TABLE IF NOT EXISTS categorias (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	nome_categoria varchar(48) NOT NULL,\n" +
 			"	CONSTRAINT categorias_pk PRIMARY KEY (id)\n" +
 			")\n";
 		
 		String sqlTags =
 			"CREATE TABLE IF NOT EXISTS tags (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	nome_tag varchar(48) NOT NULL,\n" +
 			"	CONSTRAINT tags_pk PRIMARY KEY (id)\n" +
 			")\n";
 		
 		String sqlArquivos =
 			"CREATE TABLE IF NOT EXISTS arquivos (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	url varchar NOT NULL,\n" +
 			"	mime varchar NOT NULL,\n" +
 			"	tamanho integer NULL,\n" +
@@ -39,12 +35,12 @@ public abstract class Olar {
 		
 		String sqlUsuarios =
 			"CREATE TABLE IF NOT EXISTS usuarios (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	nome_usuario varchar(128) NOT NULL,\n" +
 			"	email varchar(128) NOT NULL,\n" +
 			"	senha_hash varchar NOT NULL,\n" +
 			"	data_ultimo_login timestamp NULL,\n" +
-			"	id_foto_arquivo serial,\n" +
+			"	id_foto_arquivo integer,\n" +
 			"	deletado boolean NULL,\n" +
 			"	CONSTRAINT usuarios_pk PRIMARY KEY (id),\n" +
 			"	CONSTRAINT usuarios_fk FOREIGN KEY (id_foto_arquivo) "
@@ -53,10 +49,10 @@ public abstract class Olar {
 		
 		String sqlTokens =
 			"CREATE TABLE IF NOT EXISTS tokens (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	token varchar NOT NULL,\n" +
 			"	data_criacao timestamp NOT NULL,\n" +
-			"	id_usuario serial NOT NULL,\n" +
+			"	id_usuario integer NOT NULL,\n" +
 			"	CONSTRAINT tokens_pk PRIMARY KEY (id),\n" +
 			"	CONSTRAINT tokens_fk FOREIGN KEY (id_usuario) "
 				+ "REFERENCES usuarios(id)\n" +
@@ -64,7 +60,7 @@ public abstract class Olar {
 		
 		String sqlTarefas =
 			"CREATE TABLE IF NOT EXISTS tarefas (\n" +
-			"	id serial NOT NULL,\n" +
+			"	id integer NOT NULL,\n" +
 			"	titulo varchar(128) NOT NULL,\n" +
 			"	descricao varchar(8192) NULL,\n" +
 			"	cor char(7) NULL,\n" +
@@ -77,8 +73,8 @@ public abstract class Olar {
 		
 		String sqlTarefas_tags =
 			"CREATE TABLE IF NOT EXISTS tarefas_tags (\n" +
-			"	id_tarefa serial NOT NULL,\n" +
-			"	id_tag serial NOT NULL,\n" +
+			"	id_tarefa integer NOT NULL,\n" +
+			"	id_tag integer NOT NULL,\n" +
 			"	CONSTRAINT tarefas_tags_fk FOREIGN KEY (id_tarefa) "
 				+ "REFERENCES tarefas(id),\n" +
 			"	CONSTRAINT tarefas_tags_fk_1 FOREIGN KEY (id_tag) "
@@ -87,8 +83,8 @@ public abstract class Olar {
 		
 		String sqlTarefas_categorias =
 			"CREATE TABLE IF NOT EXISTS tarefas_categorias (\n" +
-			"	id_tarefa serial NOT NULL,\n" +
-			"	id_categoria serial NOT NULL,\n" +
+			"	id_tarefa integer NOT NULL,\n" +
+			"	id_categoria integer NOT NULL,\n" +
 			"	CONSTRAINT tarefas_categorias_fk FOREIGN KEY (id_tarefa) "
 				+ "REFERENCES tarefas(id),\n" +
 			"	CONSTRAINT tarefas_categorias_fk_1 FOREIGN KEY (id_categoria) "
@@ -97,8 +93,8 @@ public abstract class Olar {
 		
 		String sqlTarefas_usuarios =
 			"CREATE TABLE IF NOT EXISTS tarefas_usuarios (\n" +
-			"	id_tarefa serial NOT NULL,\n" +
-			"	id_usuario serial NOT NULL,\n" +
+			"	id_tarefa integer NOT NULL,\n" +
+			"	id_usuario integer NOT NULL,\n" +
 			"	permissoes bit(16) NULL,\n" +
 			"	CONSTRAINT tarefas_usuarios_fk FOREIGN KEY (id_tarefa) "
 				+ "REFERENCES tarefas(id),\n" +
@@ -108,8 +104,8 @@ public abstract class Olar {
 
 		String sqlTarefas_arquivos =
 			"CREATE TABLE IF NOT EXISTS tarefas_usuarios (\n" +
-			"	id_tarefa serial NOT NULL,\n" +
-			"	id_usuario serial NOT NULL,\n" +
+			"	id_tarefa integer NOT NULL,\n" +
+			"	id_usuario integer NOT NULL,\n" +
 			"	permissoes bit(16) NULL,\n" +
 			"	CONSTRAINT tarefas_usuarios_fk FOREIGN KEY (id_tarefa) "
 				+ "REFERENCES tarefas(id),\n" +

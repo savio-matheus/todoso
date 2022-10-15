@@ -1,16 +1,17 @@
 package todoso.backend.dados;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.time.LocalDate; // TODO: pesquisar java.time
 
 public class TaskDTO {
 
-	private String title;
+	private String title = "";
 	private long id;
 	private String description;
-	private LocalDate creationDate;
-	private LocalDate completionDate;
-	private LocalDate deadline;
+	private Timestamp creationDate = Timestamp.from(Instant.now());
+	private Timestamp completionDate;
+	private Timestamp deadline;
 	private ArrayList<CategoryDTO> categories;
 	private ArrayList<TagDTO> tags;
 	private int priority;
@@ -45,39 +46,39 @@ public class TaskDTO {
 		return this.description;
 	}
 
-	public void setCreationDate(LocalDate creationDate) {
+	public void setCreationDate(Timestamp creationDate) {
 		this.creationDate = (creationDate == null)
-			? LocalDate.now()
+			? Timestamp.from(Instant.now())
 			: creationDate;
 	}
 
-	public LocalDate getCreationDate() {
+	public Timestamp getCreationDate() {
 		return this.creationDate;
 	}
 
-	public void setCompletionDate(LocalDate completionDate) {
+	public void setCompletionDate(Timestamp completionDate) {
 		this.completionDate = completionDate;
 	}
 
 	/**
 	 * @return data de término da tarefa ou null. */
-	public LocalDate getCompletionDate() {
+	public Timestamp getCompletionDate() {
 		return this.completionDate;
 	}
 
-	public void setDeadline(LocalDate deadline) {
+	public void setDeadline(Timestamp deadline) {
 		this.deadline = deadline;
 	}
 
 	/**
 	 * @return data limite da tarefa ou null. */
-	public LocalDate getDeadline() {
+	public Timestamp getDeadline() {
 		return this.deadline;
 	}
 
 	public void setCategories(ArrayList<CategoryDTO> list)	 {
 		this.categories = (list == null)
-			? new ArrayList<CategoryDTO>()
+			? new ArrayList<>()
 			: list;
 	}
 
