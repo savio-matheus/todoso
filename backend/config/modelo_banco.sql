@@ -1,3 +1,5 @@
+-- Testado no Postgresql
+
 CREATE TABLE IF NOT EXISTS categorias (
 	id serial NOT NULL,
 	nome_categoria varchar(48) NOT NULL,
