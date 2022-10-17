@@ -17,9 +17,14 @@ import todoso.backend.dados.Tarefas;
 
 @RestController
 class TodosoAPIv1 {
+	
+	@GetMapping("/api/v1/tasks")
+	public ResponseEntity<List> getTasks() {
+		return getTasks(null);
+	}
 
 	@GetMapping("/api/v1/tasks/{id}")
-	public ResponseEntity<List> getTasks(@PathVariable("id") long id) {
+	public ResponseEntity<List> getTasks(@PathVariable("id") Long id) {
 		ArrayList<TaskDTO> lista = new ArrayList<>();
 		TaskDTO t = new TaskDTO();
 		
@@ -30,6 +35,10 @@ class TodosoAPIv1 {
 		} catch (SQLException e) {
 			System.out.println("TODO: enviar mensagem de erro.");
 			e.printStackTrace();
+		}
+
+		for (TaskDTO t2 : lista) {
+			System.out.println(t2.getTitle());
 		}
 
 		return new ResponseEntity(lista, HttpStatus.FOUND);

@@ -6,40 +6,52 @@ import java.util.ArrayList;
 
 public class TaskDTO {
 
-	private String title = "";
-	private long id;
+	private String title;
+	private Long id;
 	private String description;
-	private Timestamp creationDate = Timestamp.from(Instant.now());
+	private Timestamp creationDate;
 	private Timestamp completionDate;
 	private Timestamp deadline;
 	private ArrayList<CategoryDTO> categories;
 	private ArrayList<TagDTO> tags;
-	private int priority;
+	private Integer priority;
 	private String color; // #FFFFFF
 	private ArrayList<String> files;
 	private ArrayList<UserDTO> users;
 
 	public TaskDTO() {
+		setId(null);
+		setTitle(null);
+		setDescription(null);
+		setCreationDate(null);
+		setCompletionDate(null);
+		setDeadline(null);
+		setCategories(null);
+		setTags(null);
+		setPriority(null);
+		setColor(null);
+		setFiles(null);
+		setUsers(null);
 	}
 
 	public void setTitle(String title) {
-		this.title = (title == null) ? "" : title;
+		this.title = title;
 	}
 
 	public String getTitle() {
 		return this.title;
 	}
 	
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
 	public void setDescription(String description) {
-		this.description = (description == null) ? "" : description;
+		this.description = description;
 	}
 
 	public String getDescription() {
@@ -47,9 +59,7 @@ public class TaskDTO {
 	}
 
 	public void setCreationDate(Timestamp creationDate) {
-		this.creationDate = (creationDate == null)
-			? Timestamp.from(Instant.now())
-			: creationDate;
+		this.creationDate = creationDate;
 	}
 
 	public Timestamp getCreationDate() {
@@ -60,8 +70,6 @@ public class TaskDTO {
 		this.completionDate = completionDate;
 	}
 
-	/**
-	 * @return data de término da tarefa ou null. */
 	public Timestamp getCompletionDate() {
 		return this.completionDate;
 	}
@@ -77,9 +85,7 @@ public class TaskDTO {
 	}
 
 	public void setCategories(ArrayList<CategoryDTO> list)	 {
-		this.categories = (list == null)
-			? new ArrayList<>()
-			: list;
+		this.categories = list;
 	}
 
 	public ArrayList<CategoryDTO> getCategories() {
@@ -87,25 +93,23 @@ public class TaskDTO {
 	}
 
 	public void setTags(ArrayList<TagDTO> list) {
-		this.tags = (list == null)
-			? new ArrayList<TagDTO>()
-			: list;
+		this.tags = list;
 	}
 
 	public ArrayList<TagDTO> getTags() {
 		return this.tags;
 	}
 
-	public void setPriority(int priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 
-	public int getPriority() {
+	public Integer getPriority() {
 		return this.priority;
 	}
 
 	public void setColor(String color) {
-		this.color = (color == null) ? "" : color;
+		this.color = color;
 	}
 
 	public String getColor() {
@@ -113,9 +117,7 @@ public class TaskDTO {
 	}
 
 	public void setFiles(ArrayList<String> list) {
-		this.files = (list == null)
-			? new ArrayList<String>()
-			: list;
+		this.files = list;
 	}
 
 	public ArrayList<String> getFiles() {
@@ -123,9 +125,7 @@ public class TaskDTO {
 	}
 
 	public void setUsers(ArrayList<UserDTO> list) {
-		this.users = (list == null)
-			? new ArrayList<UserDTO>()
-			: list;
+		this.users = list;
 	}
 
 	public ArrayList<UserDTO> getUsers() {

@@ -17,13 +17,13 @@ public class BdAcesso implements Closeable {
 	private final String URL = "jdbc:sqlite:todoso.db";
 
 	public Connection conexao = null;
-	public Statement statement = null;
-	public PreparedStatement pStatement = null;
-	public ResultSet resultSet = null;
+	public Statement stmt = null;
+	public PreparedStatement pstmt = null;
+	public ResultSet rs = null;
 	
 	private BdAcesso() throws SQLException {
 		this.conexao = DriverManager.getConnection(URL);
-		this.statement = conexao.createStatement();
+		this.stmt = conexao.createStatement();
 	}
 	
 	protected static BdAcesso abrirConexao() throws SQLException {

@@ -115,18 +115,18 @@ public abstract class Olar {
 		
 		BdAcesso bd = BdAcesso.abrirConexao();
 
-		bd.statement.addBatch(sqlCategorias);
-		bd.statement.addBatch(sqlTags);
-		bd.statement.addBatch(sqlArquivos);
-		bd.statement.addBatch(sqlUsuarios);
-		bd.statement.addBatch(sqlTokens);
-		bd.statement.addBatch(sqlTarefas);
-		bd.statement.addBatch(sqlTarefas_tags);
-		bd.statement.addBatch(sqlTarefas_categorias);
-		bd.statement.addBatch(sqlTarefas_usuarios);
-		bd.statement.addBatch(sqlTarefas_arquivos);
+		bd.stmt.addBatch(sqlCategorias);
+		bd.stmt.addBatch(sqlTags);
+		bd.stmt.addBatch(sqlArquivos);
+		bd.stmt.addBatch(sqlUsuarios);
+		bd.stmt.addBatch(sqlTokens);
+		bd.stmt.addBatch(sqlTarefas);
+		bd.stmt.addBatch(sqlTarefas_tags);
+		bd.stmt.addBatch(sqlTarefas_categorias);
+		bd.stmt.addBatch(sqlTarefas_usuarios);
+		bd.stmt.addBatch(sqlTarefas_arquivos);
 		
-		bd.statement.executeBatch();
+		bd.stmt.executeBatch();
 		
 		bd.fecharConexao();
 	}
