@@ -32,13 +32,13 @@ public class Tarefas {
 		
 		for (TaskDTO t : tarefas) {
 			int i = 1;
-			bd.pstmt.setString(i++, t.getTitle());
-			bd.pstmt.setString(i++, t.getDescription());
-			bd.pstmt.setString(i++, t.getColor());
-			bd.pstmt.setInt(i++, t.getPriority());
-			bd.pstmt.setTimestamp(i++, t.getCreationDate());
-			bd.pstmt.setTimestamp(i++, t.getCompletionDate());
-			bd.pstmt.setTimestamp(i++, t.getDeadline());
+			bd.pstmt.setString(i++, t.getTitulo());
+			bd.pstmt.setString(i++, t.getDescricao());
+			bd.pstmt.setString(i++, t.getCor());
+			bd.pstmt.setInt(i++, t.getPrioridade());
+			bd.pstmt.setTimestamp(i++, t.getDataCriacao());
+			bd.pstmt.setTimestamp(i++, t.getDataConcluida());
+			bd.pstmt.setTimestamp(i++, t.getDataLimite());
 
 			bd.pstmt.addBatch();
 		}
@@ -75,44 +75,44 @@ public class Tarefas {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getTitle() != null) {
-			bd.pstmt.setString(i++, "%" + filtros.getTitle() + "%");
+		if (filtros.getTitulo() != null) {
+			bd.pstmt.setString(i++, "%" + filtros.getTitulo() + "%");
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDescription() != null) {
-			bd.pstmt.setString(i++, "%" + filtros.getDescription() + "%");
+		if (filtros.getDescricao() != null) {
+			bd.pstmt.setString(i++, "%" + filtros.getDescricao() + "%");
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getColor() != null) {
-			bd.pstmt.setString(i++, filtros.getColor());
+		if (filtros.getCor() != null) {
+			bd.pstmt.setString(i++, filtros.getCor());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getPriority() != null) {
-			bd.pstmt.setString(i++, filtros.getPriority().toString());
+		if (filtros.getPrioridade() != null) {
+			bd.pstmt.setString(i++, filtros.getPrioridade().toString());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getCreationDate() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getCreationDate());
+		if (filtros.getDataCriacao() != null) {
+			bd.pstmt.setTimestamp(i++, filtros.getDataCriacao());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getCompletionDate() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getCompletionDate());
+		if (filtros.getDataConcluida() != null) {
+			bd.pstmt.setTimestamp(i++, filtros.getDataConcluida());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDeadline() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getDeadline());
+		if (filtros.getDataLimite() != null) {
+			bd.pstmt.setTimestamp(i++, filtros.getDataLimite());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
@@ -139,13 +139,13 @@ public class Tarefas {
 			TaskDTO t = new TaskDTO();
 			
 			t.setId(bd.rs.getLong("id"));
-			t.setTitle(bd.rs.getString("titulo"));
-			t.setDescription(bd.rs.getString("descricao"));
-			t.setCreationDate(bd.rs.getTimestamp("data_criacao"));
-			t.setCompletionDate(bd.rs.getTimestamp("data_concluida"));
-			t.setDeadline(bd.rs.getTimestamp("data_limite"));
-			t.setPriority(bd.rs.getInt("prioridade"));
-			t.setColor(bd.rs.getString("cor"));
+			t.setTitulo(bd.rs.getString("titulo"));
+			t.setDescricao(bd.rs.getString("descricao"));
+			t.setDataCriacao(bd.rs.getTimestamp("data_criacao"));
+			t.setDataConcluida(bd.rs.getTimestamp("data_concluida"));
+			t.setDataLimite(bd.rs.getTimestamp("data_limite"));
+			t.setPrioridade(bd.rs.getInt("prioridade"));
+			t.setCor(bd.rs.getString("cor"));
 			
 			tarefas.add(t);
 		}

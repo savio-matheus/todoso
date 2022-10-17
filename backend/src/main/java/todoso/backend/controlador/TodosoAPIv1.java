@@ -38,7 +38,7 @@ class TodosoAPIv1 {
 		}
 
 		for (TaskDTO t2 : lista) {
-			System.out.println(t2.getTitle());
+			System.out.println(t2.getTitulo());
 		}
 
 		return new ResponseEntity(lista, HttpStatus.FOUND);
