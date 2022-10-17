@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 class Olar {
 	private static final String MODELO_RESPOSTA = "Olá, %s!";
 
-	@GetMapping("/olar")
+	@GetMapping("/api/v1/olar")
 	public ResponseEntity olar(
 		@RequestParam(value = "name", defaultValue = "Mundo") String nome) {
 		

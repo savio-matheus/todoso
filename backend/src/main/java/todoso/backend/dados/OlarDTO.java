@@ -1,6 +1,10 @@
 package todoso.backend.dados;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OlarDTO {
+	
+	@JsonProperty("name")
 	private final String nome;
 
 	public OlarDTO(String nome) {

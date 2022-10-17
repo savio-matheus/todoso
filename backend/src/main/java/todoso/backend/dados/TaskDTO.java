@@ -1,22 +1,46 @@
 package todoso.backend.dados;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 
 public class TaskDTO {
 
+	@JsonProperty("title")
 	private String title;
+	
+	@JsonProperty("id")
 	private Long id;
+	
+	@JsonProperty("description")
 	private String description;
+	
+	@JsonProperty("creationDate")
 	private Timestamp creationDate;
+	
+	@JsonProperty("completionDate")
 	private Timestamp completionDate;
+	
+	@JsonProperty("deadline")
 	private Timestamp deadline;
+	
+	@JsonProperty("categories")
 	private ArrayList<CategoryDTO> categories;
+	
+	@JsonProperty("tags")
 	private ArrayList<TagDTO> tags;
+	
+	@JsonProperty("priority")
 	private Integer priority;
+	
+	@JsonProperty("color")
 	private String color; // #FFFFFF
+	
+	@JsonProperty("files")
 	private ArrayList<String> files;
+	
+	@JsonProperty("users")
 	private ArrayList<UserDTO> users;
 
 	public TaskDTO() {
