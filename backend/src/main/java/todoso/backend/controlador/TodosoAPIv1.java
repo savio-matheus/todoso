@@ -1,46 +1,123 @@
 package todoso.backend.controlador;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
-import todoso.backend.dados.TaskDTO;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import todoso.backend.dados.TaskDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
-import todoso.backend.dados.Tarefas;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import servico.TarefaServico;
+import todoso.backend.dados.BaseDTO;
 
 @RestController
 class TodosoAPIv1 {
 	
-	@GetMapping("/api/v1/tasks")
-	public ResponseEntity<List> getTasks() {
-		return getTasks(null);
+	@RequestMapping(
+			value = "/api/v1/tasks",
+			method = RequestMethod.GET,
+			produces = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> getTarefas() {
+		return getTarefas(null);
 	}
 
-	@GetMapping("/api/v1/tasks/{id}")
-	public ResponseEntity<List> getTasks(@PathVariable("id") Long id) {
-		ArrayList<TaskDTO> lista = new ArrayList<>();
-		TaskDTO t = new TaskDTO();
-		
-		t.setId(id);
+	@RequestMapping(
+			value = "/api/v1/tasks/{id}",
+			method = RequestMethod.GET,
+			produces = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> getTarefas(@PathVariable("id") Long id) {
+		HashMap<Object, Object> retorno = new HashMap<>();
+		ArrayList<TaskDTO> lista = null;
 		
 		try {
-			lista = Tarefas.listar(t, null, null);
-		} catch (SQLException e) {
-			System.out.println("TODO: enviar mensagem de erro.");
+			TaskDTO filtro = new TaskDTO();
+			filtro.setId(id);
+			lista = TarefaServico.listar(filtro);
+		}
+		catch (SQLException e) {
+			retorno.put("status", "Internal error: SQLException");
 			e.printStackTrace();
+			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		retorno.put("status", "sucess");
+		retorno.put("data", lista);
 
-		for (TaskDTO t2 : lista) {
-			System.out.println(t2.getTitulo());
-		}
-
-		return new ResponseEntity(lista, HttpStatus.FOUND);
+		return new ResponseEntity(retorno, HttpStatus.FOUND);
 	}
+
+	@RequestMapping(
+			value = "/api/v1/tasks",
+			method = {RequestMethod.POST},
+			produces = {MediaType.APPLICATION_JSON_VALUE},
+			consumes = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> inserirTarefas(@RequestBody String json) {
+		ArrayList<TaskDTO> tarefas = new ArrayList<>();
+		ObjectMapper om = new ObjectMapper();
+		HashMap<Object, Object> retorno = new HashMap<>();
+		
+		try {
+			tarefas.add(om.readValue(json, TaskDTO.class));
+			TarefaServico.inserir(tarefas);
+			retorno.put("status", "Accepted");
+		} catch (JsonProcessingException e) {
+			retorno.put("status", "Error: JsonProcessingException");
+			return new ResponseEntity(retorno, HttpStatus.BAD_REQUEST);
+		} catch (SQLException ex) {
+			retorno.put("status", "Internal error: SQLException");
+			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		retorno.put("json", tarefas.get(0).getTitulo());
+		
+		return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
+	}
+	
+	@RequestMapping(
+			value = "/api/v1/{id}",
+			method = {RequestMethod.PATCH},
+			produces = {MediaType.APPLICATION_JSON_VALUE},
+			consumes = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> alterarTarefa() {
+		
+		return new ResponseEntity("", HttpStatus.ACCEPTED);
+	}
+	
+	@RequestMapping(
+			value = "/api/v1/tasks/{id}",
+			method = {RequestMethod.DELETE},
+			produces = {MediaType.APPLICATION_JSON_VALUE},
+			consumes = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> apagarTarefa(@PathVariable("id") Long id) {
+		TaskDTO filtro = new TaskDTO();
+		HashMap<Object, Object> retorno = new HashMap<>();
+		
+		filtro.setId(id);
+		try {
+			TarefaServico.deletar(filtro);
+			retorno.put("status", "Deleted");
+			return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
+		} catch (SQLException ex) {
+			retorno.put("status", "Internal error: SQLException");
+			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 }

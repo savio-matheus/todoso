@@ -1,5 +1,5 @@
 package todoso.backend.dados;
 
-public class CategoryDTO {
+public class CategoryDTO extends BaseDTO {
 	
 }

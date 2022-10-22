@@ -2,10 +2,9 @@ package todoso.backend.dados;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 
-public class TaskDTO {
+public class TaskDTO extends BaseDTO {
 
 	@JsonProperty("title")
 	private String titulo;

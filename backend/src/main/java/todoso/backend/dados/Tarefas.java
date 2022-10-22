@@ -48,8 +48,7 @@ public class Tarefas {
 		return alteracoes;
 	}
 	
-	public static ArrayList<TaskDTO> listar(TaskDTO filtros, Long limit,
-			Long offset) throws SQLException {
+	public static ArrayList<TaskDTO> listar(TaskDTO filtros) throws SQLException {
 
 		String sql =
 			"SELECT * FROM tarefas t WHERE\n" +
@@ -117,14 +116,14 @@ public class Tarefas {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (limit != null) {
-			bd.pstmt.setLong(i++, limit);
+		if (filtros.getLimite() != null) {
+			bd.pstmt.setLong(i++, filtros.getLimite());
 		} else {
 			bd.pstmt.setLong(i++, Long.MAX_VALUE);
 		}
 
-		if (offset != null) {
-			bd.pstmt.setLong(i++, offset);
+		if (filtros.getOffset() != null) {
+			bd.pstmt.setLong(i++, filtros.getOffset());
 		} else {
 			bd.pstmt.setLong(i++, 0);
 		}
@@ -154,19 +153,33 @@ public class Tarefas {
 	}
 
 	public static int atualizar(TaskDTO tarefa) {
-		return 0;
+		ArrayList<TaskDTO> l = new ArrayList<>();
+		return atualizar(l);
 	}
 	
 	public static int atualizar(ArrayList<TaskDTO> tarefas) {
 		return 0;
 	}
 
-	public static int atualizar(TaskDTO filtro, TaskDTO alteracoes, Integer limit) {
+	/*public static int atualizar(TaskDTO filtro, TaskDTO alteracoes) {
 		return 0;
-	}
+	}*/
 
-	public static int excluir(TaskDTO filtros, Integer limit, Integer offset) {
-		return 0;
+	public static int excluir(TaskDTO filtros) throws SQLException {
+		String sql = "DELETE FROM tarefas WHERE id = ?";
+		int i = 1;
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		
+		bd.pstmt.setLong(i++, filtros.getId());
+		if (bd.pstmt.execute()) {
+			bd.fecharConexao();
+			return 1;
+		} else {
+			bd.fecharConexao();
+			return 0;
+		}
 	}
 
 	protected static ArrayList<TaskDTO> criaLista(TaskDTO tarefa) {

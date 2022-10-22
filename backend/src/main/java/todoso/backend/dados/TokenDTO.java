@@ -4,6 +4,6 @@ package todoso.backend.dados;
  *
  * @author savio
  */
-public class TokenDTO {
+public class TokenDTO extends BaseDTO {
 	
 }
