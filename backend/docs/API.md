@@ -1,113 +1,71 @@
 # Rascunho das APIs
 
-## caminhos em /todoso-backend/api/v1
+## caminhos em /api/v1
 
 ### /tasks
+* GET /tasks
 * GET /tasks/:id
-* GET /tasks/list (suporta query)
 * POST /tasks
-* POST /tasks/:id/delete
-* POST, PUT /tasks/:id
+* PATCH /tasks/:id
 * DELETE /tasks/:id
 
 ### /users
+* GET /users
 * GET /users/:id
 * POST /users
-* POST /users/:id/delete
-* POST, PUT /users/:id
+* PATCH /users/:id
 * DELETE /users/:id
 
 ### /categories
+* GET /categories
 * GET /categories/:id
-* GET /categories/list (suporta query)
 * POST /categories
-* POST /categories/:id/delete
-* POST, PUT /categories/:id
+* PATCH /categories/:id
 * DELETE /categories/:id
 
 ### /tags
+* GET /tags
 * GET /tags/:id
-* GET /tags/list (suporta query)
 * POST /tags
-* POST /tags/:id/delete
-* POST, PUT /tags/:id
+* PATCH /tags/:id
 * DELETE /tags/:id
 
 ### /files
-* GET /file/:id
 * GET /file/:url
+* POST /file
+* DELETE /file/:url
 
 ### /session
 * GET /session
 * POST /session
 
 ## Queries
+* length
+* page
+* id
+* sort
+* filtros (atributos do objeto correspondente, como title, creationDate etc.)
 
 ## JSON padrão da resposta
 ```
 {
-	"meta" {
-		"types": [("tasks", "users", "categories", "tags", "auth", "notifications", "error",
-			"userTasks", "categoryTasks", "tagTasks", "files")],
-		"context": {
-			"message": (string),
-			"code": (código HTTP),
-			"codeMessage": (significado do código HTTP)
-		},
-		"auth": {...}
-	},
+	"status": {...},
 
-	// Varia a cada resposta. Observe os "types".
-	"data": {
-		"tasks": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"users": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"categories": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"tags": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"notifications": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"userTasks": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"categoryTasks": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"tagTasks": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"files": {
-			"count": (integer),
-			"start": (integer),
-			[{...}]
-		},
-		"error": {}
-	}
+	// Conteúdo varia
+	"page": 1..N,
+	"data": [objetos]
 }
 ```
+
+## JSON padrão da requisição
+```
+{
+	"auth": {...},
+	"data": [objetos]
+}
+```
+
+## Objetos
 
 * auth
 ```
@@ -122,8 +80,8 @@
 * task
 ```
 {
-	"title": (string (50)),
 	"id": (integer),
+	"title": (string (50)),
 
 	// varia
 	"description": (string (8192)),
@@ -171,38 +129,30 @@
 }
 ```
 
-* notification
-```
-{
-	"type": "sucess" | "warning" | "error" | "alert",
-	"message": (string)
-}
-```
-
 * userTasks
 ```
 {
-	"username": (string),
 	"id": (integer),
-	"taskList": ([objeto task1, task2, ...](50))
+	"username": (string),
+	"tasks": ([objeto task1, task2, ...](50))
 }
 ```
 
 * categoryTasks
 ```
 {
-	"name": (string),
 	"id": (integer),
-	"taskList": ([objeto task1, task2, ...](50))
+	"name": (string),
+	"tasks": ([objeto task1, task2, ...](50))
 }
 ```
 
 * tagTasks
 ```
 {
-	"name": (string),
 	"id": (integer),
-	"taskList": ([objeto task1, task2, ...](50))
+	"name": (string),
+	"tasks": ([objeto task1, task2, ...](50))
 }
 ```
 
@@ -212,11 +162,13 @@
 	"id": (integer),
 	"url": (string),
 	"type": (mimetype para imagens, texto, vídeo, música ou blob),
-	"base64": (stringBase64, para imagens)
 }
 ```
 
-* error
+* status
 ```
-{}
+{
+	"code": N,
+	"mensagem": "..."
+}
 ```
