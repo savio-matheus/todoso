@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class TaskDTO extends BaseDTO {
+public class TarefaDTO extends BaseDTO {
 
 	@JsonProperty("title")
 	private String titulo;
@@ -25,7 +25,7 @@ public class TaskDTO extends BaseDTO {
 	private Timestamp dataLimite;
 	
 	@JsonProperty("categories")
-	private ArrayList<CategoryDTO> categorias;
+	private ArrayList<CategoriaDTO> categorias;
 	
 	@JsonProperty("tags")
 	private ArrayList<TagDTO> tags;
@@ -40,9 +40,9 @@ public class TaskDTO extends BaseDTO {
 	private ArrayList<String> arquivos;
 	
 	@JsonProperty("users")
-	private ArrayList<UserDTO> usuarios;
+	private ArrayList<UsuarioDTO> usuarios;
 
-	public TaskDTO() {
+	public TarefaDTO() {
 		setId(null);
 		setTitulo(null);
 		setDescricao(null);
@@ -107,11 +107,11 @@ public class TaskDTO extends BaseDTO {
 		return this.dataLimite;
 	}
 
-	public void setCategorias(ArrayList<CategoryDTO> list)	 {
+	public void setCategorias(ArrayList<CategoriaDTO> list)	 {
 		this.categorias = list;
 	}
 
-	public ArrayList<CategoryDTO> getCategorias() {
+	public ArrayList<CategoriaDTO> getCategorias() {
 		return this.categorias;
 	}
 
@@ -147,11 +147,11 @@ public class TaskDTO extends BaseDTO {
 		return this.arquivos;
 	}
 
-	public void setUsuarios(ArrayList<UserDTO> list) {
+	public void setUsuarios(ArrayList<UsuarioDTO> list) {
 		this.usuarios = list;
 	}
 
-	public ArrayList<UserDTO> getUsuarios() {
+	public ArrayList<UsuarioDTO> getUsuarios() {
 		return this.usuarios;
 	}
 }

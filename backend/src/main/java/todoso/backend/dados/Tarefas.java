@@ -9,11 +9,11 @@ import java.util.ArrayList;
  */
 public class Tarefas {
 
-	public static int inserir(TaskDTO tarefa) throws SQLException {
+	public static int inserir(TarefaDTO tarefa) throws SQLException {
 		return inserir(criaLista(tarefa));
 	}
 	
-	public static int inserir(ArrayList<TaskDTO> tarefas) throws SQLException {
+	public static int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
 		
 		String sql = 
 			"INSERT INTO tarefas (\n" +
@@ -30,7 +30,7 @@ public class Tarefas {
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		
-		for (TaskDTO t : tarefas) {
+		for (TarefaDTO t : tarefas) {
 			int i = 1;
 			bd.pstmt.setString(i++, t.getTitulo());
 			bd.pstmt.setString(i++, t.getDescricao());
@@ -48,7 +48,7 @@ public class Tarefas {
 		return alteracoes;
 	}
 	
-	public static ArrayList<TaskDTO> listar(TaskDTO filtros) throws SQLException {
+	public static ArrayList<TarefaDTO> listar(TarefaDTO filtros) throws SQLException {
 
 		String sql =
 			"SELECT * FROM tarefas t WHERE\n" +
@@ -132,10 +132,10 @@ public class Tarefas {
 
 		bd.rs = bd.pstmt.executeQuery();
 		
-		ArrayList<TaskDTO> tarefas = new ArrayList<>();
+		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
 		
 		while (bd.rs.next()) {
-			TaskDTO t = new TaskDTO();
+			TarefaDTO t = new TarefaDTO();
 			
 			t.setId(bd.rs.getLong("id"));
 			t.setTitulo(bd.rs.getString("titulo"));
@@ -152,12 +152,12 @@ public class Tarefas {
 		return tarefas;
 	}
 
-	public static int atualizar(TaskDTO tarefa) {
-		ArrayList<TaskDTO> l = new ArrayList<>();
+	public static int atualizar(TarefaDTO tarefa) {
+		ArrayList<TarefaDTO> l = new ArrayList<>();
 		return atualizar(l);
 	}
 	
-	public static int atualizar(ArrayList<TaskDTO> tarefas) {
+	public static int atualizar(ArrayList<TarefaDTO> tarefas) {
 		return 0;
 	}
 
@@ -165,7 +165,7 @@ public class Tarefas {
 		return 0;
 	}*/
 
-	public static int excluir(TaskDTO filtros) throws SQLException {
+	public static int excluir(TarefaDTO filtros) throws SQLException {
 		String sql = "DELETE FROM tarefas WHERE id = ?";
 		int i = 1;
 		
@@ -182,8 +182,8 @@ public class Tarefas {
 		}
 	}
 
-	protected static ArrayList<TaskDTO> criaLista(TaskDTO tarefa) {
-		ArrayList<TaskDTO> l = new ArrayList<>();
+	protected static ArrayList<TarefaDTO> criaLista(TarefaDTO tarefa) {
+		ArrayList<TarefaDTO> l = new ArrayList<>();
 		l.add(tarefa);
 		return l;
 	}

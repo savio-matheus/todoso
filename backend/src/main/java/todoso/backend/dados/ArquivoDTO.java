@@ -4,6 +4,6 @@ package todoso.backend.dados;
  *
  * @author savio
  */
-public class FileDTO extends BaseDTO {
+public class ArquivoDTO extends BaseDTO {
 	
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import todoso.backend.dados.TaskDTO;
+import todoso.backend.dados.TarefaDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,10 +41,10 @@ class TodosoAPIv1 {
 	)
 	public ResponseEntity<String> getTarefas(@PathVariable("id") Long id) {
 		HashMap<Object, Object> retorno = new HashMap<>();
-		ArrayList<TaskDTO> lista = null;
+		ArrayList<TarefaDTO> lista = null;
 		
 		try {
-			TaskDTO filtro = new TaskDTO();
+			TarefaDTO filtro = new TarefaDTO();
 			filtro.setId(id);
 			lista = TarefaServico.listar(filtro);
 		}
@@ -67,12 +67,12 @@ class TodosoAPIv1 {
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<String> inserirTarefas(@RequestBody String json) {
-		ArrayList<TaskDTO> tarefas = new ArrayList<>();
+		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
 		ObjectMapper om = new ObjectMapper();
 		HashMap<Object, Object> retorno = new HashMap<>();
 		
 		try {
-			tarefas.add(om.readValue(json, TaskDTO.class));
+			tarefas.add(om.readValue(json, TarefaDTO.class));
 			TarefaServico.inserir(tarefas);
 			retorno.put("status", "Accepted");
 		} catch (JsonProcessingException e) {
@@ -106,7 +106,7 @@ class TodosoAPIv1 {
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<String> apagarTarefa(@PathVariable("id") Long id) {
-		TaskDTO filtro = new TaskDTO();
+		TarefaDTO filtro = new TarefaDTO();
 		HashMap<Object, Object> retorno = new HashMap<>();
 		
 		filtro.setId(id);
