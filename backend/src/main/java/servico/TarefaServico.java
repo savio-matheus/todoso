@@ -13,20 +13,18 @@ import todoso.backend.dados.BaseDTO;
  */
 public abstract class TarefaServico {
 	public static ArrayList<TarefaDTO> listar(TarefaDTO filtros) throws SQLException {
-		return Tarefas.listar(filtros);
+		return new Tarefas().listar(filtros);
 	}
 	
 	public static int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
-		Tarefas.inserir(tarefas);
-		return 0;
+		return new Tarefas().inserir(tarefas);
 	}
 	
-	public static int editar() {
-		return 0;
+	public static int editar(ArrayList<TarefaDTO> tarefas) throws SQLException {
+		return new Tarefas().atualizar(tarefas);
 	}
 	
 	public static int deletar(TarefaDTO filtros) throws SQLException {
-		Tarefas.excluir(filtros);
-		return 0;
+		return new Tarefas().excluir(filtros);
 	}
 }

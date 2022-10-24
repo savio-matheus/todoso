@@ -9,11 +9,7 @@ import java.util.ArrayList;
  */
 public class Tarefas {
 
-	public static int inserir(TarefaDTO tarefa) throws SQLException {
-		return inserir(criaLista(tarefa));
-	}
-	
-	public static int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
+	public int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
 		
 		String sql = 
 			"INSERT INTO tarefas (\n" +
@@ -48,7 +44,7 @@ public class Tarefas {
 		return alteracoes;
 	}
 	
-	public static ArrayList<TarefaDTO> listar(TarefaDTO filtros) throws SQLException {
+	public ArrayList<TarefaDTO> listar(TarefaDTO filtros) throws SQLException {
 
 		String sql =
 			"SELECT * FROM tarefas t WHERE\n" +
@@ -128,7 +124,7 @@ public class Tarefas {
 			bd.pstmt.setLong(i++, 0);
 		}
 
-		//System.out.println(bd.pstmt.toString());
+		System.out.println(bd.pstmt.toString());
 
 		bd.rs = bd.pstmt.executeQuery();
 		
@@ -152,20 +148,63 @@ public class Tarefas {
 		return tarefas;
 	}
 
-	public static int atualizar(TarefaDTO tarefa) {
+	public int atualizar(TarefaDTO tarefa) throws SQLException {
 		ArrayList<TarefaDTO> l = new ArrayList<>();
+		l.add(tarefa);
 		return atualizar(l);
 	}
 	
-	public static int atualizar(ArrayList<TarefaDTO> tarefas) {
-		return 0;
+	public int atualizar(ArrayList<TarefaDTO> tarefas) throws SQLException {
+		
+		String sql =
+			"UPDATE tarefas SET\n" +
+			"	titulo = ?,\n" +
+			"	descricao = ?,\n" +
+			"	cor = ?,\n" +
+			"	prioridade = ?,\n" +
+			"	data_criacao = ?,\n" +
+			"	data_concluida = ?,\n" +
+			"	data_limite = ?\n" +
+			"WHERE\n" +
+			"	TRUE\n" +
+			"	AND id = ?;";
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		
+		for (TarefaDTO tarefa : tarefas) {
+			int i = 1;
+			bd.pstmt.setString(i++, tarefa.getTitulo());
+			bd.pstmt.setString(i++, tarefa.getDescricao());
+			bd.pstmt.setString(i++, tarefa.getCor());
+			bd.pstmt.setInt(i++, tarefa.getPrioridade());
+			bd.pstmt.setTimestamp(i++, tarefa.getDataCriacao());
+			bd.pstmt.setTimestamp(i++, tarefa.getDataConcluida());
+			bd.pstmt.setTimestamp(i++, tarefa.getDataLimite());
+			
+			bd.pstmt.setLong(i, tarefa.getId());
+			
+			bd.pstmt.addBatch();
+		}
+		//System.out.println(bd.pstmt.toString());
+
+		int[] atualizados = bd.pstmt.executeBatch();
+		bd.fecharConexao();
+
+		int soma = 0;
+		for (int i : atualizados) {
+			soma += i;
+		}
+		//System.out.println(soma);
+
+		return soma;
 	}
 
 	/*public static int atualizar(TaskDTO filtro, TaskDTO alteracoes) {
 		return 0;
 	}*/
 
-	public static int excluir(TarefaDTO filtros) throws SQLException {
+	public int excluir(TarefaDTO filtros) throws SQLException {
 		String sql = "DELETE FROM tarefas WHERE id = ?";
 		int i = 1;
 		
@@ -182,7 +221,7 @@ public class Tarefas {
 		}
 	}
 
-	protected static ArrayList<TarefaDTO> criaLista(TarefaDTO tarefa) {
+	private ArrayList<TarefaDTO> criarLista(TarefaDTO tarefa) {
 		ArrayList<TarefaDTO> l = new ArrayList<>();
 		l.add(tarefa);
 		return l;

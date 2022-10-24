@@ -89,14 +89,48 @@ class TodosoAPIv1 {
 	}
 	
 	@RequestMapping(
-			value = "/api/v1/{id}",
+			value = "/api/v1",
 			method = {RequestMethod.PATCH},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<String> alterarTarefa() {
+	public ResponseEntity<String> alterarTarefa(@RequestBody String json) {
+		return alterarTarefa(null, json);
+	}
+	
+	@RequestMapping(
+			value = "/api/v1/tasks/{id}",
+			method = {RequestMethod.PATCH},
+			produces = {MediaType.APPLICATION_JSON_VALUE},
+			consumes = {MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<String> alterarTarefa(@PathVariable("id") Long id,
+			@RequestBody String json) {
+
+		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
+		ObjectMapper om = new ObjectMapper();
+		HashMap<Object, Object> retorno = new HashMap<>();
+		TarefaDTO t;
 		
-		return new ResponseEntity("", HttpStatus.ACCEPTED);
+		try {
+			t = om.readValue(json, TarefaDTO.class);
+			if (id != null) {
+				t.setId(id);
+			}
+			tarefas.add(t);
+			TarefaServico.editar(tarefas);
+			retorno.put("status", "sucess");
+		}
+		catch (JsonProcessingException e) {
+			retorno.put("status", "Error: JsonProcessingException");
+			return new ResponseEntity(retorno, HttpStatus.BAD_REQUEST);
+		}
+		catch (SQLException e) {
+			retorno.put("status", "Internal Error: SQLException");
+			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(
