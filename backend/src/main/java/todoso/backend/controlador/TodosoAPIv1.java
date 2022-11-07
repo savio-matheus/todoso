@@ -77,9 +77,11 @@ class TodosoAPIv1 {
 			retorno.put("status", "Accepted");
 		} catch (JsonProcessingException e) {
 			retorno.put("status", "Error: JsonProcessingException");
+			//e.printStackTrace();
 			return new ResponseEntity(retorno, HttpStatus.BAD_REQUEST);
 		} catch (SQLException ex) {
 			retorno.put("status", "Internal error: SQLException");
+			ex.printStackTrace();
 			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
