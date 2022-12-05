@@ -23,7 +23,7 @@ import servico.TarefaServico;
 import todoso.backend.dados.BaseDTO;
 
 @RestController
-class TodosoAPIv1 {
+class TarefaAPIv1 {
 	
 	@RequestMapping(
 			value = "/api/v1/tasks",
