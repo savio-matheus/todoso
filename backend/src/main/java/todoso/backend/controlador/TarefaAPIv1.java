@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import todoso.backend.dados.TarefaDTO;
+import todoso.backend.dados.Tarefas;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import servico.TarefaServico;
 import todoso.backend.dados.BaseDTO;
 
 @RestController
 class TarefaAPIv1 {
-	
+	Tarefas dados = new Tarefas();
+
 	@RequestMapping(
 			value = "/api/v1/tasks",
 			method = RequestMethod.GET,
@@ -46,7 +47,7 @@ class TarefaAPIv1 {
 		try {
 			TarefaDTO filtro = new TarefaDTO();
 			filtro.setId(id);
-			lista = TarefaServico.listar(filtro);
+			lista = dados.listar(filtro);
 		}
 		catch (SQLException e) {
 			retorno.put("status", "Internal error: SQLException");
@@ -73,7 +74,7 @@ class TarefaAPIv1 {
 		
 		try {
 			tarefas.add(om.readValue(json, TarefaDTO.class));
-			TarefaServico.inserir(tarefas);
+			dados.inserir(tarefas);
 			retorno.put("status", "Accepted");
 		} catch (JsonProcessingException e) {
 			retorno.put("status", "Error: JsonProcessingException");
@@ -120,7 +121,7 @@ class TarefaAPIv1 {
 				t.setId(id);
 			}
 			tarefas.add(t);
-			TarefaServico.editar(tarefas);
+			dados.atualizar(tarefas);
 			retorno.put("status", "sucess");
 		}
 		catch (JsonProcessingException e) {
@@ -147,7 +148,7 @@ class TarefaAPIv1 {
 		
 		filtro.setId(id);
 		try {
-			TarefaServico.deletar(filtro);
+			dados.excluir(filtro);
 			retorno.put("status", "Deleted");
 			return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
 		} catch (SQLException ex) {
