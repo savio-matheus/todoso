@@ -1,6 +1,5 @@
 package todoso.backend.controlador;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import todoso.backend.dados.BaseDTO;
 
 @RestController
 class TarefaAPIv1 {
@@ -43,7 +41,7 @@ class TarefaAPIv1 {
 	public ResponseEntity<String> getTarefas(@PathVariable("id") Long id) {
 		HashMap<Object, Object> retorno = new HashMap<>();
 		ArrayList<TarefaDTO> lista = null;
-		
+
 		try {
 			TarefaDTO filtro = new TarefaDTO();
 			filtro.setId(id);
@@ -54,7 +52,7 @@ class TarefaAPIv1 {
 			e.printStackTrace();
 			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		retorno.put("status", "sucess");
 		retorno.put("data", lista);
 
@@ -67,11 +65,11 @@ class TarefaAPIv1 {
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<String> inserirTarefas(@RequestBody String json) {
+	public ResponseEntity<String> postTarefas(@RequestBody String json) {
 		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
 		ObjectMapper om = new ObjectMapper();
 		HashMap<Object, Object> retorno = new HashMap<>();
-		
+
 		try {
 			tarefas.add(om.readValue(json, TarefaDTO.class));
 			dados.inserir(tarefas);
@@ -85,36 +83,36 @@ class TarefaAPIv1 {
 			ex.printStackTrace();
 			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		retorno.put("json", tarefas.get(0).getTitulo());
-		
+
 		return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
 	}
-	
+
 	@RequestMapping(
 			value = "/api/v1",
 			method = {RequestMethod.PATCH},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<String> alterarTarefa(@RequestBody String json) {
-		return alterarTarefa(null, json);
+	public ResponseEntity<String> patchTarefas(@RequestBody String json) {
+		return patchTarefas(null, json);
 	}
-	
+
 	@RequestMapping(
 			value = "/api/v1/tasks/{id}",
 			method = {RequestMethod.PATCH},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<String> alterarTarefa(@PathVariable("id") Long id,
+	public ResponseEntity<String> patchTarefas(@PathVariable("id") Long id,
 			@RequestBody String json) {
 
 		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
 		ObjectMapper om = new ObjectMapper();
 		HashMap<Object, Object> retorno = new HashMap<>();
 		TarefaDTO t;
-		
+
 		try {
 			t = om.readValue(json, TarefaDTO.class);
 			if (id != null) {
@@ -132,20 +130,20 @@ class TarefaAPIv1 {
 			retorno.put("status", "Internal Error: SQLException");
 			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		return new ResponseEntity(retorno, HttpStatus.ACCEPTED);
 	}
-	
+
 	@RequestMapping(
 			value = "/api/v1/tasks/{id}",
 			method = {RequestMethod.DELETE},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<String> apagarTarefa(@PathVariable("id") Long id) {
+	public ResponseEntity<String> deleteTarefas(@PathVariable("id") Long id) {
 		TarefaDTO filtro = new TarefaDTO();
 		HashMap<Object, Object> retorno = new HashMap<>();
-		
+
 		filtro.setId(id);
 		try {
 			dados.excluir(filtro);
@@ -156,5 +154,5 @@ class TarefaAPIv1 {
 			return new ResponseEntity(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 }
