@@ -1,7 +1,13 @@
 package todoso.backend.dados;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CategoriaDTO extends BaseDTO {
+
+	@JsonProperty("id")
 	private Long id;
+
+	@JsonProperty("name")
 	private String nome;
 
 	public Long getId() {

@@ -46,7 +46,7 @@ public class CategoriaAPIv1 {
 		
 		try {
 			lista = dados.selecionar(filtros);
-
+			System.out.println(lista.size());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			retorno.put(
@@ -86,12 +86,12 @@ public class CategoriaAPIv1 {
 			lista = conversor.readValue(json,
 				new TypeReference<ArrayList<CategoriaDTO>>(){}
 			);
-			dados.atualizar(lista);
+			dados.inserir(lista);
 			retorno.put(
-			"status",
+				"status",
 				Status.novo(200, "OK")
 			);
-			retorno.put("data", lista);
+			//retorno.put("data", lista);
 		}
 		catch (JsonProcessingException e) {
 			e.printStackTrace();

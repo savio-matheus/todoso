@@ -20,6 +20,9 @@ public abstract class BaseDTO {
 	 * @return the limit
 	 */
 	public Long getLimite() {
+		if (limite == null) {
+			return Long.MAX_VALUE;
+		}
 		return limite;
 	}
 
@@ -34,6 +37,9 @@ public abstract class BaseDTO {
 	 * @return the offset
 	 */
 	public Long getOffset() {
+		if (offset == null) {
+			return Long.valueOf(0);
+		}
 		return offset;
 	}
 
@@ -58,5 +64,12 @@ public abstract class BaseDTO {
 		this.pagina = pagina;
 	}
 	
-	
+	/**
+	 * */
+	public String filtroLike(Object dado) {
+		if (dado == null) {
+			return "%";
+		}
+		return dado.toString();
+	}
 }
