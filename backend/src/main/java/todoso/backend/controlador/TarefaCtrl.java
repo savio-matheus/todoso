@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
-class TarefaAPIv1 {
+class TarefaCtrl {
 	Tarefas dados = new Tarefas();
 
 	@RequestMapping(

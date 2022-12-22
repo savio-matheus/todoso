@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-class Olar {
+class OlarCtrl {
 	private static final String MODELO_RESPOSTA = "Olá, %s!";
 
 	@GetMapping("/api/v1/olar")

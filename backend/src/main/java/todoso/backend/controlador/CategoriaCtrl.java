@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-public class CategoriaAPIv1 {
+public class CategoriaCtrl {
 
 	private HashMap<String, Object> retorno = new HashMap<>();
 	private Categorias dados = new Categorias();

@@ -4,20 +4,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ArquivoAPIv1 {
-	public ResponseEntity getArquivo() {
+public class TagCtrl {
+
+	public ResponseEntity getTag() {
 		return null;
 	}
 
-	public ResponseEntity postArquivo() {
+	public ResponseEntity postTag() {
 		return null;
 	}
 
-	public ResponseEntity patchArquivo() {
+	public ResponseEntity patchTag() {
 		return null;
 	}
 
-	public ResponseEntity deleteArquivo() {
+	public ResponseEntity deleteTag() {
 		return null;
 	}
 }

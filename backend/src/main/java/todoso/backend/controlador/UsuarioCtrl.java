@@ -4,21 +4,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class TagAPIv1 {
+public class UsuarioCtrl {
 
-	public ResponseEntity getTag() {
+	public ResponseEntity getUsuario() {
 		return null;
 	}
 
-	public ResponseEntity postTag() {
+	public ResponseEntity postUsuario() {
 		return null;
 	}
 
-	public ResponseEntity patchTag() {
+	public ResponseEntity patchUsuario() {
 		return null;
 	}
 
-	public ResponseEntity deleteTag() {
+	public ResponseEntity deleteUsuario() {
 		return null;
 	}
 }
