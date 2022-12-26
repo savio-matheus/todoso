@@ -12,6 +12,9 @@
 ### /users
 * GET /users
 * GET /users/:id
+* GET /users/:id/tasks
+* GET /users/:id/categories
+* GET /users/:id/tags
 * POST /users
 * PATCH /users/:id
 * DELETE /users/:id
@@ -19,6 +22,7 @@
 ### /categories
 * GET /categories
 * GET /categories/:id
+* GET /categories/:id/tasks
 * POST /categories
 * PATCH /categories/:id
 * DELETE /categories/:id
@@ -26,6 +30,7 @@
 ### /tags
 * GET /tags
 * GET /tags/:id
+* GET /tags/:id/tasks
 * POST /tags
 * PATCH /tags/:id
 * DELETE /tags/:id
@@ -57,11 +62,16 @@
 }
 ```
 
-## JSON padrão da requisição
+## JSON da requisição (quando aplicável)
 ```
 {
-	"auth": {...},
 	"data": [objetos]
+}
+```
+ou
+```
+{
+	"data": {objeto}
 }
 ```
 
@@ -107,7 +117,6 @@
 	// varia
 	"email": (string),
 	"image": (objeto file),
-	"recentTasks": ([objeto task1, task2, ...](25)),
 	"creationDate": (string),
 	"lastLogin": (string)
 }
@@ -126,33 +135,6 @@
 {
 	"id": (integer),
 	"name": (string)
-}
-```
-
-* userTasks
-```
-{
-	"id": (integer),
-	"username": (string),
-	"tasks": ([objeto task1, task2, ...](50))
-}
-```
-
-* categoryTasks
-```
-{
-	"id": (integer),
-	"name": (string),
-	"tasks": ([objeto task1, task2, ...](50))
-}
-```
-
-* tagTasks
-```
-{
-	"id": (integer),
-	"name": (string),
-	"tasks": ([objeto task1, task2, ...](50))
 }
 ```
 
