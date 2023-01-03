@@ -1,29 +1,28 @@
 package todoso.backend.dados;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
  * @author savio
  */
-public abstract class Olar {
-	
-	public static void criarTabelas() throws SQLException {
+public class Olar {
+
+	public void criarTabelas() throws SQLException {
 		String sqlCategorias =
 			"CREATE TABLE IF NOT EXISTS categorias (\n" +
 			"	id INTEGER NULL,\n" +
 			"	nome_categoria varchar(48) NOT NULL,\n" +
 			"	CONSTRAINT categorias_pk PRIMARY KEY (id)\n" +
 			");";
-		
+
 		String sqlTags =
 			"CREATE TABLE IF NOT EXISTS tags (\n" +
 			"	id INTEGER NULL,\n" +
 			"	nome_tag varchar(48) NOT NULL,\n" +
 			"	CONSTRAINT tags_pk PRIMARY KEY (id)\n" +
 			");";
-		
+
 		String sqlArquivos =
 			"CREATE TABLE IF NOT EXISTS arquivos (\n" +
 			"	id INTEGER NULL,\n" +
@@ -32,7 +31,7 @@ public abstract class Olar {
 			"	tamanho integer NOT NULL,\n" +
 			"	CONSTRAINT arquivos_pk PRIMARY KEY (id)\n" +
 			");";
-		
+
 		String sqlUsuarios =
 			"CREATE TABLE IF NOT EXISTS usuarios (\n" +
 			"	id INTEGER NULL,\n" +
@@ -46,7 +45,7 @@ public abstract class Olar {
 			"	CONSTRAINT usuarios_fk FOREIGN KEY (id_foto_arquivo) "
 				+ "REFERENCES arquivos(id)\n" +
 			");";
-		
+
 		String sqlTokens =
 			"CREATE TABLE IF NOT EXISTS tokens (\n" +
 			"	id INTEGER NULL,\n" +
@@ -57,7 +56,7 @@ public abstract class Olar {
 			"	CONSTRAINT tokens_fk FOREIGN KEY (id_usuario) "
 				+ "REFERENCES usuarios(id)\n" +
 			");";
-		
+
 		String sqlTarefas =
 			"CREATE TABLE IF NOT EXISTS tarefas (\n" +
 			"	id INTEGER NULL,\n" +
@@ -70,7 +69,7 @@ public abstract class Olar {
 			"	data_limite timestamp NULL DEFAULT '',\n" +
 			"	CONSTRAINT tarefas_pk PRIMARY KEY (id)\n" +
 			");";
-		
+
 		String sqlTarefas_tags =
 			"CREATE TABLE IF NOT EXISTS tarefas_tags (\n" +
 			"	id_tarefa INTEGER NOT NULL,\n" +
@@ -80,7 +79,7 @@ public abstract class Olar {
 			"	CONSTRAINT tarefas_tags_fk_1 FOREIGN KEY (id_tag) "
 				+ "REFERENCES tags(id)\n" +
 			");";
-		
+
 		String sqlTarefas_categorias =
 			"CREATE TABLE IF NOT EXISTS tarefas_categorias (\n" +
 			"	id_tarefa INTEGER NOT NULL,\n" +
@@ -90,7 +89,7 @@ public abstract class Olar {
 			"	CONSTRAINT tarefas_categorias_fk_1 FOREIGN KEY (id_categoria) "
 				+ "REFERENCES categorias(id)\n" +
 			");";
-		
+
 		String sqlTarefas_usuarios =
 			"CREATE TABLE IF NOT EXISTS tarefas_usuarios (\n" +
 			"	id_tarefa INTEGER NOT NULL,\n" +
@@ -104,14 +103,14 @@ public abstract class Olar {
 
 		String sqlTarefas_arquivos =
 			"CREATE TABLE IF NOT EXISTS tarefas_arquivos (\n" +
-		"	id_tarefa INTEGER NOT NULL,\n" +
-		"	id_arquivo INTEGER NOT NULL,\n" +
-		"	CONSTRAINT tarefas_arquivos_fk FOREIGN KEY (id_tarefa) "
-				+ "REFERENCES tarefas(id),\n" +
-		"	CONSTRAINT tarefas_arquivos_fk_1 FOREIGN KEY (id_arquivo) "
-				+ "REFERENCES arquivos(id)\n" +
-		");";
-		
+			"	id_tarefa INTEGER NOT NULL,\n" +
+			"	id_arquivo INTEGER NOT NULL,\n" +
+			"	CONSTRAINT tarefas_arquivos_fk FOREIGN KEY (id_tarefa) "
+					+ "REFERENCES tarefas(id),\n" +
+			"	CONSTRAINT tarefas_arquivos_fk_1 FOREIGN KEY (id_arquivo) "
+					+ "REFERENCES arquivos(id)\n" +
+			");";
+
 		BdAcesso bd = BdAcesso.abrirConexao();
 
 		bd.stmt.addBatch(sqlCategorias);
@@ -124,9 +123,8 @@ public abstract class Olar {
 		bd.stmt.addBatch(sqlTarefas_categorias);
 		bd.stmt.addBatch(sqlTarefas_usuarios);
 		bd.stmt.addBatch(sqlTarefas_arquivos);
-		
+
 		bd.stmt.executeBatch();
-		
 		bd.fecharConexao();
 	}
 }
