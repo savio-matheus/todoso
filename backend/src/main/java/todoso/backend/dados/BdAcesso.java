@@ -21,6 +21,7 @@ public class BdAcesso implements Closeable {
 	public Statement stmt = null;
 	public PreparedStatement pstmt = null;
 	public ResultSet rs = null;
+	public final int RETURN_GENERATED_KEYS = Statement.RETURN_GENERATED_KEYS;
 
 	private BdAcesso() throws SQLException {
 		this.conexao = DriverManager.getConnection(URL);
@@ -51,6 +52,17 @@ public class BdAcesso implements Closeable {
 			return true;
 		}
 		return false;
+	}
+
+	protected long getChaveGerada() throws SQLException {
+		long chave = -1;
+
+		ResultSet rs = stmt.getGeneratedKeys();
+		if (rs.next()) {
+			chave = rs.getLong(1);
+		}
+
+		return chave;
 	}
 
 	@Override

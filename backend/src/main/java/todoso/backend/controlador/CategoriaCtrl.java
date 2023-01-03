@@ -2,6 +2,7 @@ package todoso.backend.controlador;
 
 import todoso.backend.dados.CategoriaDTO;
 import todoso.backend.dados.Categorias;
+import todoso.backend.servico.CategoriaServico;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public class CategoriaCtrl {
 		}
 		
 		try {
-			lista = dados.selecionar(filtros);
-			System.out.println(lista.size());
+			lista = new CategoriaServico().selecionarCategorias(filtros);
+			//System.out.println(lista.size());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			retorno.put(
@@ -83,10 +84,8 @@ public class CategoriaCtrl {
 	) {
 
 		try {
-			lista = conversor.readValue(json,
-				new TypeReference<ArrayList<CategoriaDTO>>(){}
-			);
-			dados.inserir(lista);
+			catDTO = conversor.readValue(json, CategoriaDTO.class);
+			new CategoriaServico().criarCategoria(catDTO);
 			retorno.put(
 				"status",
 				Status.novo(200, "OK")
@@ -124,7 +123,7 @@ public class CategoriaCtrl {
 
 		if (id == null) {
 			retorno.put(
-			"status",
+				"status",
 				Status.novo(405, "METHOD NOT ALLOWED - no id")
 			);
 			return new ResponseEntity<>(retorno, HttpStatus.METHOD_NOT_ALLOWED);
@@ -133,13 +132,13 @@ public class CategoriaCtrl {
 		try {
 			catDTO = conversor.readValue(json, CategoriaDTO.class);
 			catDTO.setId(id);
-			int atualizacoes = dados.atualizar(catDTO);
+			long idRet = new CategoriaServico().editarCategoria(catDTO).getId();
 			Status status = new Status();
 			
 			status.codigo = 200;
 			status.mensagem = "OK - Updated";
 
-			if (atualizacoes <= 0) {
+			if (idRet <= 0) {
 				status.codigo = 404;
 				status.mensagem = "NOT FOUND - verify sent id";
 			}
@@ -183,12 +182,12 @@ public class CategoriaCtrl {
 		filtros.setId(id);
 
 		try {
-			int atualizacoes = dados.excluir(filtros);
+			long idRet = new CategoriaServico().deletarCategoria(filtros).getId();
 			Status status = new Status();
 			status.codigo = 200;
 			status.mensagem = "OK";
 
-			if (atualizacoes <= 0) {
+			if (idRet <= 0) {
 				status.codigo = 404;
 				status.mensagem = "NOT FOUND - id: " + id;
 			}
