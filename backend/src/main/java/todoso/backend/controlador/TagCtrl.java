@@ -6,19 +6,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TagCtrl {
 
-	public ResponseEntity getTag() {
+	public ResponseEntity<Object> getTag() {
 		return null;
 	}
 
-	public ResponseEntity postTag() {
+	public ResponseEntity<Object> postTag() {
 		return null;
 	}
 
-	public ResponseEntity patchTag() {
+	public ResponseEntity<Object> patchTag() {
 		return null;
 	}
 
-	public ResponseEntity deleteTag() {
+	public ResponseEntity<Object> deleteTag() {
 		return null;
 	}
 }

@@ -5,19 +5,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ArquivoCtrl {
-	public ResponseEntity getArquivo() {
+	public ResponseEntity<Object> getArquivo() {
 		return null;
 	}
 
-	public ResponseEntity postArquivo() {
+	public ResponseEntity<Object> postArquivo() {
 		return null;
 	}
 
-	public ResponseEntity patchArquivo() {
+	public ResponseEntity<Object> patchArquivo() {
 		return null;
 	}
 
-	public ResponseEntity deleteArquivo() {
+	public ResponseEntity<Object> deleteArquivo() {
 		return null;
 	}
 }

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AutenticacaoCtrl {
-	public ResponseEntity postAutenticacao() {
+	public ResponseEntity<Object> postAutenticacao() {
 		return null;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
  *
  * @author savio
  */
+// TODO: implementar interface Dados
 public class Tarefas {
 
 	public int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
@@ -221,7 +222,7 @@ public class Tarefas {
 		}
 	}
 
-	private ArrayList<TarefaDTO> criarLista(TarefaDTO tarefa) {
+	public ArrayList<TarefaDTO> criarLista(TarefaDTO tarefa) {
 		ArrayList<TarefaDTO> l = new ArrayList<>();
 		l.add(tarefa);
 		return l;

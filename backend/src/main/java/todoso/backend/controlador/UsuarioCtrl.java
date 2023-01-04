@@ -6,19 +6,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UsuarioCtrl {
 
-	public ResponseEntity getUsuario() {
+	public ResponseEntity<Object> getUsuario() {
 		return null;
 	}
 
-	public ResponseEntity postUsuario() {
+	public ResponseEntity<Object> postUsuario() {
 		return null;
 	}
 
-	public ResponseEntity patchUsuario() {
+	public ResponseEntity<Object> patchUsuario() {
 		return null;
 	}
 
-	public ResponseEntity deleteUsuario() {
+	public ResponseEntity<Object> deleteUsuario() {
 		return null;
 	}
 }
