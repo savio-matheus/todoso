@@ -150,7 +150,8 @@ ou
 * status
 ```
 {
-	"code": N,
-	"mensagem": "..."
+	"http": N,
+	"description": "...",
+	"message": "..."
 }
 ```

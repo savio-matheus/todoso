@@ -19,7 +19,7 @@ public class ErroCtrl implements ErrorController {
 	)
 	public ResponseEntity<HashMap<String, Object>> getErroGenerico() {
 		HashMap<String, Object> retorno = new HashMap<>();
-		retorno.put("status", Status.novo(500, "Erro desconhecido"));
+		retorno.put("status", Status.novo(HttpStatus.INTERNAL_SERVER_ERROR, "Erro desconhecido", ""));
 		return new ResponseEntity<>(retorno, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

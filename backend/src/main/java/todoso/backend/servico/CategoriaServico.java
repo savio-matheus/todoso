@@ -1,10 +1,12 @@
 package todoso.backend.servico;
 
+import java.lang.IllegalArgumentException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import todoso.backend.dados.CategoriaDTO;
 import todoso.backend.dados.Categorias;
+import todoso.backend.excecoes.NotFoundException;
 
 public class CategoriaServico {
 
@@ -26,13 +28,31 @@ public class CategoriaServico {
 		return dados.selecionar(filtros);
 	}
 
-	public CategoriaDTO editarCategoria(CategoriaDTO categoria) throws SQLException {
-		dados.atualizar(categoria);
+	public CategoriaDTO editarCategoria(CategoriaDTO categoria)
+		throws SQLException, IllegalArgumentException, NotFoundException {
+
+		if (categoria.getId() == null) {
+			throw new IllegalArgumentException("Id must not be null.");
+		}
+
+		long id = dados.atualizar(categoria);
+
+		if (id <= 0) {
+			throw new NotFoundException("Try a different id.");
+		}
 		return categoria;
 	}
 
-	public CategoriaDTO deletarCategoria(CategoriaDTO filtros) throws SQLException {
-		dados.excluir(filtros);
+	public CategoriaDTO deletarCategoria(CategoriaDTO filtros)
+		throws SQLException, NotFoundException, IllegalArgumentException {
+		if (filtros.getId() == null) {
+			throw new IllegalArgumentException("Id must not be null.");
+		}
+		long id = dados.excluir(filtros);
+
+		if (id <= 0) {
+			throw new NotFoundException("Try a different id.");
+		}
 		return filtros;
 	}
 }
