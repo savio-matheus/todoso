@@ -34,6 +34,15 @@ public class CategoriaCtrl {
 	private static final Status statusAccepted = Status.novo(HttpStatus.ACCEPTED, "ACCEPTED", "");
 
 	@RequestMapping(
+		value="/api/v1/categories",
+		method=RequestMethod.GET,
+		produces={MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<HashMap<String, Object>> getCategoria() throws Exception {
+		return getCategoria(null);
+	}
+
+	@RequestMapping(
 		value="/api/v1/categories/{id}",
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
