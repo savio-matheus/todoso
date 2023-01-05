@@ -17,7 +17,7 @@ public class CategoriaServico {
 
 		id = dados.inserir(categoria);
 		if (id <= 0) {
-			throw new SQLException("ID not found");
+			throw new SQLException("Resource was created, but returned no valid id.");
 		}
 
 		categoria.setId(id);

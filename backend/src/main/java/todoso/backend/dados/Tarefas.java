@@ -7,12 +7,11 @@ import java.util.ArrayList;
  *
  * @author savio
  */
-// TODO: implementar interface Dados
-public class Tarefas {
 
-	public int inserir(ArrayList<TarefaDTO> tarefas) throws SQLException {
-		
-		String sql = 
+public class Tarefas implements Dados {
+
+	public long inserir(BaseDTO dto) throws SQLException {
+		String sql =
 			"INSERT INTO tarefas (\n" +
 			"	titulo,\n" +
 			"	descricao,\n" +
@@ -22,31 +21,28 @@ public class Tarefas {
 			"	data_concluida,\n" +
 			"	data_limite)\n" +
 			"VALUES (?, ?, ?, ?, ?, ?, ?);";
-		
-		int alteracoes = 0;
+
 		BdAcesso bd = BdAcesso.abrirConexao();
-		bd.pstmt = bd.conexao.prepareStatement(sql);
-		
-		for (TarefaDTO t : tarefas) {
-			int i = 1;
-			bd.pstmt.setString(i++, t.getTitulo());
-			bd.pstmt.setString(i++, t.getDescricao());
-			bd.pstmt.setString(i++, t.getCor());
-			bd.pstmt.setInt(i++, t.getPrioridade());
-			bd.pstmt.setTimestamp(i++, t.getDataCriacao());
-			bd.pstmt.setTimestamp(i++, t.getDataConcluida());
-			bd.pstmt.setTimestamp(i++, t.getDataLimite());
+		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
+		TarefaDTO tarefa = (TarefaDTO) dto;
 
-			bd.pstmt.addBatch();
-		}
-		bd.pstmt.executeBatch();
-	
+		int i = 1;
+		bd.pstmt.setString(i++, tarefa.getTitulo());
+		bd.pstmt.setString(i++, tarefa.getDescricao());
+		bd.pstmt.setString(i++, tarefa.getCor());
+		bd.pstmt.setInt(i++, tarefa.getPrioridade());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataCriacao());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataConcluida());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataLimite());
+
+		bd.pstmt.execute();
+		long idGerado = bd.getChaveGerada();
 		bd.fecharConexao();
-		return alteracoes;
-	}
-	
-	public ArrayList<TarefaDTO> listar(TarefaDTO filtros) throws SQLException {
 
+		return idGerado;
+	}
+
+	public ArrayList<TarefaDTO> selecionar(BaseDTO filtros) throws SQLException {
 		String sql =
 			"SELECT * FROM tarefas t WHERE\n" +
 			"	TRUE\n" +
@@ -60,67 +56,68 @@ public class Tarefas {
 			"	AND data_limite LIKE ?\n" +
 			"ORDER BY t.id\n" +
 			"LIMIT ? OFFSET ?;";
-		
+
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
+		TarefaDTO f = (TarefaDTO) filtros;
 		int i = 1;
-		if (filtros.getId() != null) {
-			bd.pstmt.setString(i++, filtros.getId().toString());
+		if (f.getId() != null) {
+			bd.pstmt.setString(i++, f.getId().toString());
 		}
 		else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getTitulo() != null) {
-			bd.pstmt.setString(i++, "%" + filtros.getTitulo() + "%");
+		if (f.getTitulo() != null) {
+			bd.pstmt.setString(i++, "%" + f.getTitulo() + "%");
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDescricao() != null) {
-			bd.pstmt.setString(i++, "%" + filtros.getDescricao() + "%");
+		if (f.getDescricao() != null) {
+			bd.pstmt.setString(i++, "%" + f.getDescricao() + "%");
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getCor() != null) {
-			bd.pstmt.setString(i++, filtros.getCor());
+		if (f.getCor() != null) {
+			bd.pstmt.setString(i++, f.getCor());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getPrioridade() != null) {
-			bd.pstmt.setString(i++, filtros.getPrioridade().toString());
+		if (f.getPrioridade() != null) {
+			bd.pstmt.setString(i++, f.getPrioridade().toString());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDataCriacao() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getDataCriacao());
+		if (f.getDataCriacao() != null) {
+			bd.pstmt.setTimestamp(i++, f.getDataCriacao());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDataConcluida() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getDataConcluida());
+		if (f.getDataConcluida() != null) {
+			bd.pstmt.setTimestamp(i++, f.getDataConcluida());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getDataLimite() != null) {
-			bd.pstmt.setTimestamp(i++, filtros.getDataLimite());
+		if (f.getDataLimite() != null) {
+			bd.pstmt.setTimestamp(i++, f.getDataLimite());
 		} else {
 			bd.pstmt.setString(i++, "%");
 		}
 
-		if (filtros.getLimite() != null) {
-			bd.pstmt.setLong(i++, filtros.getLimite());
+		if (f.getLimite() != null) {
+			bd.pstmt.setLong(i++, f.getLimite());
 		} else {
 			bd.pstmt.setLong(i++, Long.MAX_VALUE);
 		}
 
-		if (filtros.getOffset() != null) {
-			bd.pstmt.setLong(i++, filtros.getOffset());
+		if (f.getOffset() != null) {
+			bd.pstmt.setLong(i++, f.getOffset());
 		} else {
 			bd.pstmt.setLong(i++, 0);
 		}
@@ -128,12 +125,12 @@ public class Tarefas {
 		System.out.println(bd.pstmt.toString());
 
 		bd.rs = bd.pstmt.executeQuery();
-		
+
 		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
-		
+
 		while (bd.rs.next()) {
 			TarefaDTO t = new TarefaDTO();
-			
+
 			t.setId(bd.rs.getLong("id"));
 			t.setTitulo(bd.rs.getString("titulo"));
 			t.setDescricao(bd.rs.getString("descricao"));
@@ -142,21 +139,14 @@ public class Tarefas {
 			t.setDataLimite(bd.rs.getTimestamp("data_limite"));
 			t.setPrioridade(bd.rs.getInt("prioridade"));
 			t.setCor(bd.rs.getString("cor"));
-			
+
 			tarefas.add(t);
 		}
-		
+
 		return tarefas;
 	}
 
-	public int atualizar(TarefaDTO tarefa) throws SQLException {
-		ArrayList<TarefaDTO> l = new ArrayList<>();
-		l.add(tarefa);
-		return atualizar(l);
-	}
-	
-	public int atualizar(ArrayList<TarefaDTO> tarefas) throws SQLException {
-		
+	public long atualizar(BaseDTO dto) throws SQLException {
 		String sql =
 			"UPDATE tarefas SET\n" +
 			"	titulo = ?,\n" +
@@ -169,62 +159,52 @@ public class Tarefas {
 			"WHERE\n" +
 			"	TRUE\n" +
 			"	AND id = ?;";
-		
+
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
-		
-		for (TarefaDTO tarefa : tarefas) {
-			int i = 1;
-			bd.pstmt.setString(i++, tarefa.getTitulo());
-			bd.pstmt.setString(i++, tarefa.getDescricao());
-			bd.pstmt.setString(i++, tarefa.getCor());
-			bd.pstmt.setInt(i++, tarefa.getPrioridade());
-			bd.pstmt.setTimestamp(i++, tarefa.getDataCriacao());
-			bd.pstmt.setTimestamp(i++, tarefa.getDataConcluida());
-			bd.pstmt.setTimestamp(i++, tarefa.getDataLimite());
-			
-			bd.pstmt.setLong(i, tarefa.getId());
-			
-			bd.pstmt.addBatch();
-		}
+		TarefaDTO tarefa = (TarefaDTO) dto;
+
+		int i = 1;
+		bd.pstmt.setString(i++, tarefa.getTitulo());
+		bd.pstmt.setString(i++, tarefa.getDescricao());
+		bd.pstmt.setString(i++, tarefa.getCor());
+		bd.pstmt.setInt(i++, tarefa.getPrioridade());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataCriacao());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataConcluida());
+		bd.pstmt.setTimestamp(i++, tarefa.getDataLimite());
+
+		bd.pstmt.setLong(i, tarefa.getId());
+
 		//System.out.println(bd.pstmt.toString());
 
-		int[] atualizados = bd.pstmt.executeBatch();
+		int atualizados = bd.pstmt.executeUpdate();
 		bd.fecharConexao();
 
-		int soma = 0;
-		for (int i : atualizados) {
-			soma += i;
-		}
 		//System.out.println(soma);
 
-		return soma;
+		if (atualizados > 0) {
+			return tarefa.getId();
+		}
+
+		return 0;
 	}
 
-	/*public static int atualizar(TaskDTO filtro, TaskDTO alteracoes) {
-		return 0;
-	}*/
-
-	public int excluir(TarefaDTO filtros) throws SQLException {
+	public long excluir(BaseDTO filtros) throws SQLException {
 		String sql = "DELETE FROM tarefas WHERE id = ?";
 		int i = 1;
-		
+
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
-		
-		bd.pstmt.setLong(i++, filtros.getId());
+		TarefaDTO f = (TarefaDTO) filtros;
+
+		bd.pstmt.setLong(i++, f.getId());
 		if (bd.pstmt.execute()) {
 			bd.fecharConexao();
-			return 1;
+			return f.getId();
 		} else {
 			bd.fecharConexao();
 			return 0;
 		}
 	}
 
-	public ArrayList<TarefaDTO> criarLista(TarefaDTO tarefa) {
-		ArrayList<TarefaDTO> l = new ArrayList<>();
-		l.add(tarefa);
-		return l;
-	}
 }
