@@ -50,6 +50,7 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 			"INTERNAL SERVER ERROR",
 			ex.getLocalizedMessage()
 		);
+
 		HashMap<String, Status> conteudo = new HashMap<>();
 		conteudo.put("status", s);
 

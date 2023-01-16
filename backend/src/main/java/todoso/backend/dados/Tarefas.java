@@ -46,14 +46,14 @@ public class Tarefas implements Dados {
 		String sql =
 			"SELECT * FROM tarefas t WHERE\n" +
 			"	TRUE\n" +
-			"	AND id LIKE ?\n" +
-			"	AND titulo LIKE ?\n" +
-			"	AND descricao LIKE ?\n" +
-			"	AND cor LIKE ?\n" +
-			"	AND prioridade LIKE ?\n" +
-			"	AND data_criacao LIKE ?\n" +
-			"	AND data_concluida LIKE ?\n" +
-			"	AND data_limite LIKE ?\n" +
+			"	AND (id LIKE ? OR id IS NULL)\n" +
+			"	AND (titulo LIKE ? OR titulo IS NULL)\n" +
+			"	AND (descricao LIKE ? OR descricao IS NULL)\n" +
+			"	AND (cor LIKE ? OR cor IS NULL)\n" +
+			"	AND (prioridade LIKE ? OR prioridade IS NULL)\n" +
+			"	AND (data_criacao LIKE ? OR data_criacao IS NULL)\n" +
+			"	AND (data_concluida LIKE ? OR data_concluida IS NULL)\n" +
+			"	AND (data_limite LIKE ? OR data_limite IS NULL)\n" +
 			"ORDER BY t.id\n" +
 			"LIMIT ? OFFSET ?;";
 

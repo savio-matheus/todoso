@@ -44,8 +44,7 @@ class TarefaCtrl {
 			method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Object> getTarefa(@PathVariable("id") Long id) throws Exception {
-		TarefaDTO filtro = new TarefaDTO();
-		filtro.setId(id);
+		filtros.setId(id);
 		lista = servico.selecionarTarefas(filtros);
 
 		retorno.put("status", statusOk);
@@ -60,10 +59,10 @@ class TarefaCtrl {
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Object> postTarefas(@RequestBody String json) throws Exception {
-		servico.criarTarefa(conversor.readValue(json, TarefaDTO.class));
+		long id = servico.criarTarefa(conversor.readValue(json, TarefaDTO.class)).getId();
 
 		retorno.put("status", statusCreated);
-		retorno.put("id", 0);
+		retorno.put("id", id);
 
 		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}
@@ -99,8 +98,7 @@ class TarefaCtrl {
 	@RequestMapping(
 			value = "/api/v1/tasks/{id}",
 			method = {RequestMethod.DELETE},
-			produces = {MediaType.APPLICATION_JSON_VALUE},
-			consumes = {MediaType.APPLICATION_JSON_VALUE}
+			produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<Object> deleteTarefas(@PathVariable("id") Long id) throws Exception {
 
@@ -108,6 +106,7 @@ class TarefaCtrl {
 
 		servico.deletarTarefa(filtros);
 		retorno.put("status", statusAccepted);
+		retorno.put("id", id);
 
 		return new ResponseEntity<>(retorno, statusAccepted.http);
 	}

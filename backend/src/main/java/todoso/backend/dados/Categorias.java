@@ -34,8 +34,8 @@ public class Categorias implements Dados {
 		String sql =
 			"SELECT * FROM categorias c WHERE\n" +
 			"	TRUE\n" +
-			"	AND id LIKE ?\n" +
-			"	AND nome_categoria LIKE ?\n" +
+			"	AND (id LIKE ? OR id IS NULL)\n" +
+			"	AND (nome_categoria LIKE ? OR nome_categoria IS NULL)\n" +
 			"ORDER BY c.id\n" +
 			"LIMIT ? OFFSET ?;";
 
