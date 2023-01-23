@@ -32,3 +32,12 @@ As tarefas devem:
 - [ ] ter suporte a cores
 - [ ] ter suporte a prioridades
 - [ ] pertencer a nenhuma, uma ou mais categorias
+
+## Microsserviços
+
+- Cadastro de tarefas/tags/categorias
+- Login/autenticação
+- Anexos
+- Usuários
+- Banco de dados
+- Ver: [microservices with sprint boot](https://github.com/OmarElgabry/microservices-spring-boot)
