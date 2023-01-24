@@ -21,7 +21,6 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> retornoNotFoundException(Exception ex, WebRequest req) {
 		Status s = Status.novo(
 			HttpStatus.NOT_FOUND,
-			"NOT FOUND",
 			ex.getLocalizedMessage()
 		);
 		HashMap<String, Status> conteudo = new HashMap<>();
@@ -34,7 +33,6 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> retornoJsonProcessingException(Exception ex, WebRequest req) {
 		Status s = Status.novo(
 			HttpStatus.BAD_REQUEST,
-			"BAD REQUEST",
 			ex.getLocalizedMessage()
 		);
 		HashMap<String, Status> conteudo = new HashMap<>();
@@ -47,7 +45,6 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> retornoException(Exception ex, WebRequest req) {
 		Status s = Status.novo(
 			HttpStatus.INTERNAL_SERVER_ERROR,
-			"INTERNAL SERVER ERROR",
 			ex.getLocalizedMessage()
 		);
 

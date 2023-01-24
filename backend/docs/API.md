@@ -31,9 +31,7 @@
 * GET /tags
 * GET /tags/:id
 * GET /tags/:id/tasks
-* POST /tags
 * PATCH /tags/:id
-* DELETE /tags/:id
 
 ### /files
 * GET /file/:url

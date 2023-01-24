@@ -111,6 +111,11 @@ public class Olar {
 					+ "REFERENCES arquivos(id)\n" +
 			");";
 
+		// Categoria padrão para todas as tarefas
+		// Não será mais criada dessa forma quando houver mais de um usuário.
+		String sqlCategoriaPadrao =
+			"INSERT INTO categorias (id, nome_categoria) VALUES (1, 'geral');";
+
 		BdAcesso bd = BdAcesso.abrirConexao();
 
 		bd.stmt.addBatch(sqlCategorias);
@@ -123,6 +128,7 @@ public class Olar {
 		bd.stmt.addBatch(sqlTarefas_categorias);
 		bd.stmt.addBatch(sqlTarefas_usuarios);
 		bd.stmt.addBatch(sqlTarefas_arquivos);
+		bd.stmt.addBatch(sqlCategoriaPadrao);
 
 		bd.stmt.executeBatch();
 		bd.fecharConexao();

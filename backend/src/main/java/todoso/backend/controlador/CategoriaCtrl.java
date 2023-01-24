@@ -29,9 +29,9 @@ public class CategoriaCtrl {
 	private CategoriaDTO catDTO = null;
 	private CategoriaServico servico = new CategoriaServico();
 
-	private static final Status statusOk = Status.novo(HttpStatus.OK, "OK", "");
-	private static final Status statusCreated = Status.novo(HttpStatus.CREATED, "CREATED", "");
-	private static final Status statusAccepted = Status.novo(HttpStatus.ACCEPTED, "ACCEPTED", "");
+	private static final Status statusOk = Status.novo(HttpStatus.OK, "");
+	private static final Status statusCreated = Status.novo(HttpStatus.CREATED, "");
+	private static final Status statusAccepted = Status.novo(HttpStatus.ACCEPTED, "");
 
 	@RequestMapping(
 		value="/api/v1/categories",

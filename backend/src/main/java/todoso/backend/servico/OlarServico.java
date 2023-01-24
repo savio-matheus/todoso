@@ -13,7 +13,8 @@ public class OlarServico {
 			new Olar().criarTabelas();
 		}
 		catch (SQLException e) {
-			return new ResponseEntity<>("Erro ao criar/verificar as tabelas",
+			return new ResponseEntity<>(
+				"Erro ao criar/verificar as tabelas (talvez já existam).",
 				HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

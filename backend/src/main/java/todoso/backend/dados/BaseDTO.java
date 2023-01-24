@@ -16,6 +16,11 @@ public abstract class BaseDTO {
 	@JsonIgnore
 	private Long pagina = null;
 
+	// Quando um DTO deve ser relacionado o outro, utiliza-se este id para
+	// representa-lo.
+	@JsonIgnore
+	private Long idRelacionado = null;
+
 	/**
 	 * @return the limit
 	 */
@@ -62,6 +67,14 @@ public abstract class BaseDTO {
 	 */
 	public void setPagina(Long pagina) {
 		this.pagina = pagina;
+	}
+
+	public Long getIdRelacionado() {
+		return idRelacionado;
+	}
+
+	public void setIdRelacionado(Long idRelacionado) {
+		this.idRelacionado = idRelacionado;
 	}
 	
 	/**
