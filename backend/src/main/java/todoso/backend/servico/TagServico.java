@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import todoso.backend.dados.TagDTO;
 import todoso.backend.dados.Tags;
 import todoso.backend.dados.TarefaDTO;
-import todoso.backend.excecoes.NotFoundException;
 
 public class TagServico {
 	Tags dados = new Tags();

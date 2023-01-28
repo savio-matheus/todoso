@@ -1,46 +1,65 @@
 package todoso.backend.dados;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.*;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class TarefaDTO extends BaseDTO {
 
+	@NotEmpty(message="Title should not be empty")
+	@Size(max=128, message="Title should not be more than 128 characters long")
 	@JsonProperty("title")
 	private String titulo;
-	
+
+	@Positive
 	@JsonProperty("id")
 	private Long id;
-	
+
+	@Size(max=8192,
+		message="Description should not be more than 8192 characters long")
 	@JsonProperty("description")
 	private String descricao;
-	
+
+	@NotNull(message="CreationDate cannot be null")
+	@PastOrPresent(message="CreationDate cannot be set on the future")
 	@JsonProperty("creationDate")
 	private Timestamp dataCriacao;
-	
+
+	// TODO: criar validador para intervalos de data
+	// TODO: garantir que dataConcluida >= dataCriacao
 	@JsonProperty("completionDate")
 	private Timestamp dataConcluida;
-	
+
+	// TODO: garantir que dataLimite > dataCriacao
+	@Future(message="Deadline cannot be set on the past")
 	@JsonProperty("deadline")
 	private Timestamp dataLimite;
-	
+
 	@JsonProperty("categories")
-	private ArrayList<CategoriaDTO> categorias;
-	
+	private ArrayList<@NotNull CategoriaDTO> categorias;
+
 	@JsonProperty("tags")
-	private ArrayList<TagDTO> tags;
-	
+	private ArrayList<@NotNull TagDTO> tags;
+
+	@NotNull
+	@Max(value=7, message="Priority should not be higher than 7")
+	@Min(value=-7, message="Priority should not be lower than 7")
 	@JsonProperty("priority")
 	private Integer prioridade;
-	
+
+	@Pattern(regexp="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+		message="Color should be in hexadecimal pattern, as in #AF90FF or #FFF")
 	@JsonProperty("color")
-	private String cor; // #FFFFFF
-	
+	private String cor;
+
 	@JsonProperty("files")
-	private ArrayList<String> arquivos;
-	
+	private ArrayList<@NotNull String> arquivos;
+
 	@JsonProperty("users")
-	private ArrayList<UsuarioDTO> usuarios;
+	private ArrayList<@NotNull UsuarioDTO> usuarios;
 
 	public TarefaDTO() {
 		setId(null);
@@ -64,11 +83,11 @@ public class TarefaDTO extends BaseDTO {
 	public String getTitulo() {
 		return this.titulo;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public Long getId() {
 		return this.id;
 	}
@@ -153,5 +172,9 @@ public class TarefaDTO extends BaseDTO {
 
 	public ArrayList<UsuarioDTO> getUsuarios() {
 		return this.usuarios;
+	}
+
+	public boolean dataConcluidaEhMaiorQueDataCriacao() {
+		return (this.dataConcluida.after(this.dataCriacao));
 	}
 }

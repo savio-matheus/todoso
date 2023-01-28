@@ -30,7 +30,7 @@ public class TarefaServico {
 		throws SQLException, IllegalArgumentException, NotFoundException {
 
 		if (tarefaNova.getId() == null) {
-			throw new IllegalArgumentException("Id must not be null.");
+			throw new IllegalArgumentException("Id cannot be null.");
 		}
 
 		long id = dados.atualizar(tarefaNova);

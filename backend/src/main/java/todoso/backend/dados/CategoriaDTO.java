@@ -1,12 +1,16 @@
 package todoso.backend.dados;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.*;
 
 public class CategoriaDTO extends BaseDTO {
 
+	@Positive
 	@JsonProperty("id")
 	private Long id;
 
+	@NotEmpty(message="Name should not be empty or null")
+	@Size(max=48, message="Name should not be more than 48 characters long")
 	@JsonProperty("name")
 	private String nome;
 

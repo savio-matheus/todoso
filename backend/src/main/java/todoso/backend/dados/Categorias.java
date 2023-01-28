@@ -61,9 +61,6 @@ public class Categorias implements Dados {
 			ca.setId(bd.rs.getLong("id"));
 			ca.setNome(bd.rs.getString("nome_categoria"));
 
-			System.out.println(ca.getId());
-			System.out.println(ca.getNome());
-
 			categorias.add(ca);
 		}
 

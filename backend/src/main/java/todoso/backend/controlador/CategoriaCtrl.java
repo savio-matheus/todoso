@@ -4,6 +4,9 @@ import todoso.backend.dados.CategoriaDTO;
 import todoso.backend.servico.CategoriaServico;
 
 import java.util.HashMap;
+
+import javax.validation.Valid;
+
 import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
@@ -14,21 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class CategoriaCtrl {
-
-	private HashMap<String, Object> retorno = new HashMap<>();
-	private CategoriaDTO filtros = new CategoriaDTO();
-	private ArrayList<CategoriaDTO> lista = new ArrayList<>();
-	private ObjectMapper conversor = new ObjectMapper();
-
-	private CategoriaDTO catDTO = null;
-	private CategoriaServico servico = new CategoriaServico();
-
 	private static final Status statusOk = Status.novo(HttpStatus.OK, "");
 	private static final Status statusCreated = Status.novo(HttpStatus.CREATED, "");
 	private static final Status statusAccepted = Status.novo(HttpStatus.ACCEPTED, "");
@@ -50,12 +42,16 @@ public class CategoriaCtrl {
 	public ResponseEntity<HashMap<String, Object>> getCategoria(
 		@PathVariable("id") Long id) throws Exception {
 
+		HashMap<String, Object> retorno = new HashMap<>();
+		CategoriaDTO filtros = new CategoriaDTO();
+		ArrayList<CategoriaDTO> lista = new ArrayList<>();
+		CategoriaServico servico = new CategoriaServico();
+
 		if (id != null) {
 			filtros.setId(id);
 		}
 
 		lista = servico.selecionarCategorias(filtros);
-		//System.out.println(lista.size());
 
 		retorno.put("status", statusOk);
 		retorno.put("data", lista);
@@ -69,10 +65,12 @@ public class CategoriaCtrl {
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<HashMap<String, Object>> postCategoria(
-		@RequestBody String json) throws Exception {
+			@RequestBody @Valid CategoriaDTO categoria) throws Exception {
 
-		catDTO = conversor.readValue(json, CategoriaDTO.class);
-		long retId = servico.criarCategoria(catDTO).getId();
+		HashMap<String, Object> retorno = new HashMap<>();
+		CategoriaServico servico = new CategoriaServico();
+
+		long retId = servico.criarCategoria(categoria).getId();
 		retorno.put("status", statusCreated);
 		retorno.put("id", retId);
 
@@ -85,11 +83,14 @@ public class CategoriaCtrl {
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<HashMap<String, Object>> patchCategoria(
-		@PathVariable("id") Long id, @RequestBody String json) throws Exception {
+			@PathVariable("id") Long id,
+			@RequestBody @Valid CategoriaDTO categoria) throws Exception {
 
-		catDTO = conversor.readValue(json, CategoriaDTO.class);
-		catDTO.setId(id);
-		long retId = servico.editarCategoria(catDTO).getId();
+		HashMap<String, Object> retorno = new HashMap<>();
+		CategoriaServico servico = new CategoriaServico();
+
+		categoria.setId(id);
+		long retId = servico.editarCategoria(categoria).getId();
 
 		retorno.put("status", statusOk);
 		retorno.put("id", retId);
@@ -104,6 +105,10 @@ public class CategoriaCtrl {
 	)
 	public ResponseEntity<HashMap<String, Object>> deleteCategoria(
 		@PathVariable("id") Long id) throws Exception {
+
+		HashMap<String, Object> retorno = new HashMap<>();
+		CategoriaDTO filtros = new CategoriaDTO();
+		CategoriaServico servico = new CategoriaServico();
 
 		filtros.setId(id);
 
