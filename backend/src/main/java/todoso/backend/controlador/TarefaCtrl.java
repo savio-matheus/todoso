@@ -1,7 +1,6 @@
 package todoso.backend.controlador;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.validation.Valid;
 
@@ -20,15 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
 class TarefaCtrl {
-	private static final Status statusOk = Status.novo(HttpStatus.OK, "");
-	private static final Status statusCreated = Status.novo(HttpStatus.CREATED, "");
-	private static final Status statusAccepted = Status.novo(HttpStatus.ACCEPTED, "");
 
 	@RequestMapping(
 			value = "/api/v1/tasks",
 			method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Object> getTarefa() throws Exception {
+	public ResponseEntity<Resposta<TarefaDTO>> getTarefa() throws Exception {
 		return getTarefa(null);
 	}
 
@@ -36,8 +32,8 @@ class TarefaCtrl {
 			value = "/api/v1/tasks/{id}",
 			method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Object> getTarefa(@PathVariable("id") Long id) throws Exception {
-		HashMap<String, Object> retorno = new HashMap<>();
+	public ResponseEntity<Resposta<TarefaDTO>> getTarefa(@PathVariable("id") Long id) throws Exception {
+		Resposta<TarefaDTO> retorno = new Resposta<>();
 		TarefaDTO filtros = new TarefaDTO();
 		ArrayList<TarefaDTO> lista = new ArrayList<>();
 		TarefaServico servico = new TarefaServico();
@@ -45,10 +41,10 @@ class TarefaCtrl {
 		filtros.setId(id);
 		lista = servico.selecionarTarefas(filtros);
 
-		retorno.put("status", statusOk);
-		retorno.put("data", lista);
+		retorno.setHttp(HttpStatus.OK);
+		retorno.setDadosRetorno(lista);
 
-		return new ResponseEntity<>(retorno, statusOk.http);
+		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 
 	@RequestMapping(
@@ -56,15 +52,15 @@ class TarefaCtrl {
 			method = {RequestMethod.POST},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Object> postTarefas(
+	public ResponseEntity<Resposta<TarefaDTO>> postTarefas(
 			@RequestBody @Valid TarefaDTO tarefa) throws Exception {
-		HashMap<String, Object> retorno = new HashMap<>();
+		Resposta<TarefaDTO> retorno = new Resposta<>();
 		TarefaServico servico = new TarefaServico();
 
 		long id = servico.criarTarefa(tarefa).getId();
 
-		retorno.put("status", statusCreated);
-		retorno.put("id", id);
+		retorno.setHttp(HttpStatus.CREATED);
+		retorno.setId(id);
 
 		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}
@@ -75,18 +71,18 @@ class TarefaCtrl {
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<Object> patchTarefas(
+	public ResponseEntity<Resposta<TarefaDTO>> patchTarefas(
 			@PathVariable("id") Long id,
 			@RequestBody @Valid TarefaDTO tarefa) throws Exception {
-		HashMap<String, Object> retorno = new HashMap<>();
+		Resposta<TarefaDTO> retorno = new Resposta<>();
 		TarefaServico servico = new TarefaServico();
 
 		tarefa.setId(id);
 
 		servico.editarTarefa(tarefa);
-		retorno.put("status", statusOk);
+		retorno.setHttp(HttpStatus.OK);
 
-		return new ResponseEntity<>(retorno, statusOk.http);
+		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 
 	@RequestMapping(
@@ -94,19 +90,20 @@ class TarefaCtrl {
 			method = {RequestMethod.DELETE},
 			produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<Object> deleteTarefas(
+	public ResponseEntity<Resposta<TarefaDTO>> deleteTarefas(
 			@PathVariable("id") Long id) throws Exception {
-		HashMap<String, Object> retorno = new HashMap<>();
+		Resposta<TarefaDTO> retorno = new Resposta<>();
 		TarefaDTO filtros = new TarefaDTO();
 		TarefaServico servico = new TarefaServico();
 
 		filtros.setId(id);
 
 		servico.deletarTarefa(filtros);
-		retorno.put("status", statusAccepted);
-		retorno.put("id", id);
 
-		return new ResponseEntity<>(retorno, statusAccepted.http);
+		retorno.setHttp(HttpStatus.ACCEPTED);
+		retorno.setId(id);
+
+		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}
 
 }

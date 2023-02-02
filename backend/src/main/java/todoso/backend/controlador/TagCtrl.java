@@ -1,6 +1,6 @@
 package todoso.backend.controlador;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import todoso.backend.dados.TagDTO;
+import todoso.backend.dados.TarefaDTO;
 
 @RestController
 public class TagCtrl {
@@ -19,7 +20,7 @@ public class TagCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<HashMap<String, Object>> getTag() {
+	public ResponseEntity<Resposta<TagDTO>> getTag() {
 		return getTag(null);
 	}
 
@@ -28,7 +29,7 @@ public class TagCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<HashMap<String, Object>> getTag(
+	public ResponseEntity<Resposta<TagDTO>> getTag(
 		@PathVariable("id") Long id) {
 
 		return null;
@@ -39,7 +40,7 @@ public class TagCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<HashMap<String, Object>> getTasksByTag(
+	public ResponseEntity<Resposta<TarefaDTO>> getTasksByTag(
 		@PathVariable("id") Long id) {
 
 
@@ -52,7 +53,8 @@ public class TagCtrl {
 		consumes={MediaType.APPLICATION_JSON_VALUE},
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
-	public ResponseEntity<HashMap<String, Object>> patchTag() {
+	public ResponseEntity<Resposta<TagDTO>> patchTag(
+		@PathVariable("id") Long id, @Valid TagDTO tagNova) {
 		return null;
 	}
 }

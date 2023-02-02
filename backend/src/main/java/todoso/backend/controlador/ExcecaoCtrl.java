@@ -1,7 +1,6 @@
 package todoso.backend.controlador;
 
 import java.lang.IllegalArgumentException;
-import java.util.HashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -21,32 +20,27 @@ import todoso.backend.excecoes.NotFoundException;
 public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({NotFoundException.class})
-	public ResponseEntity<Object> retornoNotFoundException(Exception ex, WebRequest req) {
+	public ResponseEntity<Resposta<String>> retornoNotFoundException(Exception ex, WebRequest req) {
 		ex.printStackTrace();
-		Status s = Status.novo(
-			HttpStatus.NOT_FOUND,
-			ex.getLocalizedMessage()
-		);
-		HashMap<String, Status> conteudo = new HashMap<>();
-		conteudo.put("status", s);
 
-		return new ResponseEntity<>(conteudo, s.http);
+		Resposta<String> conteudo = new Resposta<>();
+		conteudo.setHttp(HttpStatus.NOT_FOUND);
+		conteudo.addDadosRetorno(ex.getLocalizedMessage());
+
+		return new ResponseEntity<>(conteudo, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler({
 		JsonProcessingException.class,
 		IllegalArgumentException.class})
-	public ResponseEntity<Object> retornoJsonProcessingException(Exception ex, WebRequest req) {
+	public ResponseEntity<Resposta<String>> retornoJsonProcessingException(Exception ex, WebRequest req) {
 		ex.printStackTrace();
 
-		Status s = Status.novo(
-			HttpStatus.BAD_REQUEST,
-			ex.getLocalizedMessage()
-		);
-		HashMap<String, Status> conteudo = new HashMap<>();
-		conteudo.put("status", s);
+		Resposta<String> conteudo = new Resposta<>();
+		conteudo.setHttp(HttpStatus.NOT_FOUND);
+		conteudo.addDadosRetorno(ex.getLocalizedMessage());
 
-		return new ResponseEntity<>(conteudo, s.http);
+		return new ResponseEntity<>(conteudo, HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
@@ -55,42 +49,36 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
         	HttpStatus status, WebRequest request) {
 		ex.printStackTrace();
 
-		StringBuffer erros = new StringBuffer();
+		Resposta<String> conteudo = new Resposta<>();
 
 		for (FieldError e : ex.getBindingResult().getFieldErrors()) {
+			@SuppressWarnings("null") // É feita a verificação
 			String rejectedValue = (e.getRejectedValue() == null) ?
 				"null" : e.getRejectedValue().toString();
 
 			if (rejectedValue.length() > 128) {
 				rejectedValue = rejectedValue.substring(0, 128) + "...";
 			}
-			erros.append(
+
+			conteudo.addDadosRetorno(
 				"[" + e.getDefaultMessage() +
 				" (value: " + rejectedValue + ")]"
 			);
 		}
 
-		Status s = Status.novo(
-			HttpStatus.BAD_REQUEST,
-			erros.toString()
-		);
-		HashMap<String, Status> conteudo = new HashMap<>();
-		conteudo.put("status", s);
+		conteudo.setHttp(HttpStatus.BAD_REQUEST);
 
-		return new ResponseEntity<>(conteudo, s.http);
+		return new ResponseEntity<>(conteudo, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({Exception.class})
-	public ResponseEntity<Object> retornoException(Exception ex, WebRequest req) {
+	public ResponseEntity<Resposta<String>> retornoException(Exception ex, WebRequest req) {
 		ex.printStackTrace();
-		Status s = Status.novo(
-			HttpStatus.INTERNAL_SERVER_ERROR,
-			"Exception: " + ex.getLocalizedMessage()
-		);
 
-		HashMap<String, Status> conteudo = new HashMap<>();
-		conteudo.put("status", s);
+		Resposta<String> conteudo = new Resposta<>();
+		conteudo.setHttp(HttpStatus.INTERNAL_SERVER_ERROR);
+		conteudo.addDadosRetorno("Exception: " + ex.getLocalizedMessage());
 
-		return new ResponseEntity<>(conteudo, s.http);
+		return new ResponseEntity<>(conteudo, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

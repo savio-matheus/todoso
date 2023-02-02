@@ -44,7 +44,7 @@ public class TarefaDTO extends BaseDTO {
 	@JsonProperty("tags")
 	private ArrayList<@NotNull TagDTO> tags;
 
-	@NotNull
+	@NotNull(message="Priority cannot be null")
 	@Max(value=7, message="Priority should not be higher than 7")
 	@Min(value=-7, message="Priority should not be lower than 7")
 	@JsonProperty("priority")
