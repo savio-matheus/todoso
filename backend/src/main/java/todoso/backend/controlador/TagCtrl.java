@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import todoso.backend.dados.TagDTO;
 import todoso.backend.dados.TarefaDTO;
 
+@Hidden
 @RestController
 public class TagCtrl {
 

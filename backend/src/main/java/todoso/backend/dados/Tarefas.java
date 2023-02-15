@@ -122,7 +122,7 @@ public class Tarefas implements Dados {
 			bd.pstmt.setLong(i++, 0);
 		}
 
-		System.out.println(bd.pstmt.toString());
+		//System.out.println(bd.pstmt.toString());
 
 		bd.rs = bd.pstmt.executeQuery();
 

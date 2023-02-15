@@ -15,11 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class CategoriaCtrl {
 
+	@Operation(summary = "Obtém uma lista de categorias cadastradas.")
+	@ApiResponse(responseCode = "200",
+		description = "A busca foi realizada com sucesso, tendo ou não retornado resultados.")
 	@RequestMapping(
 		value="/api/v1/categories",
 		method=RequestMethod.GET,
@@ -29,6 +35,9 @@ public class CategoriaCtrl {
 		return getCategoria(null);
 	}
 
+	@Operation(summary = "Obtém uma categoria a partir de seu ID.")
+	@ApiResponse(responseCode = "200",
+		description = "A busca foi realizada com sucesso, tendo ou não retornado resultados.")
 	@RequestMapping(
 		value="/api/v1/categories/{id}",
 		method=RequestMethod.GET,
@@ -54,6 +63,10 @@ public class CategoriaCtrl {
 		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 
+	@Operation(summary = "Cria uma nova categoria.")
+	@ApiResponse(responseCode = "201", description = "A categoria foi criada.")
+	@ApiResponse(responseCode = "400",
+		description = "Conteúdo mal formado, verifique as mensagens de retorno.")
 	@RequestMapping(
 		value="/api/v1/categories",
 		method=RequestMethod.POST,
@@ -73,6 +86,10 @@ public class CategoriaCtrl {
 		return new ResponseEntity<>(retorno, HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "Edita a categoria que possui o ID informado.")
+	@ApiResponse(responseCode = "200", description = "A categoria foi editada.")
+	@ApiResponse(responseCode = "400",
+		description = "Conteúdo mal formado, verifique as mensagens de retorno.")
 	@RequestMapping(
 		value="/api/v1/categories/{id}",
 		method=RequestMethod.PATCH,
@@ -94,6 +111,11 @@ public class CategoriaCtrl {
 		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 
+	@Operation(summary = "Deleta a categoria com o ID informado")
+	@ApiResponse(responseCode = "202",
+		description =
+			"A requisição será ou já foi atendida."+
+			"Se a categoria não existe, não faz nada.")
 	@RequestMapping(
 		value="/api/v1/categories/{id}",
 		method=RequestMethod.DELETE,
