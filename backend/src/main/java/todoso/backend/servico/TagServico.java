@@ -4,11 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import todoso.backend.dados.TagDTO;
-import todoso.backend.dados.Tags;
+import todoso.backend.dados.TagsDAO;
 import todoso.backend.dados.TarefaDTO;
 
 public class TagServico {
-	Tags dados = new Tags();
+	TagsDAO dados = new TagsDAO();
 
 	public ArrayList<TagDTO> selecionarTags(TagDTO filtros) throws SQLException {
 

@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import todoso.backend.dados.CategoriaDTO;
-import todoso.backend.dados.Categorias;
+import todoso.backend.dados.CategoriaDAO;
 import todoso.backend.excecoes.NotFoundException;
 
 public class CategoriaServico {
 
-	private Categorias dados = new Categorias();
+	private CategoriaDAO dados = new CategoriaDAO();
 
 	public CategoriaDTO criarCategoria(CategoriaDTO categoria) throws SQLException {
 		long id = 0;

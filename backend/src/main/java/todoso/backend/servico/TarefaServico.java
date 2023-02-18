@@ -4,12 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import todoso.backend.excecoes.NotFoundException;
-import todoso.backend.dados.Tarefas;
+import todoso.backend.dados.TarefasDAO;
 import todoso.backend.dados.TarefaDTO;
 
 // TODO: retornar tarefas com IDs
 public class TarefaServico {
-	private Tarefas dados = new Tarefas();
+	private TarefasDAO dados = new TarefasDAO();
 
 	public TarefaDTO criarTarefa(TarefaDTO tarefa) throws SQLException {
 		long id;

@@ -3,7 +3,7 @@ package todoso.backend.dados;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Tags implements Dados {
+public class TagsDAO implements BaseDAO {
 
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {

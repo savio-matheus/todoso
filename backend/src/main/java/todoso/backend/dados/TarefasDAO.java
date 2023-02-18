@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author savio
  */
 
-public class Tarefas implements Dados {
+public class TarefasDAO implements BaseDAO {
 
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =

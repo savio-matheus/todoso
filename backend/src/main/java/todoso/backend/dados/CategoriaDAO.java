@@ -3,9 +3,9 @@ package todoso.backend.dados;
 import java.util.ArrayList;
 import java.sql.SQLException;
 
-public class Categorias implements Dados {
+public class CategoriaDAO implements BaseDAO {
 	
-	public Categorias() {}
+	public CategoriaDAO() {}
 
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =

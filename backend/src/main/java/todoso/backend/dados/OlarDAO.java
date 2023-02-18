@@ -6,7 +6,7 @@ import java.sql.SQLException;
  *
  * @author savio
  */
-public class Olar {
+public class OlarDAO {
 
 	public void criarTabelas() throws SQLException {
 		String sqlCategorias =
