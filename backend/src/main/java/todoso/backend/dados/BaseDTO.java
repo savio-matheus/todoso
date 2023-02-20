@@ -1,6 +1,9 @@
 package todoso.backend.dados;
 
+import javax.validation.constraints.Positive;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -19,7 +22,16 @@ public abstract class BaseDTO {
 	// Quando um DTO deve ser relacionado o outro, utiliza-se este id para
 	// representa-lo.
 	@JsonIgnore
-	private Long idRelacionado = null;
+	private Long idRelacionadoCategoria = null;
+
+	@JsonIgnore
+	private Long idRelacionadoTag = null;
+
+	@JsonIgnore
+	private Long idRelacionadoUsuario = null;
+
+	@JsonIgnore
+	private Long idRelacionadoArquivo = null;
 
 	/**
 	 * @return the limit
@@ -68,14 +80,6 @@ public abstract class BaseDTO {
 	public void setPagina(Long pagina) {
 		this.pagina = pagina;
 	}
-
-	public Long getIdRelacionado() {
-		return idRelacionado;
-	}
-
-	public void setIdRelacionado(Long idRelacionado) {
-		this.idRelacionado = idRelacionado;
-	}
 	
 	/**
 	 * */
@@ -84,5 +88,37 @@ public abstract class BaseDTO {
 			return "%";
 		}
 		return dado.toString();
+	}
+
+	public Long getIdRelacionadoCategoria() {
+		return idRelacionadoCategoria;
+	}
+
+	public void setIdRelacionadoCategoria(Long idRelacionadoCategoria) {
+		this.idRelacionadoCategoria = idRelacionadoCategoria;
+	}
+
+	public Long getIdRelacionadoTag() {
+		return idRelacionadoTag;
+	}
+
+	public void setIdRelacionadoTag(Long idRelacionadoTag) {
+		this.idRelacionadoTag = idRelacionadoTag;
+	}
+
+	public Long getIdRelacionadoUsuario() {
+		return idRelacionadoUsuario;
+	}
+
+	public void setIdRelacionadoUsuario(Long idRelacionadoUsuario) {
+		this.idRelacionadoUsuario = idRelacionadoUsuario;
+	}
+
+	public Long getIdRelacionadoArquivo() {
+		return idRelacionadoArquivo;
+	}
+
+	public void setIdRelacionadoArquivo(Long idRelacionadoArquivo) {
+		this.idRelacionadoArquivo = idRelacionadoArquivo;
 	}
 }

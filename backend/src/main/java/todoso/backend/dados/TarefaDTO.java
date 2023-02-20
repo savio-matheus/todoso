@@ -130,6 +130,14 @@ public class TarefaDTO extends BaseDTO {
 		this.categorias = list;
 	}
 
+	public void addCategoria(CategoriaDTO c) {
+		if (this.categorias == null) {
+			this.categorias = new ArrayList<>();
+		}
+
+		this.categorias.add(c);
+	}
+
 	public ArrayList<CategoriaDTO> getCategorias() {
 		return this.categorias;
 	}

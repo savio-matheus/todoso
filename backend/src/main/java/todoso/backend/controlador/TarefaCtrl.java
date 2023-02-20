@@ -9,7 +9,6 @@ import todoso.backend.servico.TarefaServico;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -123,10 +122,10 @@ class TarefaCtrl {
 
 		filtros.setId(id);
 
-		servico.deletarTarefa(filtros);
+		long id_deletado = servico.deletarTarefa(filtros).getId();
 
 		retorno.setHttp(HttpStatus.ACCEPTED);
-		retorno.setId(id);
+		retorno.setId(id_deletado);
 
 		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}

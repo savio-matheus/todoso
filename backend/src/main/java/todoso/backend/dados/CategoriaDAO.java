@@ -1,6 +1,8 @@
 package todoso.backend.dados;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.sql.SQLException;
 
 public class CategoriaDAO implements BaseDAO {
@@ -109,6 +111,136 @@ public class CategoriaDAO implements BaseDAO {
 			bd.fecharConexao();
 			return -1;
 		}
+	}
+
+	/**
+	 * <p>Usa os IDs informados nos DTOs da tarefa e da categoria para relacioná-las.
+	 * É importante que elas já existam no banco de dados.</p>
+	 * 
+	 * @param tarefa
+	 * @param categoria
+	 * @return 'true' se a relação foi criada ou já existe; 'false' em caso contrário.
+	 */
+	public boolean relacionarTarefaCategoria(TarefaDTO tarefa, CategoriaDTO categoria) throws SQLException {
+		String sql =
+			"SELECT id_tarefa, id_categoria\n" +
+			"FROM tarefas_categorias\n" +
+			"WHERE id_tarefa = ? AND id_categoria = ?;";
+
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setLong(1, tarefa.getId());
+		bd.pstmt.setLong(2, categoria.getId());
+		bd.rs = bd.pstmt.executeQuery();
+
+		if (bd.rs.next()) {
+			// Relação já existe
+			bd.fecharConexao();
+			return true;
+		}
+
+		sql =
+			"INSERT INTO tarefas_categorias(\n" +
+			"	id_tarefa,\n" +
+			"	id_categoria\n" +
+			")\n" +
+			"VALUES(?, ?);";
+
+
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setLong(1, tarefa.getId());
+		bd.pstmt.setLong(2, categoria.getId());
+		bd.pstmt.execute();
+		bd.fecharConexao();
+
+		return true;
+	}
+
+	/**
+	 * <p> Usa os IDs informados nos DTOs da tarefa e da categoria para desfazer
+	 * o relacionamento entre elas no banco de dados.</p>
+	 * <p> Se o argumento categoria for null, desfaz <strong>todas</strong> as
+	 * relações da tarefa.
+	 * A recíproca também acontece se a tarefa for null.</p>
+	 * @param tarefa
+	 * @param categoria
+	 */
+	public void desfazerRelacaoTarefaCategoria(TarefaDTO tarefa, CategoriaDTO categoria) throws SQLException {
+		String sql;
+
+		if (tarefa == null && categoria == null) {
+			throw new IllegalArgumentException("At least one argument should not be null.");
+		}
+		
+		if (categoria == null) {
+			sql =
+				"DELETE FROM tarefas_categorias\n" +
+				"WHERE id_tarefa = ?;";
+		}
+		else if (tarefa == null) {
+			sql =
+				"DELETE FROM tarefas_categorias\n" +
+				"WHERE id_categoria = ?;";
+		}
+		else {
+			sql =
+				"DELETE FROM tarefas_categorias\n" +
+				"WHERE id_tarefa = ? AND id_categoria = ?;";
+		}
+
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		if (tarefa != null) bd.pstmt.setLong(1, tarefa.getId());
+		if (categoria != null) bd.pstmt.setLong(2, categoria.getId());
+		bd.pstmt.execute();
+		bd.fecharConexao();
+	}
+
+	public HashMap<Long, ArrayList<CategoriaDTO>> selecionarCategoriasPorTarefa(
+		ArrayList<TarefaDTO> tarefas) throws SQLException {
+
+		HashMap<Long, ArrayList<CategoriaDTO>> retorno = new HashMap<>();
+
+		if (tarefas.size() <= 0) {
+			return retorno;
+		}
+
+		String sqlEstatico =
+			"SELECT * FROM categorias c\n" +
+			"INNER JOIN tarefas_categorias tc ON c.id = tc.id_categoria\n" +
+			"WHERE tc.id_tarefa IN (";
+		StringBuffer sql = new StringBuffer(sqlEstatico);
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		for (int i = 0; i < tarefas.size(); i++) {
+			TarefaDTO d = tarefas.get(i);
+			sql.append(d.getId());
+
+			if (i+1 < tarefas.size()) sql.append(",");
+			else sql.append(");");
+		}
+
+		bd.pstmt = bd.conexao.prepareStatement(sql.toString());
+		//System.out.println(bd.pstmt);
+		bd.rs = bd.pstmt.executeQuery();
+
+		while (bd.rs.next()) {
+			if (retorno.get(bd.rs.getLong("id_tarefa")) == null) {
+				retorno.put(
+					bd.rs.getLong("id_tarefa"),
+					new ArrayList<CategoriaDTO>()
+				);
+			}
+
+			retorno.get(bd.rs.getLong("id_tarefa")).add(
+				new CategoriaDTO(
+					bd.rs.getLong("id_categoria"),
+					bd.rs.getString("nome_categoria")
+				)
+			);
+		}
+
+		return retorno;
 	}
 
 }

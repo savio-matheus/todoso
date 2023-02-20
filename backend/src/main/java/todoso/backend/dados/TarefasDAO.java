@@ -44,18 +44,22 @@ public class TarefasDAO implements BaseDAO {
 
 	public ArrayList<TarefaDTO> selecionar(BaseDTO filtros) throws SQLException {
 		String sql =
-			"SELECT * FROM tarefas t WHERE\n" +
-			"	TRUE\n" +
-			"	AND (id LIKE ? OR id IS NULL)\n" +
-			"	AND (titulo LIKE ? OR titulo IS NULL)\n" +
-			"	AND (descricao LIKE ? OR descricao IS NULL)\n" +
-			"	AND (cor LIKE ? OR cor IS NULL)\n" +
-			"	AND (prioridade LIKE ? OR prioridade IS NULL)\n" +
-			"	AND (data_criacao LIKE ? OR data_criacao IS NULL)\n" +
-			"	AND (data_concluida LIKE ? OR data_concluida IS NULL)\n" +
-			"	AND (data_limite LIKE ? OR data_limite IS NULL)\n" +
+			"SELECT t.* FROM tarefas t \n" +
+			"INNER JOIN tarefas_categorias tc ON tc.id_tarefa = t.id\n" +
+			"INNER JOIN categorias c ON c.id = tc.id_categoria\n" +
+			"	WHERE TRUE\n" +
+			"	AND (t.id LIKE ? OR t.id IS NULL)\n" +
+			"	AND (t.titulo LIKE ? OR t.titulo IS NULL)\n" +
+			"	AND (t.descricao LIKE ? OR t.descricao IS NULL)\n" +
+			"	AND (t.cor LIKE ? OR t.cor IS NULL)\n" +
+			"	AND (t.prioridade LIKE ? OR t.prioridade IS NULL)\n" +
+			"	AND (t.data_criacao LIKE ? OR t.data_criacao IS NULL)\n" +
+			"	AND (t.data_concluida LIKE ? OR t.data_concluida IS NULL)\n" +
+			"	AND (t.data_limite LIKE ? OR t.data_limite IS NULL)\n" +
+			"	AND (tc.id_categoria LIKE ? OR tc.id_categoria IS NULL)\n" +
+			"GROUP BY t.id\n" +
 			"ORDER BY t.id\n" +
-			"LIMIT ? OFFSET ?;";
+			"LIMIT ? OFFSET ?\n";
 
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
@@ -110,6 +114,12 @@ public class TarefasDAO implements BaseDAO {
 			bd.pstmt.setString(i++, "%");
 		}
 
+		if (f.getIdRelacionadoCategoria() != null) {
+			bd.pstmt.setLong(i++, f.getIdRelacionadoCategoria());
+		} else {
+			bd.pstmt.setString(i++, "%");
+		}
+
 		if (f.getLimite() != null) {
 			bd.pstmt.setLong(i++, f.getLimite());
 		} else {
@@ -127,7 +137,6 @@ public class TarefasDAO implements BaseDAO {
 		bd.rs = bd.pstmt.executeQuery();
 
 		ArrayList<TarefaDTO> tarefas = new ArrayList<>();
-
 		while (bd.rs.next()) {
 			TarefaDTO t = new TarefaDTO();
 
@@ -194,17 +203,21 @@ public class TarefasDAO implements BaseDAO {
 		int i = 1;
 
 		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.conexao.setAutoCommit(false);
+
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		TarefaDTO f = (TarefaDTO) filtros;
 
 		bd.pstmt.setLong(i++, f.getId());
-		if (bd.pstmt.execute()) {
-			bd.fecharConexao();
-			return f.getId();
-		} else {
-			bd.fecharConexao();
-			return 0;
-		}
+		bd.pstmt.execute();
+
+		// TODO: utilizar as funções no DAO da categoria
+		// TODO: usar o padrão singleton no BdAcesso, para trabalhar com transações
+
+		bd.conexao.commit();
+		bd.fecharConexao();
+
+		return f.getId();
 	}
 
 }

@@ -1,7 +1,9 @@
 package todoso.backend.controlador;
 
 import todoso.backend.dados.CategoriaDTO;
+import todoso.backend.dados.TarefaDTO;
 import todoso.backend.servico.CategoriaServico;
+import todoso.backend.servico.TarefaServico;
 
 import javax.validation.Valid;
 
@@ -56,6 +58,36 @@ public class CategoriaCtrl {
 		}
 
 		lista = servico.selecionarCategorias(filtros);
+
+		retorno.setHttp(HttpStatus.OK);
+		retorno.setDadosRetorno(lista);
+
+		return new ResponseEntity<>(retorno, HttpStatus.OK);
+	}
+
+	@Operation(summary = "Obtém a lista de tarefas em determinada categoria.")
+	@ApiResponse(responseCode = "200",
+		description = "A busca foi realizada com sucesso, tendo ou não retornado resultados.")
+	@RequestMapping(
+		value="/api/v1/categories/{id}/tasks",
+		method=RequestMethod.GET,
+		produces={MediaType.APPLICATION_JSON_VALUE}
+	)
+	public ResponseEntity<Resposta<TarefaDTO>> getTarefasPorCategoria(
+		@PathVariable("id") Long id) throws Exception {
+
+		Resposta<TarefaDTO> retorno = new Resposta<>();
+		TarefaDTO filtros = new TarefaDTO();
+		ArrayList<TarefaDTO> lista = new ArrayList<>();
+		TarefaServico servico = new TarefaServico();
+
+		if (id == null) {
+			throw new IllegalArgumentException("Id must not be null.");
+		}
+
+		filtros.setIdRelacionadoCategoria(id);
+
+		lista = servico.selecionarTarefas(filtros);
 
 		retorno.setHttp(HttpStatus.OK);
 		retorno.setDadosRetorno(lista);
