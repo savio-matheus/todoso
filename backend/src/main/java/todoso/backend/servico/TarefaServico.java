@@ -10,7 +10,6 @@ import todoso.backend.dados.CategoriaDAO;
 import todoso.backend.dados.CategoriaDTO;
 import todoso.backend.dados.TarefaDTO;
 
-// TODO: retornar tarefas com IDs
 public class TarefaServico {
 	private TarefasDAO dados = new TarefasDAO();
 	final long ID_CATEGORIA_PADRAO = 1;
@@ -31,12 +30,17 @@ public class TarefaServico {
 		}
 
 		CategoriaDAO catDAO = new CategoriaDAO();
+		int erros = 0;
 		for (CategoriaDTO c : tarefa.getCategorias()) {
-			// TODO: problema: o que fazer se, dentre N operações, uma falhar? Usar transações?
 			if (!catDAO.relacionarTarefaCategoria(tarefa, c)) {
-				throw new SQLException("Failed to assign task "
-					+ tarefa.getId() + " category " + c.getId() + ".");
+				erros++;
 			}
+		}
+
+		// Em caso de erros, existe a possibilidade de a tarefa ter ficado
+		// sem categoria.
+		if (erros > 0) {
+			catDAO.relacionarCategoriaPadrao();
 		}
 
 		if (id <= 0) {
@@ -103,13 +107,13 @@ public class TarefaServico {
 			throw new NotFoundException("Id not found. Try a different one.");
 		}
 
+		CategoriaDAO catDAO = new CategoriaDAO();
 		for (CategoriaDTO c : retorno.get(0).getCategorias()) {
-			CategoriaDAO catDAO = new CategoriaDAO();
-
 			catDAO.desfazerRelacaoTarefaCategoria(filtros, c);
 		}
 
 		long id = dados.excluir(filtros);
+		catDAO.relacionarCategoriaPadrao();
 		filtros.setId(id);
 
 		return filtros;

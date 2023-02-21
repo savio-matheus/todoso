@@ -48,6 +48,12 @@ public class CategoriaServico {
 		if (filtros.getId() == null) {
 			throw new IllegalArgumentException("Id must not be null.");
 		}
+		if (filtros.getId() == 1) {
+			throw new SQLException("Cannot delete default category.");
+		}
+
+		dados.desfazerRelacaoTarefaCategoria(null, filtros);
+		dados.relacionarCategoriaPadrao();
 		long id = dados.excluir(filtros);
 
 		if (id <= 0) {

@@ -3,6 +3,9 @@ package todoso.backend.dados;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import todoso.backend.excecoes.NotFoundException;
+
 import java.sql.SQLException;
 
 public class CategoriaDAO implements BaseDAO {
@@ -104,13 +107,11 @@ public class CategoriaDAO implements BaseDAO {
 
 		bd.pstmt.setLong(i++, c.getId());
 
-		if (bd.pstmt.execute()) {
-			bd.fecharConexao();
-			return c.getId();
-		} else {
-			bd.fecharConexao();
-			return -1;
-		}
+		bd.pstmt.execute();
+
+		bd.fecharConexao();
+
+		return c.getId();
 	}
 
 	/**
@@ -122,12 +123,27 @@ public class CategoriaDAO implements BaseDAO {
 	 * @return 'true' se a relação foi criada ou já existe; 'false' em caso contrário.
 	 */
 	public boolean relacionarTarefaCategoria(TarefaDTO tarefa, CategoriaDTO categoria) throws SQLException {
+		// Verifica a existência da categoria
 		String sql =
+			"SELECT * FROM categorias\n" +
+			"WHERE id = ?;";
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setLong(1, categoria.getId());
+		bd.rs = bd.pstmt.executeQuery();
+
+		if (!bd.rs.next()) {
+			bd.fecharConexao();
+			return false;
+		}
+		
+		// Verifica se a relação já existe
+		sql =
 			"SELECT id_tarefa, id_categoria\n" +
 			"FROM tarefas_categorias\n" +
 			"WHERE id_tarefa = ? AND id_categoria = ?;";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		bd.pstmt.setLong(1, tarefa.getId());
 		bd.pstmt.setLong(2, categoria.getId());
@@ -139,6 +155,7 @@ public class CategoriaDAO implements BaseDAO {
 			return true;
 		}
 
+		// Cria a relação tarefa-categoria.
 		sql =
 			"INSERT INTO tarefas_categorias(\n" +
 			"	id_tarefa,\n" +
@@ -159,9 +176,11 @@ public class CategoriaDAO implements BaseDAO {
 	/**
 	 * <p> Usa os IDs informados nos DTOs da tarefa e da categoria para desfazer
 	 * o relacionamento entre elas no banco de dados.</p>
-	 * <p> Se o argumento categoria for null, desfaz <strong>todas</strong> as
-	 * relações da tarefa.
-	 * A recíproca também acontece se a tarefa for null.</p>
+	 * <p>Se for informada ou uma categoria ou uma tarefa, então todas as suas
+	 * relações são desfeitas.</p>
+	 * <p>As tarefas não devem ficar sem categoria, portanto considere usar o
+	 * método relacionarCategoriaPadrao() em seguida.</p>
+	 * 
 	 * @param tarefa
 	 * @param categoria
 	 */
@@ -188,14 +207,34 @@ public class CategoriaDAO implements BaseDAO {
 				"WHERE id_tarefa = ? AND id_categoria = ?;";
 		}
 
+		int i = 1;
 		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
-		if (tarefa != null) bd.pstmt.setLong(1, tarefa.getId());
-		if (categoria != null) bd.pstmt.setLong(2, categoria.getId());
+		if (tarefa != null) bd.pstmt.setLong(i++, tarefa.getId());
+		if (categoria != null) bd.pstmt.setLong(i++, categoria.getId());
 		bd.pstmt.execute();
+	}
+
+	public void relacionarCategoriaPadrao() throws SQLException {
+		String sql =
+			"INSERT INTO tarefas_categorias (id_tarefa, id_categoria)\n" +
+			"SELECT t.id, 1 AS categoria_padrao FROM tarefas_categorias tc\n" +
+			"RIGHT JOIN tarefas t ON tc.id_tarefa = t.id\n" +
+			"WHERE tc.id_tarefa IS NULL;";
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.execute();
+
 		bd.fecharConexao();
 	}
 
+	/**
+	 * 
+	 * @param tarefas
+	 * @return
+	 * @throws SQLException
+	 */
 	public HashMap<Long, ArrayList<CategoriaDTO>> selecionarCategoriasPorTarefa(
 		ArrayList<TarefaDTO> tarefas) throws SQLException {
 
