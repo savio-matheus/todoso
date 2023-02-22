@@ -227,7 +227,7 @@ public class TarefasDAO implements BaseDAO {
 		String sql =
 			"SELECT t.id, a.url FROM arquivos a\n" +
 			"INNER JOIN tarefas_arquivos ta ON ta.id_arquivo = a.id\n" +
-			"INNER JOIN tarefas t ON t.id = ta.id_arquivo\n" +
+			"INNER JOIN tarefas t ON t.id = ta.id_tarefa\n" +
 			"WHERE t.id LIKE ?;";
 		
 		BdAcesso bd = BdAcesso.abrirConexao();
