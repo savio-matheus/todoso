@@ -57,7 +57,6 @@ function addTask() {
 
     let data = {
         "title": titulo,
-        "id": 1,
         "description": descricao,
         "creationDate": new Date(),
         "deadline": data_limite,
@@ -68,9 +67,27 @@ function addTask() {
         "priority": prioridade,
         "color": "#3AA"
     }
-    console.log(data);
+    //console.log(data);
 
     genericPost(url_endpoint, data);
+}
+
+function postFile(url, file) {
+    const formData = new FormData();
+    formData.append('arquivo', file);
+  
+    const options = {
+      method: 'POST',
+      body: formData
+    };
+  
+    return fetch(url, options)
+      .then(response => {
+        response.json();
+        getdata();
+        getCatData();
+      })
+      .catch(error => console.error(error));
 }
 
 function genericPost(url, data) {
@@ -104,12 +121,14 @@ function genericDelete(url) {
     .catch(error => console.error(error));
 }
 
-function genericGet(url) {
+function genericGet(url, func, args) {
     return fetch(url, {
       method: 'GET'
     })
     .then(response => {
-        response.json();
+        if (func !== 'undefined') {
+            func(response, args);
+        }
     })
     .catch(error => console.error(error));
 }
@@ -155,7 +174,7 @@ function editTask(id) {
     let edit = ""
     edit = url_endpoint + "/" + id
 
-    genericPatch(url, editdata);
+    genericPatch(edit, editdata);
 }
 
 
