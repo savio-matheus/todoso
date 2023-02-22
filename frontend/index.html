@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+	<title>Kanban Board</title>
+</head>
+<body>
+	<div class="header">
+		<h1>TODOSO</h1>
+	</div>
+
+	<div class="row">
+		
+
+		<div class="column">
+			<h2>New Task</h2>
+			<div class="new-task-card">
+				<form>
+					<label for="titulo">Título</label>
+					<input type="text" id="titulo" name="titulo">
+			
+					<label for="descricao">Descrição</label>
+					<textarea id="descricao" name="descricao"></textarea>
+			
+					<label id="cat" for="categoria">Categoria</label>
+					<select id='categoria' name='categoria'>
+						<option value='1'>Geral</option>
+						<option value='2'>Casa</option>
+						<option value='3'>Trabalho</option>
+					</select>
+			
+					<label for="data">Data Limite</label>
+					<input type="date" id="data" name="data">
+			
+					<label for="prioridade">Prioridade</label>
+					<select id="prioridade" name="prioridade">
+						<option value="1">Baixa</option>
+						<option value="4">Média</option>
+						<option value="7">Alta</option>
+					</select>
+				
+					<button type="submit" onclick="addTask()">Adicionar</button>
+						
+					<div>
+						<span id="message">
+
+						</span>
+					</div>
+				</form>
+			</div>
+
+			<br>
+
+			<div class="new-task-card">
+				<P class="adc_cat">ADICIONAR CATEGORIA</P>
+				<form>
+					<label for="cats">Nova Categoria</label>
+					<input type="text" id="nova_cat" name="nova_cat">
+
+					<button type="submit" onclick="addCat()">Adicionar</button>
+				</form>
+			</div>
+
+		</div>
+
+		<div class="column">
+			<h2>To Do</h2>
+			<div id="to_do">
+				
+			</div>
+		</div>
+
+		<div class="column">
+			<h2>Done</h2>
+			<div class="card">Task 6</div>
+			<div class="card">Task 7</div>
+			<div class="card">Task 8</div>
+		</div>
+	</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
