@@ -1,6 +1,7 @@
 package todoso.backend.dados;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.Hidden;
 
 import javax.validation.constraints.*;
 
@@ -41,7 +42,8 @@ public class TarefaDTO extends BaseDTO {
 	@JsonProperty("categories")
 	private ArrayList<@NotNull CategoriaDTO> categorias;
 
-	@JsonProperty("tags")
+	//@JsonProperty("tags")
+	@Hidden
 	private ArrayList<@NotNull TagDTO> tags;
 
 	@NotNull(message="Priority cannot be null")
@@ -58,7 +60,8 @@ public class TarefaDTO extends BaseDTO {
 	@JsonProperty("files")
 	private ArrayList<@NotNull String> arquivos;
 
-	@JsonProperty("users")
+	//@JsonProperty("users")
+	@Hidden
 	private ArrayList<@NotNull UsuarioDTO> usuarios;
 
 	public TarefaDTO() {

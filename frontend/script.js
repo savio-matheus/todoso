@@ -1,4 +1,5 @@
-const url_endpoint = "http://127.0.0.1:8080/api/v1/tasks";
+const base_url = "http://localhost:8080";
+const url_endpoint = base_url + "/api/v1/tasks";
 
 getdata();
 
@@ -8,7 +9,7 @@ function getdata() {
         (res)=>res.json()
     ).then((response)=>{
         var tmpData = "";
-        console.log(response);
+        //console.log(response);
         response.data.forEach((task)=>{
             const dataJson = task.deadline;
             const data = new Date(dataJson);
@@ -37,6 +38,7 @@ function getdata() {
             tmpData += "<p class='prioridade'>" + priori + "</p><br>";
             tmpData += "<div class='card-buttons'>";
             tmpData += "<button class='editar-button' onclick='editTask(" + task.id + ")'>Editar</button>";
+            tmpData += "<button class='anexar-button' onclick='editTask(" + task.id + ")'>Anexar arquivo</button>";
             tmpData += "<button class='deletar-button' onclick='deleteTask(" + task.id + ")'>Deletar</button>";
             tmpData += "</div>";
             tmpData += "</div>";
@@ -57,43 +59,76 @@ function addTask() {
         "title": titulo,
         "id": 1,
         "description": descricao,
-        "creationDate": "2023-02-20",
-        "completionDate": "2023-02-20",
+        "creationDate": new Date(),
         "deadline": data_limite,
         "categories": [{
             "id": categoria,
             "name": "string"
         }],
-        "tags": [{
-            "id": 0,
-            "name": "string"
-        }],
         "priority": prioridade,
-        "color": "#3AA",
-        "files": [
-        "string"
-        ],
-        "users": [
-        {}
-        ]
+        "color": "#3AA"
     }
+    console.log(data);
 
-    fetch(url_endpoint,{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify(data),
-    }).then(response => response.json())
-    .then(data => {
-      console.log('Resposta da API:', data);
-    })
-    .catch(error => {
-      console.error('Ocorreu um erro:', error);
-    });
-    getdata();
+    genericPost(url_endpoint, data);
 }
 
+function genericPost(url, data) {
+    event.preventDefault();
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        mode: 'cors'
+    })
+    .then(response => {
+        response.json();
+        getdata();
+        getCatData();
+    })
+    .catch(error => console.error(error));
+}
+
+function genericDelete(url) {
+    return fetch(url, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        response.json();
+        getdata();
+        getCatData();
+    })
+    .catch(error => console.error(error));
+}
+
+function genericGet(url) {
+    return fetch(url, {
+      method: 'GET'
+    })
+    .then(response => {
+        response.json();
+    })
+    .catch(error => console.error(error));
+}
+
+function genericPatch(url, data) {
+    const options = {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    };
+  
+    return fetch(url, options)
+    .then(response => {
+        response.json();
+        getdata();
+        getCatData();
+    })
+    .catch(error => console.error(error));
+}
 
 // UPDATE TASK DATA
 function editTask(id) {
@@ -103,48 +138,24 @@ function editTask(id) {
     prioridade  = document.getElementById("prioridade").value;
     categoria  = document.getElementById("categoria").value;
     
-    let data = {
+    let editdata = {
         "title": titulo,
-        "id": 55,
+        "id": id,
         "description": descricao,
-        "creationDate": "2023-02-20",
-        "completionDate": "2023-02-20",
+        "creationDate": new Date(),
         "deadline": data_limite,
         "categories": [{
             "id": 0,
             "name": categoria
         }],
-        "tags": [{
-            "id": 0,
-            "name": "string"
-        }],
         "priority": prioridade,
-        "color": "#3AA",
-        "files": [
-        "string"
-        ],
-        "users": [
-        {}
-        ]
+        "color": "#3AA"
     }
 
     let edit = ""
     edit = url_endpoint + "/" + id
 
-    fetch(edit,{
-        method:"PATCH",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify(data),
-    }).then(response => response.json())
-    .then(data => {
-      console.log('Resposta da API:', data);
-    })
-    .catch(error => {
-      console.error('Ocorreu um erro:', error);
-    });
-    getdata();
+    genericPatch(url, editdata);
 }
 
 
@@ -152,25 +163,12 @@ function editTask(id) {
 function deleteTask(id) {
     let del = ""
     del = url_endpoint + "/" + id
-    fetch(del,{
-        method:"DELETE",
-        headers:{
-            "Content-Type":"application/json"
-        },
-    }).then(response => response.json())
-    .then(data => {
-      console.log('Resposta da API:', data);
-    })
-    .catch(error => {
-      console.error('Ocorreu um erro:', error);
-    });
-    getdata();
-    getdata();
+    genericDelete(del);
 }
 
 
 // ==================== CATEGORIES =========================== //
-const url_categ = 'http://127.0.0.1:8080/api/v1/categories'; 
+const url_categ = base_url + '/api/v1/categories'; 
 
 getCatData();
 
@@ -180,7 +178,7 @@ function getCatData() {
         (res)=>res.json()
     ).then((response)=>{
         var tmpCatData = "";
-        console.log(response);
+        //console.log(response);
         response.data.forEach((cat)=>{
 			tmpCatData += "<option value='" + cat.id + "'>" + cat.name + "</option>";
         })
@@ -198,18 +196,27 @@ function addCat() {
         "name": nova_categoria,
     }
 
-    fetch(url_categ,{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify(data),
-    }).then(response => response.json())
-    .then(data => {
-      console.log('Resposta da API:', data);
-    })
-    .catch(error => {
-      console.error('Ocorreu um erro:', error);
-    });
-    getCatData();
+    genericPost(url_categ, data);
+}
+
+function editCat(idCategory, newName) {
+    let data = {
+        id: idCategory,
+        name: newName
+    };
+
+    genericPatch(idCategory, data);
+}
+
+function remCat(idCategory) {
+    let del = ""
+    del = url_categ + "/" + id
+    
+    genericDelete(del);
+}
+
+
+// set the message for form status
+function setSuccessMessage(message) {
+    alert(message);
 }

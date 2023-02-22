@@ -104,6 +104,17 @@ h2 {
     justify-content: space-between;
 }
 
+.anexar-button{
+    display: flex;
+    align-self: center;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: rgb(244, 244, 244);
+    cursor: pointer;
+    background-color: green;
+    padding: 5px 10px;
+}
+
 .editar-button,
 .deletar-button {
     background-color: #fff;

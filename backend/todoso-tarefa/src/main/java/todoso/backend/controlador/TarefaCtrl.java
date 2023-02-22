@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ class TarefaCtrl {
 			value = "/api/v1/tasks",
 			method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> getTarefa() throws Exception {
 		return getTarefa(null);
 	}
@@ -43,6 +45,7 @@ class TarefaCtrl {
 			value = "/api/v1/tasks/{id}",
 			method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> getTarefa(@PathVariable("id") Long id) throws Exception {
 		Resposta<TarefaDTO> retorno = new Resposta<>();
 		TarefaDTO filtros = new TarefaDTO();
@@ -67,6 +70,7 @@ class TarefaCtrl {
 			method = {RequestMethod.POST},
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE})
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> postTarefas(
 			@RequestBody @Valid TarefaDTO tarefa) throws Exception {
 		Resposta<TarefaDTO> retorno = new Resposta<>();
@@ -90,6 +94,7 @@ class TarefaCtrl {
 			produces = {MediaType.APPLICATION_JSON_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> patchTarefas(
 			@PathVariable("id") Long id,
 			@RequestBody @Valid TarefaDTO tarefa) throws Exception {
@@ -104,7 +109,8 @@ class TarefaCtrl {
 		return new ResponseEntity<>(retorno, HttpStatus.OK);
 	}
 
-	@Operation(summary = "Deleta a tarefa com o ID informado")
+	@Operation(summary = "Deleta a tarefa com o ID informado."+
+			"Apague todos os anexos antes de deletar uma tarefa.")
 	@ApiResponse(responseCode = "202",
 		description =
 			"A requisição será ou já foi atendida."+
@@ -114,6 +120,7 @@ class TarefaCtrl {
 			method = {RequestMethod.DELETE},
 			produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> deleteTarefas(
 			@PathVariable("id") Long id) throws Exception {
 		Resposta<TarefaDTO> retorno = new Resposta<>();

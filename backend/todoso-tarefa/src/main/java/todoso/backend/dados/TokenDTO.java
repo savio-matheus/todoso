@@ -1,9 +1,8 @@
 package todoso.backend.dados;
 
-/**
- *
- * @author savio
- */
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 public class TokenDTO extends BaseDTO {
 	
 }

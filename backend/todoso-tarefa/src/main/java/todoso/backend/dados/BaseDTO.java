@@ -1,14 +1,9 @@
 package todoso.backend.dados;
 
-import javax.validation.constraints.Positive;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.Hidden;
 
-/**
- *
- * @author savio
- */
+@Hidden
 public abstract class BaseDTO {
 	@JsonIgnore
 	private Long limite = null;

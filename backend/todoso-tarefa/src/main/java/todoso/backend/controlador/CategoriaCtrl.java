@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,6 +34,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<CategoriaDTO>> getCategoria() throws Exception {
 		return getCategoria(null);
 	}
@@ -45,6 +47,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<CategoriaDTO>> getCategoria(
 		@PathVariable("id") Long id) throws Exception {
 
@@ -73,6 +76,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.GET,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<TarefaDTO>> getTarefasPorCategoria(
 		@PathVariable("id") Long id) throws Exception {
 
@@ -104,6 +108,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.POST,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<CategoriaDTO>> postCategoria(
 			@RequestBody @Valid CategoriaDTO categoria) throws Exception {
 
@@ -127,6 +132,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.PATCH,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<CategoriaDTO>> patchCategoria(
 			@PathVariable("id") Long id,
 			@RequestBody @Valid CategoriaDTO categoria) throws Exception {
@@ -153,6 +159,7 @@ public class CategoriaCtrl {
 		method=RequestMethod.DELETE,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
+	@CrossOrigin
 	public ResponseEntity<Resposta<CategoriaDTO>> deleteCategoria(
 		@PathVariable("id") Long id) throws Exception {
 

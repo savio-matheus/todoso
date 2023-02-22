@@ -3,6 +3,9 @@ package todoso.backend.dados;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.*;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 public class CategoriaDTO extends BaseDTO {
 
 	public CategoriaDTO() {}
