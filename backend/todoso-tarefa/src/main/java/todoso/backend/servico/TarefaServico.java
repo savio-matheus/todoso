@@ -59,7 +59,7 @@ public class TarefaServico {
 		for (TarefaDTO t : resultados) {
 			t.setCategorias(categorias.get(t.getId()));
 		}
-		
+
 		for (TarefaDTO t : resultados) {
 			t.setArquivos(dados.anexosPorTarefa(t));
 		}
