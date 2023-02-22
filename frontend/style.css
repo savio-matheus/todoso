@@ -1,0 +1,212 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+}
+
+.header {
+    background-color: #222;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+}
+
+.column h2 {
+    margin-top: 10px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0px 6px 6px rgb(163, 163, 163);
+}
+
+.titulo {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.descricao {
+    margin-bottom: 10px;
+}
+
+.categoria,
+.data,
+.prioridade {
+    margin: 0;
+}
+
+.categoria:before,
+.data:before,
+.prioridade:before {
+    font-weight: bold;
+}
+
+.categoria:before {
+    content: "Categoria: ";
+}
+
+.data:before {
+    content: "Data Limite: ";
+}
+
+.prioridade:before {
+    content: "Prioridade: ";
+}
+
+/* Exemplo de cores */
+.card[data-prioridade="Baixa"] {
+    background-color: #d1e9f7;
+}
+
+.card[data-prioridade="Média"] {
+    background-color: #fce8b2;
+}
+
+.card[data-prioridade="Alta"] {
+    background-color: #f8d7da;
+}
+
+.card-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.editar-button,
+.deletar-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.editar-button:hover,
+.deletar-button:hover {
+    background-color: #eee;
+}
+
+.editar-button {
+    margin-right: 10px;
+}
+
+.editar-button:focus,
+.deletar-button:focus {
+    outline: none;
+}
+
+.deletar-button {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.deletar-button:hover {
+    background-color: #c82333;
+}
+
+.new-task-card {
+    background-color: rgb(252, 243, 224);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+}
+
+.new-task-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.new-task-card form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+}
+
+.new-task-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.new-task-card input[type="text"],
+.new-task-card input[type="date"],
+.new-task-card select,
+.new-task-card textarea {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: none;
+    padding: 5px;
+    width: 100%;
+}
+
+.new-task-card textarea {
+    height: 80px;
+}
+
+.new-task-card button[type="submit"] {
+    background-color: #151c83;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+    padding: 10px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease-in-out;
+    width: 100%;
+}
+
+.new-task-card button[type="submit"]:hover {
+    background-color: #0069d9;
+}
+
+.new-task-card input:focus,
+.new-task-card select:focus,
+.new-task-card textarea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.new-task-card p {
+    text-align: center;
+    margin-top: 5px;
+    font-size: large;
+    font-weight: bold;
+}
