@@ -2,6 +2,7 @@ package todoso.backend.dados;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -219,5 +220,29 @@ public class TarefasDAO implements BaseDAO {
 
 		return f.getId();
 	}
-
+	
+	public ArrayList<String> anexosPorTarefa(TarefaDTO tarefa) throws SQLException {
+		// TODO: utilizar a mesma abordagem das categorias para diminuir a qtde
+		// de consultas ao banco.
+		String sql =
+			"SELECT t.id, a.url FROM arquivos a\n" +
+			"INNER JOIN tarefas_arquivos ta ON ta.id_arquivo = a.id\n" +
+			"INNER JOIN tarefas t ON t.id = ta.id_arquivo\n" +
+			"WHERE t.id LIKE '%';";
+		
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		
+		bd.pstmt.setLong(1, tarefa.getId());
+		
+		bd.rs = bd.pstmt.executeQuery();
+		
+		ArrayList<String> arquivos = new ArrayList<>();
+		while (bd.rs.next()) {
+			arquivos.add(bd.rs.getString("url"));
+		}
+		bd.fecharConexao();
+		
+		return arquivos;
+	}
 }

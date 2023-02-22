@@ -15,7 +15,7 @@ import java.sql.Statement;
  */
 public class BdAcesso implements Closeable {
 	// TODO: a URL poderia ficar num arquivo de configuração
-	private final String URL = "jdbc:sqlite:todoso.db";
+	private final String URL = "jdbc:sqlite:../todoso.db";
 
 	public Connection conexao = null;
 	public Statement stmt = null;
