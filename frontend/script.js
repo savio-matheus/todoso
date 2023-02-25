@@ -164,8 +164,7 @@ function editTask(id) {
         "creationDate": new Date(),
         "deadline": data_limite,
         "categories": [{
-            "id": 0,
-            "name": categoria
+            "id": 1
         }],
         "priority": prioridade,
         "color": "#3AA"
