@@ -5,9 +5,12 @@
 ### /tasks
 * GET /tasks
 * GET /tasks/:id
+* GET /tasks/:id/files
 * POST /tasks
+* POST /tasks/:id/files
 * PATCH /tasks/:id
 * DELETE /tasks/:id
+* DELETE /tasks/files/:id
 
 ### /users
 * GET /users
@@ -16,6 +19,7 @@
 * GET /users/:id/categories
 * GET /users/:id/tags
 * POST /users
+* POST /users/:id/files
 * PATCH /users/:id
 * DELETE /users/:id
 
@@ -34,9 +38,7 @@
 * PATCH /tags/:id
 
 ### /files
-* GET /file/:url
-* POST /file
-* DELETE /file/:url
+* GET /files/:id
 
 ### /session
 * GET /session

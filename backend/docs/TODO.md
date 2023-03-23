@@ -4,18 +4,19 @@
 
 O aplicativo deve:
 
-- [ ] cadastrar tarefas
-- [ ] editar tarefas
-- [ ] apagar tarefas
-- [ ] listar/visualizar tarefas
+- [x] cadastrar tarefas
+- [x] editar tarefas
+- [x] apagar tarefas
+- [x] listar/visualizar tarefas
 
-- [ ] cadastrar categorias
-- [ ] editar categorias
-- [ ] apagar categorias
-- [ ] listar/visualizar categorias
+- [x] cadastrar categorias
+- [x] editar categorias
+- [x] apagar categorias
+- [x] listar/visualizar categorias
 
-- [ ] fornecer uma api REST
+- [x] fornecer uma api REST
 - [ ] pelo menos dois front-ends diferentes
+- [ ] nas listagens, permitir parâmetros na url de requisição (paginação, ordem etc.)
 
 - [ ] mostrar notificações (quando aplicável)
 - [ ] exportar/importar tarefas em vários formatos
@@ -25,13 +26,17 @@ O aplicativo deve:
 
 As tarefas devem:
 
-- [ ] ter data de criação
-- [ ] permitir data de término
+- [x] ter data de criação
+- [x] permitir data de término
 - [ ] ter suporte a anexos (imagens, texto, vídeos etc.)
 - [ ] ter suporte a tags
-- [ ] ter suporte a cores
-- [ ] ter suporte a prioridades
-- [ ] pertencer a nenhuma, uma ou mais categorias
+- [x] ter suporte a cores
+- [x] ter suporte a prioridades
+- [x] pertencer a nenhuma, uma ou mais categorias
+
+Outros:
+- [ ] envio e download de arquivos
+- [ ] suporte multiusuário (autenticação e tudo)
 
 ## Microsserviços
 
