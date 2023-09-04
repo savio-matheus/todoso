@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import todoso.backend.dados.TarefaDTO;
 import todoso.backend.servico.TarefaServico;
-import todoso.backend.dados.ArquivoDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -136,49 +135,5 @@ class TarefaCtrl {
 		retorno.setId(id_deletado);
 
 		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
-	}
-
-	// Endpoints relacionados ao envio de anexos
-
-	@Operation(
-		summary = "Baixa todos os anexos (arquivo .zip) da tarefa informada."
-	)
-	@ApiResponse(
-		responseCode = "200",
-		description = "A requisição foi atendida, podendo ou não iniciar o download."
-	)
-	@RequestMapping(
-		value = "/api/v1/tasks/{id}/files",
-		method = {RequestMethod.GET},
-		produces = {
-			MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_OCTET_STREAM_VALUE
-		}
-	)
-	public ResponseEntity<Resposta<ArquivoDTO>> getArquivo(
-			@PathVariable("id") Long id) throws Exception {
-
-		return null;
-	}
-
-	@Operation(
-		summary = "Envia e associa um arquivo à tarefa informada."
-	)
-	@ApiResponse(
-		responseCode = "200",
-		description = "O arquivo foi salvo."
-	)
-	@RequestMapping(
-		value = "/api/v1/tasks/{id}/files",
-		method = {RequestMethod.POST},
-		produces = {
-			MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_OCTET_STREAM_VALUE
-		}
-	)
-	public ResponseEntity<Resposta<ArquivoDTO>> postArquivo(
-			@PathVariable("id") Long id) throws Exception {
-
-		return null;
 	}
 }

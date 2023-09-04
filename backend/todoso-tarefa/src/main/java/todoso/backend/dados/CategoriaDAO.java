@@ -1,10 +1,7 @@
 package todoso.backend.dados;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-
-import todoso.backend.excecoes.NotFoundException;
 
 import java.sql.SQLException;
 

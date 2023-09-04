@@ -37,12 +37,4 @@ As tarefas devem:
 Outros:
 - [ ] envio e download de arquivos
 - [ ] suporte multiusuário (autenticação e tudo)
-
-## Microsserviços
-
-- Cadastro de tarefas/tags/categorias
-- Login/autenticação
-- Anexos
-- Usuários
-- Banco de dados
-- Ver: [microservices with sprint boot](https://github.com/OmarElgabry/microservices-spring-boot)
+- [ ] mesclar todoso principal e microsserviço de arquivos
