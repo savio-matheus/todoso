@@ -1,7 +1,10 @@
 package todoso.backend.dados;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,14 +12,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author savio
  */
-public class ArquivoDTO {
+public class ArquivoDTO extends BaseDTO {
 	
 	@Positive
 	@JsonProperty("id")
 	private Long id;
 
-	@JsonProperty("url")
-	private String url;
+	// TODO: validar nome do arquivo (ex.: barras, pontos etc.)
+	@JsonProperty("fileName")
+	private String nome;
 
 	@NotEmpty(message="Mime type should not be empty")
 	@JsonProperty("mime")
@@ -25,7 +29,7 @@ public class ArquivoDTO {
 	@JsonProperty("size")
 	private Long tamanho;
 
-	private long idRelacionadoTarefa;
+	private MultipartFile multipartFile;
 
 	public Long getId() {
 		return id;
@@ -35,36 +39,27 @@ public class ArquivoDTO {
 		this.id = id;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	public String getNome() {
+		return nome;
 	}
 
 	public String getMimetype() {
 		return mimetype;
 	}
 
-	public void setMimetype(String mimetype) {
-		this.mimetype = mimetype;
-	}
-
 	public Long getTamanho() {
 		return tamanho;
 	}
 
-	public void setTamanho(Long tamanho) {
-		this.tamanho = tamanho;
+	public void setMultipartFile(@NotNull MultipartFile multipartFile) {
+		this.multipartFile = multipartFile;
+	
+		this.tamanho = multipartFile.getSize();
+		this.mimetype = multipartFile.getContentType();
+		this.nome = multipartFile.getOriginalFilename();
 	}
 
-	public long getIdRelacionadoTarefa() {
-		return idRelacionadoTarefa;
+	public MultipartFile getMultipartFile() {
+		return this.multipartFile;
 	}
-
-	public void setIdRelacionadoTarefa(long idRelacionadoTarefa) {
-		this.idRelacionadoTarefa = idRelacionadoTarefa;
-	}
-
 }

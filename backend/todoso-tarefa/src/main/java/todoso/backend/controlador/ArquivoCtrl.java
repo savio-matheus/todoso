@@ -1,5 +1,6 @@
 package todoso.backend.controlador;
 
+import todoso.backend.dados.ArquivoDAO;
 import todoso.backend.dados.ArquivoDTO;
 
 import javax.validation.Valid;
@@ -41,18 +42,28 @@ class ArquivoCtrl {
 
 	@RequestMapping(
 		value={
-			"/api/v1/task/{taskId}/files",
-			"/api/v1/users/{userId}/files"
+			"/api/v1/task/{taskId}/files"
 		},
 		method=RequestMethod.POST,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<Resposta<ArquivoDTO>> postArquivo(
 			@PathVariable Long taskId,
-			@PathVariable Long userId,
 			@RequestParam("arquivo") MultipartFile file) throws Exception {
 
-		return null;
+		System.out.println("taskId: " + taskId);
+
+		ArquivoDTO arquivo = new ArquivoDTO();
+		arquivo.setMultipartFile(file);
+		
+		ArquivoDAO arqDAO = new ArquivoDAO();
+		long idGerado = arqDAO.inserir(arquivo);
+
+		Resposta<ArquivoDTO> r = new Resposta<>();
+		r.setId(idGerado);
+		r.setHttp(HttpStatus.ACCEPTED);
+
+		return new ResponseEntity<>(r, HttpStatus.OK);
 	}
 
 	@RequestMapping(

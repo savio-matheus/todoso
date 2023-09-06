@@ -28,6 +28,9 @@ public abstract class BaseDTO {
 	@JsonIgnore
 	private Long idRelacionadoArquivo = null;
 
+	@JsonIgnore
+	private Long idRelacionadoTarefa;
+
 	/**
 	 * @return the limit
 	 */
@@ -115,5 +118,13 @@ public abstract class BaseDTO {
 
 	public void setIdRelacionadoArquivo(Long idRelacionadoArquivo) {
 		this.idRelacionadoArquivo = idRelacionadoArquivo;
+	}
+
+	public long getIdRelacionadoTarefa() {
+		return this.idRelacionadoTarefa;
+	}
+
+	public void setIdRelacionadoTarefa(long idRelacionadoTarefa) {
+		this.idRelacionadoTarefa = idRelacionadoTarefa;
 	}
 }

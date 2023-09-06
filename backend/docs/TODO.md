@@ -38,3 +38,4 @@ Outros:
 - [ ] envio e download de arquivos
 - [ ] suporte multiusuário (autenticação e tudo)
 - [ ] mesclar todoso principal e microsserviço de arquivos
+- [ ] usar transações no banco de dados
