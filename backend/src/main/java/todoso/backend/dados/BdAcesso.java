@@ -23,13 +23,20 @@ public class BdAcesso implements Closeable {
 	public ResultSet rs = null;
 	public final int RETURN_GENERATED_KEYS = Statement.RETURN_GENERATED_KEYS;
 
-	private BdAcesso() throws SQLException {
+	private boolean autoCommit = true;
+
+	private BdAcesso(boolean autoCommit) throws SQLException {
+		this.autoCommit = autoCommit;
 		this.conexao = DriverManager.getConnection(URL);
+		this.conexao.setAutoCommit(autoCommit);
 		this.stmt = conexao.createStatement();
 	}
 
 	protected static BdAcesso abrirConexao() throws SQLException {
-		return new BdAcesso();
+		return new BdAcesso(true);
+	}
+	protected static BdAcesso abrirConexao(boolean autoCommit) throws SQLException {
+		return new BdAcesso(autoCommit);
 	}
 
 	protected void fecharConexao() {
@@ -38,6 +45,7 @@ public class BdAcesso implements Closeable {
 				return;
 			}
 
+			if (!this.autoCommit) { conexao.commit(); }
 			conexao.close();
 		}
 		catch (SQLException e) {

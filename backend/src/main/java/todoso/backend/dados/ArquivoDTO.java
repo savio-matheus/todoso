@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author savio
  */
 public class ArquivoDTO extends BaseDTO {
-	
+
 	@Positive
 	@JsonProperty("id")
 	private Long id;
@@ -53,7 +53,7 @@ public class ArquivoDTO extends BaseDTO {
 
 	public void setMultipartFile(@NotNull MultipartFile multipartFile) {
 		this.multipartFile = multipartFile;
-	
+
 		this.tamanho = multipartFile.getSize();
 		this.mimetype = multipartFile.getContentType();
 		this.nome = multipartFile.getOriginalFilename();

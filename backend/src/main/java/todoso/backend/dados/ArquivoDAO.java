@@ -1,28 +1,30 @@
 package todoso.backend.dados;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ArquivoDAO implements BaseDAO {
 	// TODO: esta informação deve ser passada como propriedade em runtime!!!
-	private final String PATH_ARQUIVOS = ".\\anexos-todoso\\";
+	private final String PATH_ARQUIVOS = "./anexos-todoso/";
 
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =
 			"INSERT INTO arquivos (url, mime, tamanho)\n" +
 			"VALUES (?, ?, ?);";
-		
+
 		// TODO: tudo deveria ser feito dentro de uma transaction pois a gravação pode falhar.
-		BdAcesso bd = BdAcesso.abrirConexao();
+		BdAcesso bd = BdAcesso.abrirConexao(false);
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
 		ArquivoDTO a = (ArquivoDTO) dto;
@@ -46,19 +48,10 @@ public class ArquivoDAO implements BaseDAO {
 		try {
 			// TODO: o que fazer quando o arquivo já existe?
 			// TODO: criar também a pasta "anexos-todoso"
-			System.out.println(caminhoCompleto.toString());
-			File arquivoDisco = new File(caminhoCompleto.toString());
-			if (!arquivoDisco.createNewFile()) {
-				System.out.println("File already exists! It'll be overwritten.");
-			}
-			Files.copy(
-				a.getMultipartFile().getInputStream(),
-				caminhoCompleto,
-				StandardCopyOption.REPLACE_EXISTING
-			);
-
+			escreverArquivo(a);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			bd.conexao.rollback();
 			e.printStackTrace();
 			throw new SQLException("File not saved!");
 		}
@@ -69,8 +62,30 @@ public class ArquivoDAO implements BaseDAO {
 	}
 
 	@Override
-	public ArrayList<? extends BaseDTO> selecionar(BaseDTO filtros) throws SQLException {
-		return null;
+	public ArrayList<? extends BaseDTO> selecionar(BaseDTO filtros) throws SQLException, Exception {
+		ArquivoDTO arqDTO = (ArquivoDTO) filtros;
+
+		final String sql = "SELECT * FROM arquivos a WHERE a.id = ?;";
+
+		BdAcesso bd = BdAcesso.abrirConexao();
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setLong(1, arqDTO.getId());
+
+		bd.rs = bd.pstmt.executeQuery();
+
+		ArrayList<ArquivoDTO> arquivos = new ArrayList<>();
+		ArquivoDTO ar;
+		while (bd.rs.next()) {
+			String url = bd.rs.getString("url");
+			MultipartFile mpf = lerArquivo(url);
+			ar = new ArquivoDTO();
+			ar.setMultipartFile(mpf);
+			arquivos.add(ar);
+			System.out.println(ar.toString());
+		}
+
+		bd.fecharConexao();
+		return arquivos;
 	}
 
 	@Override
@@ -83,5 +98,23 @@ public class ArquivoDAO implements BaseDAO {
 	public long excluir(BaseDTO filtros) throws SQLException {
 		return 0;
 	}
-	
+
+	public MultipartFile lerArquivo(String url) throws IOException {
+		File arquivoDisco = new File(url);
+		MultipartFileImpl mpf = new MultipartFileImpl(arquivoDisco);
+		return mpf;
+	}
+
+	public String escreverArquivo(ArquivoDTO arquivo) throws IOException {
+		MultipartFile mpf = arquivo.getMultipartFile();
+		File arquivoDisco = new File(PATH_ARQUIVOS + arquivo.getNome());
+		arquivoDisco.createNewFile();
+		Files. write(
+			arquivoDisco.toPath(),
+			mpf.getBytes(),
+			StandardOpenOption.TRUNCATE_EXISTING
+		);
+		return arquivoDisco.toPath().toString();
+	}
+
 }
