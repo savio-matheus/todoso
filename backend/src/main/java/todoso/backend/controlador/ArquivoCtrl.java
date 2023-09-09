@@ -2,10 +2,13 @@ package todoso.backend.controlador;
 
 import todoso.backend.dados.ArquivoDAO;
 import todoso.backend.dados.ArquivoDTO;
+import todoso.backend.servico.ArquivoServico;
+import todoso.backend.servico.ConfiguracoesServico;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +29,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 public class ArquivoCtrl {
-
 	//{"/api/v1/task/{taskId}/files/{fileId}",
 	//"/api/v1/users/{userId}/files/{fileId}"}
 	@RequestMapping(
@@ -93,17 +95,28 @@ public class ArquivoCtrl {
 
 	@RequestMapping(
 		value={
-			"/api/v1/task/{taskId}/files/{fileId}",
-			"/api/v1/users/{userId}/files/{fileId}"
+			"/api/v1/files/{fileId}"
+			//"/api/v1/task/{id}/files/{fileId}",
+			//"/api/v1/users/{id}/files/{fileId}"
 		},
 		method=RequestMethod.DELETE,
 		produces={MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<Resposta<ArquivoDTO>> deleteArquivo(
-			@PathVariable Long fileId,
-			@PathVariable Long taskId,
-			@PathVariable Long userId) throws Exception {
+			@PathVariable Long fileId) throws Exception {
 
-		return null;
+		ConfiguracoesServico config = new ConfiguracoesServico();
+
+		Resposta<ArquivoDTO> retorno = new Resposta<>();
+		ArquivoServico servico = new ArquivoServico();
+		ArquivoDTO filtros = new ArquivoDTO();
+		filtros.setId(fileId);
+
+		long retId = servico.deletarArquivo(filtros).getId();
+
+		retorno.setHttp(HttpStatus.ACCEPTED);
+		retorno.setId(retId);
+
+		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}
 }

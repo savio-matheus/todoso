@@ -11,11 +11,13 @@ import java.nio.file.StandardOpenOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ArquivoDAO implements BaseDAO {
-	// TODO: esta informação deve ser passada como propriedade em runtime!!!
-	private final String PATH_ARQUIVOS = "./anexos-todoso/";
+
+	//@Value("${arquivos.diretorioRaiz}") TODO: criar classe de configurações
+	private String DIRETORIO_RAIZ = "/arquivos-todoso";
 
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {
@@ -23,7 +25,6 @@ public class ArquivoDAO implements BaseDAO {
 			"INSERT INTO arquivos (url, mime, tamanho)\n" +
 			"VALUES (?, ?, ?);";
 
-		// TODO: tudo deveria ser feito dentro de uma transaction pois a gravação pode falhar.
 		BdAcesso bd = BdAcesso.abrirConexao(false);
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
@@ -31,7 +32,7 @@ public class ArquivoDAO implements BaseDAO {
 		int i = 1;
 		long idGerado = 0;
 		// TODO: atualizar quando for implementado suporte multiusuário.
-		Path caminhoCompleto = Paths.get(PATH_ARQUIVOS + a.getNome());
+		Path caminhoCompleto = Paths.get(DIRETORIO_RAIZ + a.getNome());
 
 		bd.pstmt.setString(i++, caminhoCompleto.toString());
 		bd.pstmt.setString(i++, a.getMimetype());
@@ -46,10 +47,10 @@ public class ArquivoDAO implements BaseDAO {
 		}
 
 		try {
-			// TODO: o que fazer quando o arquivo já existe?
-			// TODO: criar também a pasta "anexos-todoso"
-			escreverArquivo(a);
-		} catch (IOException e) {
+			// TODO: essas funções deveriam ser chamadas na classe de serviço
+			criarDiretorios(a);
+			escreverArquivoEmDisco(a);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			bd.conexao.rollback();
 			e.printStackTrace();
@@ -62,7 +63,7 @@ public class ArquivoDAO implements BaseDAO {
 	}
 
 	@Override
-	public ArrayList<? extends BaseDTO> selecionar(BaseDTO filtros) throws SQLException, Exception {
+	public ArrayList<ArquivoDTO> selecionar(BaseDTO filtros) throws SQLException, Exception {
 		ArquivoDTO arqDTO = (ArquivoDTO) filtros;
 
 		final String sql = "SELECT * FROM arquivos a WHERE a.id = ?;";
@@ -77,7 +78,7 @@ public class ArquivoDAO implements BaseDAO {
 		ArquivoDTO ar;
 		while (bd.rs.next()) {
 			String url = bd.rs.getString("url");
-			MultipartFile mpf = lerArquivo(url);
+			MultipartFile mpf = lerArquivoEmDisco(url);
 			ar = new ArquivoDTO();
 			ar.setMultipartFile(mpf);
 			arquivos.add(ar);
@@ -96,18 +97,28 @@ public class ArquivoDAO implements BaseDAO {
 
 	@Override
 	public long excluir(BaseDTO filtros) throws SQLException {
-		return 0;
+		final String sql = "DELETE FROM arquivos WHERE id = ?";
+		ArquivoDTO a = (ArquivoDTO) filtros;
+
+		BdAcesso bd = BdAcesso.abrirConexao(false);
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+
+		bd.pstmt.setLong(1, a.getId());
+		bd.pstmt.execute();
+		bd.fecharConexao();
+
+		return a.getId();
 	}
 
-	public MultipartFile lerArquivo(String url) throws IOException {
+	public MultipartFile lerArquivoEmDisco(String url) throws IOException {
 		File arquivoDisco = new File(url);
 		MultipartFileImpl mpf = new MultipartFileImpl(arquivoDisco);
 		return mpf;
 	}
 
-	public String escreverArquivo(ArquivoDTO arquivo) throws IOException {
+	public String escreverArquivoEmDisco(ArquivoDTO arquivo) throws IOException {
 		MultipartFile mpf = arquivo.getMultipartFile();
-		File arquivoDisco = new File(PATH_ARQUIVOS + arquivo.getNome());
+		File arquivoDisco = new File(DIRETORIO_RAIZ + arquivo.getNome());
 		arquivoDisco.createNewFile();
 		Files. write(
 			arquivoDisco.toPath(),
@@ -117,4 +128,20 @@ public class ArquivoDAO implements BaseDAO {
 		return arquivoDisco.toPath().toString();
 	}
 
+	public String apagarArquivoEmDisco(ArquivoDTO arquivo) throws IOException {
+		File arquivoDisco = new File(DIRETORIO_RAIZ + arquivo.getNome());
+		if (!arquivoDisco.exists()) {
+			throw new IOException("File does not exist.");
+		}
+
+		arquivoDisco.delete();
+		return arquivoDisco.getPath().toString();
+	}
+
+	public boolean criarDiretorios(ArquivoDTO arquivo) throws Exception {
+		System.out.println(DIRETORIO_RAIZ);
+		File f = new File(DIRETORIO_RAIZ);
+		if (f.isDirectory()) { return true; }
+		return f.mkdirs();
+	}
 }
