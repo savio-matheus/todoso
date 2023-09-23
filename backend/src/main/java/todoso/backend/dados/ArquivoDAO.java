@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ArquivoDAO implements BaseDAO {
 
 	//@Value("${arquivos.diretorioRaiz}") TODO: criar classe de configurações
-	private String DIRETORIO_RAIZ = "/arquivos-todoso";
+	private String DIRETORIO_RAIZ = "./arquivos-todoso/";
 
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {
@@ -51,8 +51,8 @@ public class ArquivoDAO implements BaseDAO {
 			criarDiretorios(a);
 			escreverArquivoEmDisco(a);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			bd.conexao.rollback();
+			bd.fecharConexao();
 			e.printStackTrace();
 			throw new SQLException("File not saved!");
 		}
@@ -75,14 +75,13 @@ public class ArquivoDAO implements BaseDAO {
 		bd.rs = bd.pstmt.executeQuery();
 
 		ArrayList<ArquivoDTO> arquivos = new ArrayList<>();
-		ArquivoDTO ar;
+		ArquivoDTO arq;
 		while (bd.rs.next()) {
 			String url = bd.rs.getString("url");
 			MultipartFile mpf = lerArquivoEmDisco(url);
-			ar = new ArquivoDTO();
-			ar.setMultipartFile(mpf);
-			arquivos.add(ar);
-			System.out.println(ar.toString());
+			arq = new ArquivoDTO();
+			arq.setMultipartFile(mpf);
+			arquivos.add(arq);
 		}
 
 		bd.fecharConexao();
@@ -110,6 +109,8 @@ public class ArquivoDAO implements BaseDAO {
 		return a.getId();
 	}
 
+	// Todos os métodos abaixo pressupõem que o caminho da url é válido.
+
 	public MultipartFile lerArquivoEmDisco(String url) throws IOException {
 		File arquivoDisco = new File(url);
 		MultipartFileImpl mpf = new MultipartFileImpl(arquivoDisco);
@@ -117,21 +118,20 @@ public class ArquivoDAO implements BaseDAO {
 	}
 
 	public String escreverArquivoEmDisco(ArquivoDTO arquivo) throws IOException {
-		MultipartFile mpf = arquivo.getMultipartFile();
 		File arquivoDisco = new File(DIRETORIO_RAIZ + arquivo.getNome());
 		arquivoDisco.createNewFile();
-		Files. write(
+		Files.write(
 			arquivoDisco.toPath(),
-			mpf.getBytes(),
-			StandardOpenOption.TRUNCATE_EXISTING
+			arquivo.getMultipartFile().getBytes()
 		);
 		return arquivoDisco.toPath().toString();
 	}
 
 	public String apagarArquivoEmDisco(ArquivoDTO arquivo) throws IOException {
 		File arquivoDisco = new File(DIRETORIO_RAIZ + arquivo.getNome());
+
 		if (!arquivoDisco.exists()) {
-			throw new IOException("File does not exist.");
+			return DIRETORIO_RAIZ + arquivo.getNome();
 		}
 
 		arquivoDisco.delete();

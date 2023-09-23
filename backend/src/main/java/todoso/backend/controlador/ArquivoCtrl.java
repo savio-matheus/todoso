@@ -1,14 +1,11 @@
 package todoso.backend.controlador;
 
-import todoso.backend.dados.ArquivoDAO;
 import todoso.backend.dados.ArquivoDTO;
 import todoso.backend.servico.ArquivoServico;
-import todoso.backend.servico.ConfiguracoesServico;
+//import todoso.backend.servico.ConfiguracoesServico;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,14 +37,14 @@ public class ArquivoCtrl {
 		Resposta<ArquivoDTO> retorno = new Resposta<>();
 		ArquivoDTO filtros = new ArquivoDTO();
 		ArrayList<ArquivoDTO> lista = new ArrayList<>();
-		ArquivoDAO arqDAO = new ArquivoDAO();
+		ArquivoServico servico = new ArquivoServico();
 
 		if (fileId == null) {
 			fileId = 0L;
 		}
 		filtros.setId(fileId);
 		// TODO: criar classe ArquivoServico
-		lista = (ArrayList<ArquivoDTO>) arqDAO.selecionar(filtros);
+		lista = (ArrayList<ArquivoDTO>) servico.selecionarArquivos(filtros);
 
 		retorno.setHttp(HttpStatus.OK);
 		retorno.setDadosRetorno(lista);
@@ -57,6 +53,7 @@ public class ArquivoCtrl {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
+		// TODO: isso tá bem ruim. Criar solução para n arquivos
 		InputStreamResource isr = new InputStreamResource(
 			lista.get(0).getMultipartFile().getInputStream());
 
@@ -80,11 +77,12 @@ public class ArquivoCtrl {
 	public ResponseEntity<Resposta<ArquivoDTO>> postArquivo(
 			@RequestParam("arquivo") MultipartFile file) throws Exception {
 
+		ArquivoServico servico = new ArquivoServico();
 		ArquivoDTO arquivo = new ArquivoDTO();
 		arquivo.setMultipartFile(file);
 
-		ArquivoDAO arqDAO = new ArquivoDAO();
-		long idGerado = arqDAO.inserir(arquivo);
+		arquivo = servico.criarArquivo(arquivo);
+		long idGerado = arquivo.getId();
 
 		Resposta<ArquivoDTO> r = new Resposta<>();
 		r.setId(idGerado);
@@ -105,7 +103,7 @@ public class ArquivoCtrl {
 	public ResponseEntity<Resposta<ArquivoDTO>> deleteArquivo(
 			@PathVariable Long fileId) throws Exception {
 
-		ConfiguracoesServico config = new ConfiguracoesServico();
+		//ConfiguracoesServico config = new ConfiguracoesServico();
 
 		Resposta<ArquivoDTO> retorno = new Resposta<>();
 		ArquivoServico servico = new ArquivoServico();

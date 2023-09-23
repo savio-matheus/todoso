@@ -27,7 +27,7 @@ public class ArquivoServico {
 
 		arquivo.setId(id);
 
-		return null;
+		return arquivo;
 	}
 
 	public ArrayList<ArquivoDTO> selecionarArquivos(ArquivoDTO filtros)
@@ -41,12 +41,17 @@ public class ArquivoServico {
 	}
 
 	public ArquivoDTO deletarArquivo(ArquivoDTO filtros)
-			throws SQLException, NotFoundException {
+			throws Exception {
 
+		ArrayList<ArquivoDTO> arquivos = dados.selecionar(filtros);
 		long id = dados.excluir(filtros);
 
 		if (id <= 0) {
-			throw new NotFoundException("Try a different id.");
+			throw new NotFoundException("File not found. Try a different id.");
+		}
+
+		if (!arquivos.isEmpty()) {
+			dados.apagarArquivoEmDisco(arquivos.get(0));
 		}
 
 		return filtros;
