@@ -10,6 +10,18 @@ import java.util.ArrayList;
 
 public class TarefasDAO implements BaseDAO {
 
+	private BdAcesso bd = null;
+
+	public TarefasDAO(BdAcesso bd) throws SQLException {
+		if (bd != null && bd.conexao != null && !bd.conexao.isClosed()) {
+			this.bd = bd;
+		}
+		else {
+			throw new SQLException("Não foi fornecida uma conexão válida " +
+				"com o banco de dados.");
+		}
+	}
+
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =
 			"INSERT INTO tarefas (\n" +
@@ -22,7 +34,6 @@ public class TarefasDAO implements BaseDAO {
 			"	data_limite)\n" +
 			"VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 		TarefaDTO tarefa = (TarefaDTO) dto;
 
@@ -37,7 +48,7 @@ public class TarefasDAO implements BaseDAO {
 
 		bd.pstmt.execute();
 		long idGerado = bd.getChaveGerada();
-		bd.fecharConexao();
+		bd.pstmt.close();
 
 		return idGerado;
 	}
@@ -61,7 +72,6 @@ public class TarefasDAO implements BaseDAO {
 			"ORDER BY t.id\n" +
 			"LIMIT ? OFFSET ?\n";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		TarefaDTO f = (TarefaDTO) filtros;
 		int i = 1;
@@ -152,6 +162,7 @@ public class TarefasDAO implements BaseDAO {
 			tarefas.add(t);
 		}
 
+		bd.pstmt.close();
 		return tarefas;
 	}
 
@@ -169,7 +180,6 @@ public class TarefasDAO implements BaseDAO {
 			"	TRUE\n" +
 			"	AND id = ?;";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		TarefaDTO tarefa = (TarefaDTO) dto;
 
@@ -187,7 +197,6 @@ public class TarefasDAO implements BaseDAO {
 		//System.out.println(bd.pstmt.toString());
 
 		int atualizados = bd.pstmt.executeUpdate();
-		bd.fecharConexao();
 
 		//System.out.println(soma);
 
@@ -195,15 +204,13 @@ public class TarefasDAO implements BaseDAO {
 			return tarefa.getId();
 		}
 
+		bd.pstmt.close();
 		return 0;
 	}
 
 	public long excluir(BaseDTO filtros) throws SQLException {
 		String sql = "DELETE FROM tarefas WHERE id = ?";
 		int i = 1;
-
-		BdAcesso bd = BdAcesso.abrirConexao();
-		bd.conexao.setAutoCommit(false);
 
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		TarefaDTO f = (TarefaDTO) filtros;
@@ -212,14 +219,11 @@ public class TarefasDAO implements BaseDAO {
 		bd.pstmt.execute();
 
 		// TODO: utilizar as funções no DAO da categoria
-		// TODO: usar o padrão singleton no BdAcesso, para trabalhar com transações
 
-		bd.conexao.commit();
-		bd.fecharConexao();
-
+		bd.pstmt.close();
 		return f.getId();
 	}
-	
+
 	public ArrayList<String> anexosPorTarefa(TarefaDTO tarefa) throws SQLException {
 		// TODO: utilizar a mesma abordagem das categorias para diminuir a qtde
 		// de consultas ao banco.
@@ -228,20 +232,19 @@ public class TarefasDAO implements BaseDAO {
 			"INNER JOIN tarefas_arquivos ta ON ta.id_arquivo = a.id\n" +
 			"INNER JOIN tarefas t ON t.id = ta.id_tarefa\n" +
 			"WHERE t.id LIKE ?;";
-		
-		BdAcesso bd = BdAcesso.abrirConexao();
+
 		bd.pstmt = bd.conexao.prepareStatement(sql);
-		
+
 		bd.pstmt.setLong(1, tarefa.getId());
-		
+
 		bd.rs = bd.pstmt.executeQuery();
-		
+
 		ArrayList<String> arquivos = new ArrayList<>();
 		while (bd.rs.next()) {
 			arquivos.add(bd.rs.getString("url"));
 		}
-		bd.fecharConexao();
-		
+
+		bd.pstmt.close();
 		return arquivos;
 	}
 }

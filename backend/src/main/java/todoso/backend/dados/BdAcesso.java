@@ -32,20 +32,20 @@ public class BdAcesso implements Closeable {
 		this.stmt = conexao.createStatement();
 	}
 
-	protected static BdAcesso abrirConexao() throws SQLException {
+	public static BdAcesso abrirConexao() throws SQLException {
 		return new BdAcesso(true);
 	}
-	protected static BdAcesso abrirConexao(boolean autoCommit) throws SQLException {
+	public static BdAcesso abrirConexao(boolean autoCommit) throws SQLException {
 		return new BdAcesso(autoCommit);
 	}
 
-	protected void fecharConexao() {
+	public void fecharConexao() {
 		try {
 			if (conexao == null || conexao.isClosed()) {
 				return;
 			}
 
-			if (!this.autoCommit) { conexao.commit(); }
+			if (!this.autoCommit) { confirmar(); }
 			conexao.close();
 		}
 		catch (SQLException e) {
@@ -53,7 +53,15 @@ public class BdAcesso implements Closeable {
 		}
 	}
 
-	protected boolean existeTabela(String nomeTabela) throws SQLException {
+	public void confirmar() throws SQLException {
+		conexao.commit();
+	}
+
+	public void reverter() throws SQLException {
+		conexao.rollback();
+	}
+
+	public boolean existeTabela(String nomeTabela) throws SQLException {
 		DatabaseMetaData meta = conexao.getMetaData();
 		ResultSet tabelas = meta.getTables(null, null, nomeTabela, null);
 		if (tabelas.next()) {
@@ -62,7 +70,7 @@ public class BdAcesso implements Closeable {
 		return false;
 	}
 
-	protected long getChaveGerada() throws SQLException {
+	public long getChaveGerada() throws SQLException {
 		long chave = -1;
 
 		ResultSet rs = stmt.getGeneratedKeys();

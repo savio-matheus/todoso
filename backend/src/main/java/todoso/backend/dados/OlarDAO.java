@@ -8,6 +8,18 @@ import java.sql.SQLException;
  */
 public class OlarDAO {
 
+	private BdAcesso bd = null;
+
+	public OlarDAO(BdAcesso bd) throws SQLException {
+		if (bd != null && bd.conexao != null && !bd.conexao.isClosed()) {
+			this.bd = bd;
+		}
+		else {
+			throw new SQLException("Não foi fornecida uma conexão válida " +
+				"com o banco de dados.");
+		}
+	}
+
 	public void criarTabelas() throws SQLException {
 		String sqlCategorias =
 			"CREATE TABLE IF NOT EXISTS categorias (\n" +
@@ -116,8 +128,6 @@ public class OlarDAO {
 		String sqlCategoriaPadrao =
 			"INSERT INTO categorias (id, nome_categoria) VALUES (1, 'geral');";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
-
 		bd.stmt.addBatch(sqlCategorias);
 		bd.stmt.addBatch(sqlTags);
 		bd.stmt.addBatch(sqlArquivos);
@@ -131,6 +141,5 @@ public class OlarDAO {
 		bd.stmt.addBatch(sqlCategoriaPadrao);
 
 		bd.stmt.executeBatch();
-		bd.fecharConexao();
 	}
 }

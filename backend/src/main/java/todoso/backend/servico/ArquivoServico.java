@@ -8,10 +8,17 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import todoso.backend.dados.ArquivoDAO;
 import todoso.backend.dados.ArquivoDTO;
+import todoso.backend.dados.BdAcesso;
 import todoso.backend.excecoes.NotFoundException;
 
 public class ArquivoServico {
-	private ArquivoDAO dados = new ArquivoDAO();
+	private BdAcesso bancoDeDados;
+	private ArquivoDAO dados;
+
+	public ArquivoServico() throws SQLException {
+		bancoDeDados = BdAcesso.abrirConexao(false);
+		dados = new ArquivoDAO(bancoDeDados);
+	}
 
 	// TODO: atribuir nomes personalizados aos arquivos para evitar colisões.
 	public ArquivoDTO criarArquivo(ArquivoDTO arquivo) throws SQLException {
@@ -22,10 +29,12 @@ public class ArquivoServico {
 		//dados.escreverArquivoEmDisco(arquivo);
 
 		if (id <= 0) {
+			bancoDeDados.reverter();
 			throw new SQLException("Resource was created, but returned no valid id.");
 		}
 
 		arquivo.setId(id);
+		bancoDeDados.close();
 
 		return arquivo;
 	}
@@ -47,6 +56,7 @@ public class ArquivoServico {
 		long id = dados.excluir(filtros);
 
 		if (id <= 0) {
+			bancoDeDados.reverter();
 			throw new NotFoundException("File not found. Try a different id.");
 		}
 
@@ -54,6 +64,7 @@ public class ArquivoServico {
 			dados.apagarArquivoEmDisco(arquivos.get(0));
 		}
 
+		bancoDeDados.close();
 		return filtros;
 	}
 

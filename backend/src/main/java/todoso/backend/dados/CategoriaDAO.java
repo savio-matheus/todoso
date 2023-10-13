@@ -6,8 +6,18 @@ import java.util.HashMap;
 import java.sql.SQLException;
 
 public class CategoriaDAO implements BaseDAO {
-	
-	public CategoriaDAO() {}
+
+	private BdAcesso bd = null;
+
+	public CategoriaDAO(BdAcesso bd) throws SQLException {
+		if (bd != null && bd.conexao != null && !bd.conexao.isClosed()) {
+			this.bd = bd;
+		}
+		else {
+			throw new SQLException("Não foi fornecida uma conexão válida " +
+				"com o banco de dados.");
+		}
+	}
 
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =
@@ -16,7 +26,6 @@ public class CategoriaDAO implements BaseDAO {
 			")\n" +
 			"VALUES (?);";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
 		CategoriaDTO c = (CategoriaDTO) dto;
@@ -27,7 +36,7 @@ public class CategoriaDAO implements BaseDAO {
 
 		idGerado = bd.getChaveGerada();
 
-		bd.fecharConexao();
+		bd.pstmt.close();
 
 		return idGerado;
 	}
@@ -41,7 +50,6 @@ public class CategoriaDAO implements BaseDAO {
 			"ORDER BY c.id\n" +
 			"LIMIT ? OFFSET ?;";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 
 		int i = 1;
@@ -66,6 +74,7 @@ public class CategoriaDAO implements BaseDAO {
 			categorias.add(ca);
 		}
 
+		bd.pstmt.close();
 		return categorias;
 	}
 
@@ -77,7 +86,6 @@ public class CategoriaDAO implements BaseDAO {
 			"	TRUE\n" +
 			"	AND id = ?;";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
 		CategoriaDTO c = (CategoriaDTO) dto;
@@ -89,7 +97,7 @@ public class CategoriaDAO implements BaseDAO {
 		if (bd.pstmt.executeUpdate() > 0) {
 			return c.getId();
 		}
-		bd.fecharConexao();
+		bd.pstmt.close();
 
 		return -1;
 	}
@@ -99,22 +107,21 @@ public class CategoriaDAO implements BaseDAO {
 		CategoriaDTO c = (CategoriaDTO) filtros;
 		int i = 1;
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 
 		bd.pstmt.setLong(i++, c.getId());
 
 		bd.pstmt.execute();
+		bd.pstmt.close();
 
-		bd.fecharConexao();
-
+		// TODO: indicar se foi ou não excluído
 		return c.getId();
 	}
 
 	/**
 	 * <p>Usa os IDs informados nos DTOs da tarefa e da categoria para relacioná-las.
 	 * É importante que elas já existam no banco de dados.</p>
-	 * 
+	 *
 	 * @param tarefa
 	 * @param categoria
 	 * @return 'true' se a relação foi criada ou já existe; 'false' em caso contrário.
@@ -124,17 +131,16 @@ public class CategoriaDAO implements BaseDAO {
 		String sql =
 			"SELECT * FROM categorias\n" +
 			"WHERE id = ?;";
-		
-		BdAcesso bd = BdAcesso.abrirConexao();
+
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		bd.pstmt.setLong(1, categoria.getId());
 		bd.rs = bd.pstmt.executeQuery();
 
 		if (!bd.rs.next()) {
-			bd.fecharConexao();
+			bd.pstmt.close();
 			return false;
 		}
-		
+
 		// Verifica se a relação já existe
 		sql =
 			"SELECT id_tarefa, id_categoria\n" +
@@ -148,7 +154,7 @@ public class CategoriaDAO implements BaseDAO {
 
 		if (bd.rs.next()) {
 			// Relação já existe
-			bd.fecharConexao();
+			bd.pstmt.close();
 			return true;
 		}
 
@@ -165,7 +171,7 @@ public class CategoriaDAO implements BaseDAO {
 		bd.pstmt.setLong(1, tarefa.getId());
 		bd.pstmt.setLong(2, categoria.getId());
 		bd.pstmt.execute();
-		bd.fecharConexao();
+		bd.pstmt.close();
 
 		return true;
 	}
@@ -177,7 +183,7 @@ public class CategoriaDAO implements BaseDAO {
 	 * relações são desfeitas.</p>
 	 * <p>As tarefas não devem ficar sem categoria, portanto considere usar o
 	 * método relacionarCategoriaPadrao() em seguida.</p>
-	 * 
+	 *
 	 * @param tarefa
 	 * @param categoria
 	 */
@@ -187,7 +193,7 @@ public class CategoriaDAO implements BaseDAO {
 		if (tarefa == null && categoria == null) {
 			throw new IllegalArgumentException("At least one argument should not be null.");
 		}
-		
+
 		if (categoria == null) {
 			sql =
 				"DELETE FROM tarefas_categorias\n" +
@@ -205,11 +211,11 @@ public class CategoriaDAO implements BaseDAO {
 		}
 
 		int i = 1;
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		if (tarefa != null) bd.pstmt.setLong(i++, tarefa.getId());
 		if (categoria != null) bd.pstmt.setLong(i++, categoria.getId());
 		bd.pstmt.execute();
+		bd.pstmt.close();
 	}
 
 	public void relacionarCategoriaPadrao() throws SQLException {
@@ -218,16 +224,13 @@ public class CategoriaDAO implements BaseDAO {
 			"SELECT t.id, 1 AS categoria_padrao FROM tarefas_categorias tc\n" +
 			"RIGHT JOIN tarefas t ON tc.id_tarefa = t.id\n" +
 			"WHERE tc.id_tarefa IS NULL;";
-		
-		BdAcesso bd = BdAcesso.abrirConexao();
+
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		bd.pstmt.execute();
-
-		bd.fecharConexao();
 	}
 
 	/**
-	 * 
+	 *
 	 * @param tarefas
 	 * @return
 	 * @throws SQLException
@@ -246,8 +249,7 @@ public class CategoriaDAO implements BaseDAO {
 			"INNER JOIN tarefas_categorias tc ON c.id = tc.id_categoria\n" +
 			"WHERE tc.id_tarefa IN (";
 		StringBuffer sql = new StringBuffer(sqlEstatico);
-		
-		BdAcesso bd = BdAcesso.abrirConexao();
+
 		for (int i = 0; i < tarefas.size(); i++) {
 			TarefaDTO d = tarefas.get(i);
 			sql.append(d.getId());

@@ -5,6 +5,18 @@ import java.util.ArrayList;
 
 public class TagsDAO implements BaseDAO {
 
+	private BdAcesso bd = null;
+
+	public TagsDAO(BdAcesso bd) throws SQLException {
+		if (bd != null && bd.conexao != null && !bd.conexao.isClosed()) {
+			this.bd = bd;
+		}
+		else {
+			throw new SQLException("Não foi fornecida uma conexão válida " +
+				"com o banco de dados.");
+		}
+	}
+
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {
 		// TODO Auto-generated method stub

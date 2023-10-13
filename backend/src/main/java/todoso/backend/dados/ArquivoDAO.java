@@ -15,6 +15,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ArquivoDAO implements BaseDAO {
+	private BdAcesso bd = null;
+
+	public ArquivoDAO(BdAcesso bd) throws SQLException {
+		if (bd != null && bd.conexao != null && !bd.conexao.isClosed()) {
+			this.bd = bd;
+		}
+		else {
+			throw new SQLException("Não foi fornecida uma conexão válida " +
+				"com o banco de dados.");
+		}
+	}
 
 	//@Value("${arquivos.diretorioRaiz}") TODO: criar classe de configurações
 	private String DIRETORIO_RAIZ = "./arquivos-todoso/";
@@ -25,7 +36,6 @@ public class ArquivoDAO implements BaseDAO {
 			"INSERT INTO arquivos (url, mime, tamanho)\n" +
 			"VALUES (?, ?, ?);";
 
-		BdAcesso bd = BdAcesso.abrirConexao(false);
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
 		ArquivoDTO a = (ArquivoDTO) dto;
@@ -41,8 +51,9 @@ public class ArquivoDAO implements BaseDAO {
 
 		idGerado = bd.getChaveGerada();
 
+		// TODO: não é nem possível... remover
 		if (idGerado <= 0) {
-			bd.fecharConexao();
+			bd.reverter();
 			return idGerado;
 		}
 
@@ -51,13 +62,10 @@ public class ArquivoDAO implements BaseDAO {
 			criarDiretorios(a);
 			escreverArquivoEmDisco(a);
 		} catch (Exception e) {
-			bd.conexao.rollback();
-			bd.fecharConexao();
+			bd.reverter();
 			e.printStackTrace();
 			throw new SQLException("File not saved!");
 		}
-
-		bd.fecharConexao();
 
 		return idGerado;
 	}
@@ -68,7 +76,6 @@ public class ArquivoDAO implements BaseDAO {
 
 		final String sql = "SELECT * FROM arquivos a WHERE a.id = ?;";
 
-		BdAcesso bd = BdAcesso.abrirConexao();
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 		bd.pstmt.setLong(1, arqDTO.getId());
 
@@ -84,7 +91,7 @@ public class ArquivoDAO implements BaseDAO {
 			arquivos.add(arq);
 		}
 
-		bd.fecharConexao();
+		bd.pstmt.close();
 		return arquivos;
 	}
 
@@ -99,13 +106,13 @@ public class ArquivoDAO implements BaseDAO {
 		final String sql = "DELETE FROM arquivos WHERE id = ?";
 		ArquivoDTO a = (ArquivoDTO) filtros;
 
-		BdAcesso bd = BdAcesso.abrirConexao(false);
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 
 		bd.pstmt.setLong(1, a.getId());
 		bd.pstmt.execute();
-		bd.fecharConexao();
+		bd.pstmt.close();
 
+		// TODO: indicar com mais clareza se a linha foi ou não excluída.
 		return a.getId();
 	}
 

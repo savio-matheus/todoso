@@ -5,12 +5,15 @@ import java.sql.SQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import todoso.backend.dados.BdAcesso;
 import todoso.backend.dados.OlarDAO;
 
 public class OlarServico {
 	public ResponseEntity<String> criarBancoDeDados() {
 		try {
-			new OlarDAO().criarTabelas();
+			BdAcesso bancoDeDados = BdAcesso.abrirConexao(false);
+			new OlarDAO(bancoDeDados).criarTabelas();
+			bancoDeDados.fecharConexao();
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

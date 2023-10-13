@@ -6,13 +6,22 @@ import java.util.HashMap;
 
 import todoso.backend.excecoes.NotFoundException;
 import todoso.backend.dados.TarefasDAO;
+import todoso.backend.dados.BdAcesso;
 import todoso.backend.dados.CategoriaDAO;
 import todoso.backend.dados.CategoriaDTO;
 import todoso.backend.dados.TarefaDTO;
 
 public class TarefaServico {
-	private TarefasDAO dados = new TarefasDAO();
 	final long ID_CATEGORIA_PADRAO = 1;
+	private BdAcesso bancoDeDados;
+	private TarefasDAO dados;
+	private CategoriaDAO catDAO;
+
+	public TarefaServico() throws SQLException {
+		bancoDeDados = BdAcesso.abrirConexao(false);
+		dados = new TarefasDAO(bancoDeDados);
+		catDAO = new CategoriaDAO(bancoDeDados);
+	}
 
 	public TarefaDTO criarTarefa(TarefaDTO tarefa) throws SQLException {
 		long id;
@@ -29,7 +38,6 @@ public class TarefaServico {
 			tarefa.setCategorias(l);
 		}
 
-		CategoriaDAO catDAO = new CategoriaDAO();
 		int erros = 0;
 		for (CategoriaDTO c : tarefa.getCategorias()) {
 			if (!catDAO.relacionarTarefaCategoria(tarefa, c)) {
@@ -44,17 +52,20 @@ public class TarefaServico {
 		}
 
 		if (id <= 0) {
-			throw new SQLException("Resource was created, but returned no valid id.");
+			bancoDeDados.reverter();
+			throw new SQLException("Nenhum id válido foi retornado.");
 		}
 		tarefa.setId(id);
+
+		bancoDeDados.close();
 		return tarefa;
 	}
 
 	public ArrayList<TarefaDTO> selecionarTarefas(TarefaDTO filtros) throws SQLException {
 
 		ArrayList<TarefaDTO> resultados = dados.selecionar(filtros);
-		HashMap<Long, ArrayList<CategoriaDTO>> categorias = new CategoriaDAO()
-			.selecionarCategoriasPorTarefa(resultados);
+		HashMap<Long, ArrayList<CategoriaDTO>> categorias =
+			catDAO.selecionarCategoriasPorTarefa(resultados);
 
 		for (TarefaDTO t : resultados) {
 			t.setCategorias(categorias.get(t.getId()));
@@ -77,6 +88,7 @@ public class TarefaServico {
 		long id = dados.atualizar(tarefaNova);
 
 		if (id <= 0) {
+			bancoDeDados.reverter();
 			throw new NotFoundException("Try a different id.");
 		}
 
@@ -92,13 +104,13 @@ public class TarefaServico {
 			tarefaNova.setCategorias(l);
 		}
 
-		CategoriaDAO catDAO = new CategoriaDAO();
 		catDAO.desfazerRelacaoTarefaCategoria(tarefaNova, null);
 
 		for (CategoriaDTO c : tarefaNova.getCategorias()) {
 			catDAO.relacionarTarefaCategoria(tarefaNova, c);
 		}
 
+		bancoDeDados.close();
 		return tarefaNova;
 	}
 
@@ -111,7 +123,6 @@ public class TarefaServico {
 			throw new NotFoundException("Id not found. Try a different one.");
 		}
 
-		CategoriaDAO catDAO = new CategoriaDAO();
 		for (CategoriaDTO c : retorno.get(0).getCategorias()) {
 			catDAO.desfazerRelacaoTarefaCategoria(filtros, c);
 		}
@@ -120,6 +131,7 @@ public class TarefaServico {
 		catDAO.relacionarCategoriaPadrao();
 		filtros.setId(id);
 
+		bancoDeDados.close();
 		return filtros;
 	}
 }
