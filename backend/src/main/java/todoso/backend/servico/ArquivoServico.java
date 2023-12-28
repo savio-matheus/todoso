@@ -1,6 +1,7 @@
 package todoso.backend.servico;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,20 +22,26 @@ public class ArquivoServico {
 	}
 
 	// TODO: atribuir nomes personalizados aos arquivos para evitar colisões.
-	public ArquivoDTO criarArquivo(ArquivoDTO arquivo) throws SQLException {
+	public ArquivoDTO criarArquivo(ArquivoDTO arquivo)
+			throws SQLException, NoSuchAlgorithmException, IOException {
+		
 		long id = 0;
 
-		id = dados.inserir(arquivo);
-		//dados.criarDiretorios(arquivo);
-		//dados.escreverArquivoEmDisco(arquivo);
+		try {
+			arquivo.setHash(ArquivoDAO.sha256String(arquivo.getMultipartFile().getBytes()));
+			id = dados.inserir(arquivo);
+			bancoDeDados.fecharConexao();
 
-		if (id <= 0) {
-			bancoDeDados.reverter();
-			throw new SQLException("Resource was created, but returned no valid id.");
+			//dados.criarDiretorios(arquivo);
+			//dados.escreverArquivoEmDisco(arquivo);
+			
+			arquivo.setId(id);
 		}
-
-		arquivo.setId(id);
-		bancoDeDados.close();
+		catch (SQLException e) {
+			bancoDeDados.reverter();
+			bancoDeDados.fecharConexao();
+			throw new SQLException(e);
+		}
 
 		return arquivo;
 	}
@@ -52,19 +59,25 @@ public class ArquivoServico {
 	public ArquivoDTO deletarArquivo(ArquivoDTO filtros)
 			throws Exception {
 
-		ArrayList<ArquivoDTO> arquivos = dados.selecionar(filtros);
-		long id = dados.excluir(filtros);
+		try {
+			ArrayList<ArquivoDTO> arquivos = dados.selecionar(filtros);
+			long id = dados.excluir(filtros);
 
-		if (id <= 0) {
+			if (id <= 0) {
+				bancoDeDados.reverter();
+				throw new NotFoundException("File not found. Try a different id.");
+			}
+
+			if (!arquivos.isEmpty()) {
+				dados.apagarArquivoEmDisco(arquivos.get(0));
+			}
+		}
+		catch (SQLException e) {
 			bancoDeDados.reverter();
-			throw new NotFoundException("File not found. Try a different id.");
+			bancoDeDados.fecharConexao();
+			throw new SQLException(e);
 		}
 
-		if (!arquivos.isEmpty()) {
-			dados.apagarArquivoEmDisco(arquivos.get(0));
-		}
-
-		bancoDeDados.close();
 		return filtros;
 	}
 

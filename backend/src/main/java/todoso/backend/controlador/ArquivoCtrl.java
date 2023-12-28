@@ -5,7 +5,9 @@ import todoso.backend.servico.ArquivoServico;
 //import todoso.backend.servico.ConfiguracoesServico;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -117,4 +119,41 @@ public class ArquivoCtrl {
 
 		return new ResponseEntity<>(retorno, HttpStatus.ACCEPTED);
 	}
+
+	private ResponseEntity<Resposta<ArquivoDTO>> adicionarArquivo(
+		MultipartFile file, Optional<Long> idUsuario, Optional<Long> idTarefa) throws Exception {
+		
+		if (idUsuario.isEmpty() && idTarefa.isEmpty()) {
+			throw new Exception("O arquivo deve ser vinculado a um usuário ou tarefa."); 
+		}
+		
+		return null;
+	}
+
+	private ResponseEntity<Resource> baixarArquivo(
+		Long idArquivo, Optional<Long> idUsuario, Optional<Long> idTarefa) throws Exception {
+
+		if (idArquivo < 0 || null == idArquivo) {
+			throw new Exception("Id inválido para o arquivo.");
+		}
+		if (idUsuario.isEmpty() && idTarefa.isEmpty()) {
+			throw new Exception("Informe a qual tarefa ou usuário o arquivo está associado.");
+		}
+
+		return null;
+	}
+
+	private ResponseEntity<Resposta<ArquivoDTO>> deletarArquivo(
+		Long idArquivo, Optional<Long> idUsuario, Optional<Long> idTarefa) throws Exception {
+
+		if (idArquivo < 0 || null == idArquivo) {
+			throw new Exception("Id inválido para o arquivo.");
+		}
+		if (idUsuario.isEmpty() && idTarefa.isEmpty()) {
+			throw new Exception("Informe a qual tarefa ou usuário o arquivo está associado.");
+		}
+
+		return null;
+	}
 }
+

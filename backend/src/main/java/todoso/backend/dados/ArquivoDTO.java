@@ -29,6 +29,8 @@ public class ArquivoDTO extends BaseDTO {
 	@JsonProperty("size")
 	private Long tamanho;
 
+	private String hash = "";
+
 	private MultipartFile multipartFile;
 
 	public Long getId() {
@@ -61,5 +63,13 @@ public class ArquivoDTO extends BaseDTO {
 
 	public MultipartFile getMultipartFile() {
 		return this.multipartFile;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public String getHash() {
+		return this.hash;
 	}
 }

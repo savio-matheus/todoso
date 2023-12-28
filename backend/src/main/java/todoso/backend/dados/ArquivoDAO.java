@@ -3,13 +3,18 @@ package todoso.backend.dados;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,8 +38,8 @@ public class ArquivoDAO implements BaseDAO {
 	@Override
 	public long inserir(BaseDTO dto) throws SQLException {
 		String sql =
-			"INSERT INTO arquivos (url, mime, tamanho)\n" +
-			"VALUES (?, ?, ?);";
+			"INSERT INTO arquivos (url, mime, tamanho, nome_original, sha256)\n" +
+			"VALUES (?, ?, ?, ?, ?);";
 
 		bd.pstmt = bd.conexao.prepareStatement(sql, bd.RETURN_GENERATED_KEYS);
 
@@ -47,15 +52,11 @@ public class ArquivoDAO implements BaseDAO {
 		bd.pstmt.setString(i++, caminhoCompleto.toString());
 		bd.pstmt.setString(i++, a.getMimetype());
 		bd.pstmt.setLong(i++, a.getTamanho());
+		bd.pstmt.setString(i++, a.getNome());
+		bd.pstmt.setString(i++, a.getHash());
 		bd.pstmt.execute();
 
 		idGerado = bd.getChaveGerada();
-
-		// TODO: não é nem possível... remover
-		if (idGerado <= 0) {
-			bd.reverter();
-			return idGerado;
-		}
 
 		try {
 			// TODO: essas funções deveriam ser chamadas na classe de serviço
@@ -109,11 +110,10 @@ public class ArquivoDAO implements BaseDAO {
 		bd.pstmt = bd.conexao.prepareStatement(sql);
 
 		bd.pstmt.setLong(1, a.getId());
-		bd.pstmt.execute();
+		boolean apagado = bd.pstmt.execute();
 		bd.pstmt.close();
 
-		// TODO: indicar com mais clareza se a linha foi ou não excluída.
-		return a.getId();
+		return (apagado) ? a.getId() : -1;
 	}
 
 	// Todos os métodos abaixo pressupõem que o caminho da url é válido.
@@ -150,5 +150,18 @@ public class ArquivoDAO implements BaseDAO {
 		File f = new File(DIRETORIO_RAIZ);
 		if (f.isDirectory()) { return true; }
 		return f.mkdirs();
+	}
+
+	public static String sha256String(byte[] conteudo) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		byte[] hash = md.digest(conteudo);
+
+		BigInteger n = new BigInteger(1, hash);
+		StringBuffer resultado = new StringBuffer(n.toString(16));
+		while (resultado.length() < 64) {
+			resultado.insert(0, "0");
+		}
+
+		return resultado.toString();
 	}
 }

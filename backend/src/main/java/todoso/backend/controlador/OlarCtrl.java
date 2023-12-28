@@ -14,7 +14,7 @@ class OlarCtrl {
 
 	@GetMapping("/api/v1/olar")
 	@CrossOrigin
-	public ResponseEntity<String> olar() {
+	public ResponseEntity<String> olar() throws Exception {
 		OlarServico s = new OlarServico();
 		return s.criarBancoDeDados();
 	}

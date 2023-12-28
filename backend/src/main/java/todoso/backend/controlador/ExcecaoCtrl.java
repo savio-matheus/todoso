@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import todoso.backend.excecoes.InvalidRequestException;
 import todoso.backend.excecoes.NotFoundException;
 
 @ControllerAdvice
@@ -28,6 +29,17 @@ public class ExcecaoCtrl extends ResponseEntityExceptionHandler {
 		conteudo.addDadosRetorno(ex.getLocalizedMessage());
 
 		return new ResponseEntity<>(conteudo, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler({InvalidRequestException.class})
+	public ResponseEntity<Resposta<String>> retornoInvalidRequestException(Exception ex, WebRequest req) {
+		ex.printStackTrace();
+
+		Resposta<String> conteudo = new Resposta<>();
+		conteudo.setHttp(HttpStatus.BAD_REQUEST);
+		conteudo.addDadosRetorno(ex.getLocalizedMessage());
+
+		return new ResponseEntity<>(conteudo, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({

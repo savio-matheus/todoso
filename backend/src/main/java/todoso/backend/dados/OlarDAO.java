@@ -38,9 +38,11 @@ public class OlarDAO {
 		String sqlArquivos =
 			"CREATE TABLE IF NOT EXISTS arquivos (\n" +
 			"	id INTEGER NULL,\n" +
-			"	url varchar NOT NULL,\n" +
-			"	mime varchar NOT NULL,\n" +
+			"	url varchar(256) NOT NULL,\n" +
+			"	mime varchar(128) NOT NULL,\n" +
 			"	tamanho integer NOT NULL,\n" +
+			"	nome_original varchar(128) NOT NULL,\n" +
+			"	sha256 char(65) NOT NULL,\n" +
 			"	CONSTRAINT arquivos_pk PRIMARY KEY (id)\n" +
 			");";
 
@@ -123,10 +125,23 @@ public class OlarDAO {
 					+ "REFERENCES arquivos(id)\n" +
 			");";
 
+		String sqlUsuarios_arquivos =
+			"CREATE TABLE IF NOT EXISTS usuarios_arquivos (\n" +
+			"	id_usuario INTEGER NOT NULL,\n" +
+			"	id_arquivo INTEGER NOT NULL,\n" +
+			"	CONSTRAINT usuarios_arquivos_fk FOREIGN KEY (id_usuario) "
+					+ "REFERENCES tarefas(id),\n" +
+			"	CONSTRAINT usuarios_arquivos_fk_1 FOREIGN KEY (id_arquivo) "
+					+ "REFERENCES arquivos(id)\n" +
+			");";
+
 		// Categoria padrão para todas as tarefas
 		// Não será mais criada dessa forma quando houver mais de um usuário.
 		String sqlCategoriaPadrao =
-			"INSERT INTO categorias (id, nome_categoria) VALUES (1, 'geral');";
+			"INSERT OR IGNORE INTO categorias (id, nome_categoria) VALUES (1, 'geral');";
+
+		// Alterações devem ser adicionadas aqui.
+		//String sqlAlteracoes = "";
 
 		bd.stmt.addBatch(sqlCategorias);
 		bd.stmt.addBatch(sqlTags);
@@ -138,7 +153,9 @@ public class OlarDAO {
 		bd.stmt.addBatch(sqlTarefas_categorias);
 		bd.stmt.addBatch(sqlTarefas_usuarios);
 		bd.stmt.addBatch(sqlTarefas_arquivos);
+		bd.stmt.addBatch(sqlUsuarios_arquivos);
 		bd.stmt.addBatch(sqlCategoriaPadrao);
+		//bd.stmt.addBatch(sqlAlteracoes);
 
 		bd.stmt.executeBatch();
 	}

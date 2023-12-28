@@ -93,11 +93,11 @@ public class CategoriaDAO implements BaseDAO {
 
 		bd.pstmt.setString(i++, c.getNome());
 		bd.pstmt.setLong(i++, c.getId());
+		bd.pstmt.close();
 
 		if (bd.pstmt.executeUpdate() > 0) {
 			return c.getId();
 		}
-		bd.pstmt.close();
 
 		return -1;
 	}

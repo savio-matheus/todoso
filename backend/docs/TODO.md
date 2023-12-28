@@ -35,7 +35,7 @@ As tarefas devem:
 - [x] pertencer a nenhuma, uma ou mais categorias
 
 Outros:
-- [ ] envio e download de arquivos
+- [x] envio e download de arquivos
 - [ ] suporte multiusuário (autenticação e tudo)
-- [ ] mesclar todoso principal e microsserviço de arquivos
-- [ ] usar transações no banco de dados
+- [x] mesclar todoso principal e microsserviço de arquivos
+- [x] usar transações no banco de dados

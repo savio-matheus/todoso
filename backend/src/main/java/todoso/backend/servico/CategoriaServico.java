@@ -29,7 +29,7 @@ public class CategoriaServico {
 		}
 
 		categoria.setId(id);
-		bancoDeDados.close();
+		bancoDeDados.fecharConexao();
 		return categoria;
 	}
 
@@ -51,7 +51,7 @@ public class CategoriaServico {
 			throw new NotFoundException("Try a different id.");
 		}
 
-		bancoDeDados.close();
+		bancoDeDados.fecharConexao();
 		return categoria;
 	}
 
@@ -74,7 +74,7 @@ public class CategoriaServico {
 			throw new NotFoundException("Try a different id.");
 		}
 
-		bancoDeDados.close();
+		bancoDeDados.fecharConexao();
 		return filtros;
 	}
 }
