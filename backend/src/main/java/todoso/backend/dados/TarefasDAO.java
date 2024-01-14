@@ -247,4 +247,80 @@ public class TarefasDAO implements BaseDAO {
 		bd.pstmt.close();
 		return arquivos;
 	}
+
+	/**
+	 * Retorna uma lista tarefas (ids apenas) associadas com a tag informada
+	 * nos filtros.
+	 *
+	 * @param filtros Com o id da tag preenchido.
+	 * @return
+	 * @throws SQLException
+	 */
+	public ArrayList<? extends BaseDTO> selecionarTarefasPorTag(BaseDTO filtros)
+		throws SQLException {
+
+		final String sql =
+			"SELECT t.id FROM tarefas t\n" +
+			"INNER JOIN tarefas_tags tt ON t.id = tt.id_tarefa\n" +
+			"INNER JOIN tags tg ON tg.id = tt.id_tag\n" +
+			"WHERE tg.id = ?;";
+
+		TagDTO filtrosTag = (TagDTO) filtros;
+		if (filtrosTag.getId() == null) {
+			throw new SQLException("É necessário informar o id da tag.");
+		}
+
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setObject(1, filtrosTag.getId());
+		bd.rs = bd.pstmt.executeQuery();
+
+		ArrayList<TagDTO> resultado = new ArrayList<>();
+		while (bd.rs.next()) {
+			TarefaDTO t = new TarefaDTO();
+			t.setId(bd.rs.getLong("id"));
+		}
+
+		bd.rs.close();
+		bd.pstmt.close();
+
+		return resultado;
+	}
+
+	/**
+	 * Retorna uma lista tarefas (ids apenas) associadas com a categoria informada
+	 * nos filtros.
+	 * 
+	 * @param filtros Contendo o id da categoria.
+	 * @return
+	 * @throws SQLException
+	 */
+	public ArrayList<? extends BaseDTO> selecionarTarefasPorCategoria(BaseDTO filtros)
+		throws SQLException {
+
+		final String sql =
+			"SELECT t.id FROM tarefas t\n" +
+			"INNER JOIN tarefas_categorias tc ON t.id = tc.id_tarefa\n" +
+			"INNER JOIN categorias c ON c.id = tc.id_tarefa\n" +
+			"WHERE tc.id_tarefa = ?;";
+
+		CategoriaDTO filtrosCategoria = (CategoriaDTO) filtros;
+		if (filtrosCategoria.getId() == null) {
+			throw new SQLException("É necessário informar o id da categoria.");
+		}
+
+		bd.pstmt = bd.conexao.prepareStatement(sql);
+		bd.pstmt.setObject(1, filtrosCategoria.getId());
+		bd.rs = bd.pstmt.executeQuery();
+
+		ArrayList<CategoriaDTO> resultado = new ArrayList<>();
+		while (bd.rs.next()) {
+			TarefaDTO t = new TarefaDTO();
+			t.setId(bd.rs.getLong("id"));
+		}
+
+		bd.rs.close();
+		bd.pstmt.close();
+
+		return resultado;
+	}
 }

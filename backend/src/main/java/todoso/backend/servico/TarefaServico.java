@@ -9,6 +9,8 @@ import todoso.backend.dados.TarefasDAO;
 import todoso.backend.dados.BdAcesso;
 import todoso.backend.dados.CategoriaDAO;
 import todoso.backend.dados.CategoriaDTO;
+import todoso.backend.dados.TagDTO;
+import todoso.backend.dados.TagsDAO;
 import todoso.backend.dados.TarefaDTO;
 
 public class TarefaServico {
@@ -16,11 +18,13 @@ public class TarefaServico {
 	private BdAcesso bancoDeDados;
 	private TarefasDAO dados;
 	private CategoriaDAO catDAO;
+	private TagsDAO tagDAO;
 
 	public TarefaServico() throws SQLException {
 		bancoDeDados = BdAcesso.abrirConexao(false);
 		dados = new TarefasDAO(bancoDeDados);
 		catDAO = new CategoriaDAO(bancoDeDados);
+		tagDAO = new TagsDAO(bancoDeDados);
 	}
 
 	public TarefaDTO criarTarefa(TarefaDTO tarefa) throws SQLException {
@@ -29,6 +33,7 @@ public class TarefaServico {
 
 		tarefa.setId(id);
 
+		// Relacionar as categorias
 		if (tarefa.getCategorias() == null) {
 			ArrayList<CategoriaDTO> l = new ArrayList<>();
 			CategoriaDTO padrao = new CategoriaDTO();
@@ -51,9 +56,17 @@ public class TarefaServico {
 			catDAO.relacionarCategoriaPadrao();
 		}
 
+		// Relacionar as tags. Nesse caso não existe o conceito de tag padrão.
+		if (tarefa.getTags() != null) {
+			for (TagDTO t : tarefa.getTags()) {
+				// TODO: e se ok = false?
+				boolean ok = tagDAO.relacionarTarefaTag(tarefa, t);
+			}
+		}
+
 		if (id <= 0) {
 			bancoDeDados.reverter();
-			throw new SQLException("Nenhum id válido foi retornado.");
+			throw new SQLException("Houve um erro ao criar tarefa.");
 		}
 		tarefa.setId(id);
 
@@ -66,9 +79,15 @@ public class TarefaServico {
 		ArrayList<TarefaDTO> resultados = dados.selecionar(filtros);
 		HashMap<Long, ArrayList<CategoriaDTO>> categorias =
 			catDAO.selecionarCategoriasPorTarefa(resultados);
+		HashMap<Long, ArrayList<TagDTO>> tags =
+			tagDAO.selecionarTagsPorTarefa(resultados);
 
 		for (TarefaDTO t : resultados) {
 			t.setCategorias(categorias.get(t.getId()));
+		}
+
+		for (TarefaDTO t : resultados) {
+			t.setTags(tags.get(t.getId()));
 		}
 
 		for (TarefaDTO t : resultados) {
@@ -92,11 +111,11 @@ public class TarefaServico {
 			throw new NotFoundException("Try a different id.");
 		}
 
-		// Retiramos todas as categorias da tarefa do banco e adicionamos
+		// Retiramos todas as categorias/tags da tarefa do banco e adicionamos
 		// novamente para refletir a tarefa editada.
 		// TODO: talvez tenha forma melhor de fazer isso
 
-		if (tarefaNova.getCategorias() == null || tarefaNova.getCategorias().size() == 0) {
+		if (tarefaNova.getCategorias() == null || tarefaNova.getCategorias().isEmpty()) {
 			ArrayList<CategoriaDTO> l = new ArrayList<>();
 			CategoriaDTO c = new CategoriaDTO();
 			c.setId(ID_CATEGORIA_PADRAO);
@@ -105,12 +124,17 @@ public class TarefaServico {
 		}
 
 		catDAO.desfazerRelacaoTarefaCategoria(tarefaNova, null);
-
 		for (CategoriaDTO c : tarefaNova.getCategorias()) {
 			catDAO.relacionarTarefaCategoria(tarefaNova, c);
 		}
 
-		bancoDeDados.close();
+		tagDAO.desfazerRelacaoTarefaTag(tarefaNova, null);
+		for (TagDTO t : tarefaNova.getTags()) {
+			tagDAO.relacionarTarefaTag(tarefaNova, t);
+		}
+
+		bancoDeDados.confirmar();
+		bancoDeDados.fecharConexao();
 		return tarefaNova;
 	}
 
@@ -123,12 +147,18 @@ public class TarefaServico {
 			throw new NotFoundException("Id not found. Try a different one.");
 		}
 
+		// Tratamento das categorias
 		for (CategoriaDTO c : retorno.get(0).getCategorias()) {
 			catDAO.desfazerRelacaoTarefaCategoria(filtros, c);
 		}
 
+		// Tratamento das tags
+		for (TagDTO t : retorno.get(0).getTags()) {
+			tagDAO.desfazerRelacaoTarefaTag(filtros, t);
+		}
+		tagDAO.excluirTagsSemTarefas();
+
 		long id = dados.excluir(filtros);
-		catDAO.relacionarCategoriaPadrao();
 		filtros.setId(id);
 
 		bancoDeDados.close();

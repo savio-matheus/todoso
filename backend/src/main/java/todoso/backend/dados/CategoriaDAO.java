@@ -111,11 +111,10 @@ public class CategoriaDAO implements BaseDAO {
 
 		bd.pstmt.setLong(i++, c.getId());
 
-		bd.pstmt.execute();
+		int deletadas = bd.pstmt.executeUpdate();
 		bd.pstmt.close();
 
-		// TODO: indicar se foi ou não excluído
-		return c.getId();
+		return deletadas;
 	}
 
 	/**
@@ -181,13 +180,15 @@ public class CategoriaDAO implements BaseDAO {
 	 * o relacionamento entre elas no banco de dados.</p>
 	 * <p>Se for informada ou uma categoria ou uma tarefa, então todas as suas
 	 * relações são desfeitas.</p>
-	 * <p>As tarefas não devem ficar sem categoria, portanto considere usar o
+	 * <p>As tarefas não devem ficar sem categoria, portanto você deve usar o
 	 * método relacionarCategoriaPadrao() em seguida.</p>
 	 *
 	 * @param tarefa
 	 * @param categoria
 	 */
-	public void desfazerRelacaoTarefaCategoria(TarefaDTO tarefa, CategoriaDTO categoria) throws SQLException {
+	public int desfazerRelacaoTarefaCategoria(TarefaDTO tarefa, CategoriaDTO categoria)
+		throws SQLException {
+		
 		String sql;
 
 		if (tarefa == null && categoria == null) {
@@ -212,10 +213,16 @@ public class CategoriaDAO implements BaseDAO {
 
 		int i = 1;
 		bd.pstmt = bd.conexao.prepareStatement(sql);
-		if (tarefa != null) bd.pstmt.setLong(i++, tarefa.getId());
-		if (categoria != null) bd.pstmt.setLong(i++, categoria.getId());
-		bd.pstmt.execute();
+		if (tarefa != null) {
+			bd.pstmt.setLong(i++, tarefa.getId());
+		}
+		if (categoria != null) {
+			bd.pstmt.setLong(i++, categoria.getId());
+		}
+		int alteracoes = bd.pstmt.executeUpdate();
 		bd.pstmt.close();
+
+		return alteracoes;
 	}
 
 	public void relacionarCategoriaPadrao() throws SQLException {

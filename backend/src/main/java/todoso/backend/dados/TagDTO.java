@@ -8,6 +8,13 @@ import io.swagger.v3.oas.annotations.Hidden;
 @Hidden
 public class TagDTO extends BaseDTO {
 
+	public TagDTO() {}
+
+	public TagDTO(long id, String nome_tag) {
+		this.id = id;
+		this.nome = nome_tag;
+	}
+
 	@Positive
 	@JsonProperty("id")
 	private Long id;
