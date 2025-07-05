@@ -1,7 +1,7 @@
 package todoso.backend.dados;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import io.swagger.v3.oas.annotations.Hidden;
 

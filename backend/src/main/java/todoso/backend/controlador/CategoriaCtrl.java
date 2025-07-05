@@ -5,7 +5,7 @@ import todoso.backend.dados.TarefaDTO;
 import todoso.backend.servico.CategoriaServico;
 import todoso.backend.servico.TarefaServico;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 

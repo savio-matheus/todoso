@@ -3,7 +3,7 @@ package todoso.backend.dados;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Hidden;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

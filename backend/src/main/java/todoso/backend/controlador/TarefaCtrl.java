@@ -2,7 +2,7 @@ package todoso.backend.controlador;
 
 import java.util.ArrayList;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import todoso.backend.dados.TarefaDTO;
 import todoso.backend.servico.TarefaServico;
