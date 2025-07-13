@@ -10,7 +10,7 @@
 * POST /tasks/:id/files
 * PATCH /tasks/:id
 * DELETE /tasks/:id
-* DELETE /tasks/files/:id
+* DELETE /tasks/:id/files/:fileId
 
 ### /users
 * GET /users

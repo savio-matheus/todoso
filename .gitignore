@@ -5,6 +5,10 @@
 **/todoso-tarefas-anexos/
 **/anexos-todoso
 
+### CTags
+*.tags
+*.tags_sorted_by_file
+
 ### Sublime Text
 *.sublime-project
 *.sublime-workspace
